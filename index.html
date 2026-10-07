@@ -877,6 +877,7 @@
 <script>
     // ================= STATE DATA =================
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const STORAGE_KEY = 'agendaAnggaranData';
     
     let groups = {};
     let groupCounter = 0;
@@ -955,6 +956,68 @@
         '#eab308', '#ef4444', '#22c55e', '#3b82f6', '#d946ef'
     ];
 
+    // ==========================================
+    // AUTO-SAVE & LOAD DARI LOCALSTORAGE
+    // ==========================================
+    function saveToLocalStorage() {
+        try {
+            const data = {
+                groups: groups,
+                groupCounter: groupCounter,
+                programCounter: programCounter,
+                mode: currentMode,
+                companyName: document.getElementById('companyName').value,
+                budgetYear: document.getElementById('budgetYear').value,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) {
+            console.warn('Gagal menyimpan ke localStorage:', e);
+        }
+    }
+    
+    function loadFromLocalStorage() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            
+            const data = JSON.parse(raw);
+            if (!data || !data.groups) return false;
+            
+            groups = data.groups || {};
+            groupCounter = data.groupCounter || 0;
+            programCounter = data.programCounter || 0;
+            
+            // Restore meta
+            if (data.companyName) {
+                document.getElementById('companyName').value = data.companyName;
+            }
+            if (data.budgetYear) {
+                const yearSelect = document.getElementById('budgetYear');
+                if (Array.from(yearSelect.options).some(o => o.value === data.budgetYear)) {
+                    yearSelect.value = data.budgetYear;
+                }
+            }
+            
+            // Restore mode
+            if (data.mode) {
+                setMode(data.mode);
+            }
+            
+            return true;
+        } catch (e) {
+            console.warn('Gagal load dari localStorage:', e);
+            return false;
+        }
+    }
+    
+    // Auto-save setiap kali ada perubahan penting
+    function triggerAutoSave() {
+        // Debounce supaya tidak terlalu sering save
+        if (window._saveTimeout) clearTimeout(window._saveTimeout);
+        window._saveTimeout = setTimeout(saveToLocalStorage, 500);
+    }
+    
     // Helper: konversi hex ke RGB
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -1568,6 +1631,7 @@
         groups[groupId] = { name: 'Kelompok ' + groupCounter, programs: [] };
         renderAll();
         saveHistory('Tambah kelompok: Kelompok ' + groupCounter);
+        triggerAutoSave();
         setTimeout(() => {
             const input = document.querySelector(`tr[data-group-id="${groupId}"] input[type="text"]`);
             if (input) { input.focus(); input.select(); }
@@ -1611,6 +1675,7 @@
             inputName.addEventListener('change', function() { 
                 updateGroupName(groupId, this.value); 
                 saveHistory('Ubah nama kelompok jadi: ' + this.value);
+                triggerAutoSave();
             });
             tdName.appendChild(inputName);
             tr.appendChild(tdName);
@@ -1746,6 +1811,7 @@
         
         renderAll();
         saveHistory(`Ubah status "${program.name}" jadi ${STATUS_FLOW[nextStatus].label}`);
+        triggerAutoSave();
         showToast(`${STATUS_FLOW[nextStatus].icon} Status: ${STATUS_FLOW[nextStatus].label}`, 'info');
     }
 
@@ -1761,6 +1827,7 @@
             delete groups[groupId];
             renderAll();
             saveHistory('Hapus kelompok: ' + groupName);
+            triggerAutoSave();
             showToast('Kelompok dihapus', 'success');
         });
     }
@@ -1788,6 +1855,7 @@
         closeModal('programModal');
         renderAll();
         saveHistory('Tambah program: ' + name);
+        triggerAutoSave();
         showToast('Program berhasil disimpan', 'success');
     }
 
@@ -1797,6 +1865,7 @@
             groups[groupId].programs = groups[groupId].programs.filter(p => p.id !== programId);
             renderAll();
             saveHistory('Hapus program: ' + programName);
+            triggerAutoSave();
             showToast('Program dihapus', 'success');
         });
     }
@@ -1924,6 +1993,7 @@
         closeModal('scheduleModal');
         renderAll();
         saveHistory(`Jadwalkan "${program.name}" di ${months[monthIndex]}`);
+        triggerAutoSave();
         showToast('Program berhasil dijadwalkan', 'success');
     }
 
@@ -1934,6 +2004,7 @@
             if (program) { program.scheduledMonth = null; }
             renderAll();
             saveHistory('Batalkan jadwal: ' + programName);
+            triggerAutoSave();
             showToast('Jadwal dibatalkan', 'info');
         });
     }
@@ -1981,6 +2052,10 @@
                 if (hp.classList.contains('open')) toggleHistoryPanel();
             }
         });
+        
+        // Auto-save meta inputs
+        document.getElementById('companyName').addEventListener('change', triggerAutoSave);
+        document.getElementById('budgetYear').addEventListener('change', triggerAutoSave);
     });
 
     // ========================================================
@@ -1990,7 +2065,6 @@
         const isCircular = chartType === 'pie' || chartType === 'doughnut';
         
         if (isCircular) {
-            // ============ PIE / DONUT CHART ============
             const totals = groupIds.map(gid => {
                 return groups[gid].programs
                     .filter(p => p.scheduledMonth !== null)
@@ -1998,7 +2072,6 @@
             });
             const grandTotal = totals.reduce((s, v) => s + v, 0);
             
-            // Background panel chart
             doc.setFillColor(250, 250, 252);
             doc.setDrawColor(226, 232, 240);
             doc.roundedRect(x, y, width, height, 2, 2, 'FD');
@@ -2011,7 +2084,6 @@
                 return;
             }
             
-            // Posisi center chart (di kiri area, legend di kanan)
             const chartAreaWidth = width * 0.55;
             const centerX = x + chartAreaWidth / 2;
             const centerY = y + height / 2;
@@ -2019,8 +2091,7 @@
             const outerRadius = maxRadius;
             const innerRadius = chartType === 'doughnut' ? maxRadius * 0.55 : 0;
             
-            // Gambar setiap slice menggunakan polygon approximation
-            let currentAngle = -Math.PI / 2; // Mulai dari atas
+            let currentAngle = -Math.PI / 2;
             const segments = [];
             
             totals.forEach((value, i) => {
@@ -2038,13 +2109,10 @@
                 currentAngle += angle;
             });
             
-            // Gambar setiap segment
             segments.forEach(seg => {
-                // Polygon approximation untuk arc
                 const steps = Math.max(20, Math.ceil((seg.endAngle - seg.startAngle) / (Math.PI / 60)));
                 const points = [];
                 
-                // Titik luar
                 for (let s = 0; s <= steps; s++) {
                     const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
                     points.push({
@@ -2053,7 +2121,6 @@
                     });
                 }
                 
-                // Titik dalam (untuk donut) - jalur kembali
                 if (innerRadius > 0) {
                     for (let s = steps; s >= 0; s--) {
                         const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
@@ -2063,25 +2130,19 @@
                         });
                     }
                 } else {
-                    // Pie: titik tengah
                     points.push({ x: centerX, y: centerY });
                 }
                 
-                // Convert ke format delta untuk doc.lines
                 const deltas = [];
                 for (let i = 0; i < points.length - 1; i++) {
                     deltas.push([points[i+1].x - points[i].x, points[i+1].y - points[i].y]);
                 }
                 
-                // Set warna
                 doc.setFillColor(...seg.color);
                 doc.setDrawColor(255, 255, 255);
                 doc.setLineWidth(0.3);
-                
-                // Gambar polygon slice
                 doc.lines(deltas, points[0].x, points[0].y, [1, 1], 'FD', true);
                 
-                // Label di dalam slice (nominal + persentase)
                 const midAngle = (seg.startAngle + seg.endAngle) / 2;
                 const labelRadius = innerRadius > 0 ? (innerRadius + outerRadius) / 2 : outerRadius * 0.65;
                 const labelX = centerX + Math.cos(midAngle) * labelRadius;
@@ -2089,7 +2150,6 @@
                 
                 const arcSize = seg.endAngle - seg.startAngle;
                 if (arcSize > 0.3) {
-                    // Format nominal singkat
                     let valueStr;
                     if (seg.value >= 1000000000) valueStr = (seg.value / 1000000000).toFixed(1) + 'M';
                     else if (seg.value >= 1000000) valueStr = (seg.value / 1000000).toFixed(1) + 'jt';
@@ -2111,13 +2171,11 @@
                 }
             });
             
-            // Legend di kanan chart
             const legendX = x + chartAreaWidth + 5;
             const legendY = y + 15;
             const legendItemHeight = 11;
             const legendWidth = width - chartAreaWidth - 10;
             
-            // Judul legend
             doc.setTextColor(30, 41, 59);
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
@@ -2125,23 +2183,19 @@
             
             let legendItemY = legendY + 6;
             segments.forEach(seg => {
-                // Kotak warna
                 doc.setFillColor(...seg.color);
                 doc.rect(legendX, legendItemY - 2, 4, 4, 'F');
                 
-                // Nama kelompok
                 doc.setTextColor(30, 41, 59);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'bold');
                 doc.text(seg.groupName, legendX + 6, legendItemY);
                 
-                // Nominal
                 doc.setTextColor(...seg.color);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Rp ' + seg.value.toLocaleString('id-ID'), legendX + 6, legendItemY + 4);
                 
-                // Persentase
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(7);
                 doc.setFont('helvetica', 'normal');
@@ -2150,7 +2204,6 @@
                 legendItemY += legendItemHeight;
             });
             
-            // Total di bawah legend
             doc.setFillColor(238, 242, 255);
             doc.setDrawColor(99, 102, 241);
             doc.roundedRect(legendX, legendItemY + 2, legendWidth, 12, 2, 2, 'FD');
@@ -2162,8 +2215,6 @@
             doc.text('Rp ' + grandTotal.toLocaleString('id-ID'), legendX + 3, legendItemY + 11);
             
         } else if (chartType === 'bar' || chartType === 'line') {
-            // ============ BAR / LINE CHART ============
-            // Hitung data per bulan per kelompok
             const monthlyByGroup = groupIds.map(gid => {
                 const arr = new Array(12).fill(0);
                 groups[gid].programs.forEach(p => {
@@ -2176,19 +2227,16 @@
             monthlyByGroup.forEach(arr => arr.forEach((v, i) => monthlyTotals[i] += v));
             const maxValue = Math.max(...monthlyTotals, 1);
             
-            // Background panel
             doc.setFillColor(250, 250, 252);
             doc.setDrawColor(226, 232, 240);
             doc.roundedRect(x, y, width, height, 2, 2, 'FD');
             
-            // Area chart
             const chartPadding = { left: 20, right: 5, top: 10, bottom: 15 };
             const chartW = width - chartPadding.left - chartPadding.right;
             const chartH = height - chartPadding.top - chartPadding.bottom;
             const chartX = x + chartPadding.left;
             const chartY = y + chartPadding.top;
             
-            // Y-axis grid lines & labels
             doc.setFontSize(6);
             doc.setTextColor(150, 150, 150);
             doc.setFont('helvetica', 'normal');
@@ -2208,22 +2256,17 @@
                 doc.text(label, chartX - 2, gy + 1, { align: 'right' });
             }
             
-            // X-axis labels (bulan)
             doc.setFontSize(6);
             doc.setTextColor(100, 116, 139);
             const colWidth = chartW / 12;
             
             if (chartType === 'bar') {
-                // Bar chart - stacked
                 const barGroupWidth = colWidth * 0.7;
                 const barWidth = barGroupWidth / groupIds.length;
-                const barX = chartX + (colWidth - barGroupWidth) / 2;
                 
                 months.forEach((m, i) => {
-                    // Label bulan
                     doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
                     
-                    // Stacked bars
                     let stackY = chartY + chartH;
                     groupIds.forEach((gid, gi) => {
                         const value = monthlyByGroup[gi][i];
@@ -2245,7 +2288,6 @@
                     });
                 });
             } else {
-                // Line chart - per kelompok
                 months.forEach((m, i) => {
                     doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
                 });
@@ -2260,11 +2302,8 @@
                         const px = chartX + colWidth * i + colWidth / 2;
                         const py = chartY + chartH - (val / maxValue) * chartH;
                         
-                        if (prevX !== null) {
-                            doc.line(prevX, prevY, px, py);
-                        }
+                        if (prevX !== null) doc.line(prevX, prevY, px, py);
                         
-                        // Titik
                         doc.setFillColor(...color);
                         doc.circle(px, py, 0.8, 'F');
                         
@@ -2274,7 +2313,6 @@
                 });
             }
             
-            // Legend di bawah chart
             const legendY = y + height - 6;
             let legendX = x + chartPadding.left;
             doc.setFontSize(6);
@@ -2322,7 +2360,6 @@
                 const accentRGB = hexToRgb(config.accentColor);
                 const accentDarkRGB = hexToRgb(config.accentDark);
 
-                // ===== HEADER =====
                 doc.setFillColor(...accentDarkRGB);
                 doc.rect(0, 0, pageWidth, 32, 'F');
                 doc.setTextColor(255, 255, 255);
@@ -2342,7 +2379,6 @@
                 doc.text('Dicetak pada: ' + now.toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}), margin, yPos);
                 yPos += 8;
 
-                // ===== SUMMARY BOXES =====
                 const summaryData = [
                     { label: 'TOTAL KELOMPOK', value: String(groupIds.length), color: [99, 102, 241] },
                     { label: 'TOTAL PROGRAM', value: String(totalPrograms), color: [59, 130, 246] },
@@ -2372,7 +2408,6 @@
                 });
                 yPos = boxY + boxHeight + 8;
 
-                // ===== SECTION 1 =====
                 doc.setFillColor(...accentDarkRGB);
                 doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
                 doc.setTextColor(255, 255, 255);
@@ -2415,7 +2450,6 @@
                 });
                 yPos = doc.lastAutoTable.finalY + 10;
 
-                // ===== SECTION 2: JADWAL =====
                 if (yPos > pageHeight - 60) { doc.addPage(); yPos = margin; }
                 doc.setFillColor(...accentDarkRGB);
                 doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
@@ -2453,7 +2487,6 @@
                 });
                 yPos = doc.lastAutoTable.finalY + 8;
 
-                // ===== SECTION 3: CHART (GAMBAR NATIVE) =====
                 if (yPos > pageHeight - 100) { doc.addPage(); yPos = margin; }
                 doc.setFillColor(...accentDarkRGB);
                 doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
@@ -2463,13 +2496,11 @@
                 doc.text('GRAFIK FLUKTUASI ' + config.labelTabel1.toUpperCase() + ' PER BULAN', margin + 3, yPos + 5);
                 yPos += 9;
                 
-                // Gambar chart native (bukan screenshot)
                 const chartW = pageWidth - 2 * margin;
                 const chartH = 90;
                 drawChartInPDF(doc, margin, yPos, chartW, chartH, null, currentChartType, groupIds);
                 yPos += chartH + 6;
 
-                // ===== RINGKASAN TOTAL =====
                 if (yPos > pageHeight - 50) { doc.addPage(); yPos = margin; }
                 const panelBgColor = config.accentLight === '#d1fae5' ? [240, 253, 244] : [254, 242, 242];
                 doc.setFillColor(...panelBgColor);
@@ -2509,7 +2540,6 @@
                 doc.text('Rp ' + totalBudget.toLocaleString('id-ID'), pageWidth - margin - 60, yPos + 22);
                 yPos += 35;
 
-                // ===== TERBILANG =====
                 doc.setFillColor(238, 242, 255);
                 doc.setDrawColor(99, 102, 241);
                 doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 16, 3, 3, 'FD');
@@ -2524,7 +2554,6 @@
                 const splitText = doc.splitTextToSize(terbilangStr, pageWidth - 2 * margin - 10);
                 doc.text(splitText, margin + 5, yPos + 11);
 
-                // ===== FOOTER =====
                 const pageCount = doc.internal.getNumberOfPages();
                 for (let i = 1; i <= pageCount; i++) {
                     doc.setPage(i);
@@ -2654,6 +2683,7 @@
 
                 renderAll();
                 saveHistory('Import dari Excel');
+                triggerAutoSave();
                 overlay.classList.remove('active');
                 showToast(`Import berhasil`, 'success');
             } catch (err) {
@@ -2668,6 +2698,7 @@
 
     // ================= INIT =================
     window.onload = function() {
+        // Restore dark mode
         if (localStorage.getItem('darkMode') === '1') {
             document.body.classList.add('dark-mode');
         }
@@ -2675,33 +2706,24 @@
         initYearDropdown();
         setMode('expense');
         
-        groupCounter = 3;
-        programCounter = 7;
-        groups['group_1'] = {
-            name: 'Kelompok #1',
-            programs: [
-                { id: 'prog_1', name: 'Rapat Awal', cost: 500000, scheduledMonth: 0, status: 'done' },
-                { id: 'prog_2', name: 'Workshop', cost: 2000000, scheduledMonth: 2, status: 'approved' },
-                { id: 'prog_4', name: 'Seminar', cost: 1500000, scheduledMonth: 6, status: 'draft' }
-            ]
-        };
-        groups['group_2'] = {
-            name: 'Kelompok #2',
-            programs: [
-                { id: 'prog_3', name: 'Pelatihan', cost: 1500000, scheduledMonth: 2, status: 'inprogress' },
-                { id: 'prog_5', name: 'Evaluasi', cost: 800000, scheduledMonth: 11, status: 'draft' }
-            ]
-        };
-        groups['group_3'] = {
-            name: 'Kelompok #3',
-            programs: [
-                { id: 'prog_6', name: 'Sosialisasi', cost: 1200000, scheduledMonth: 3, status: 'draft' },
-                { id: 'prog_7', name: 'Laporan Akhir', cost: 700000, scheduledMonth: 11, status: 'draft' }
-            ]
-        };
+        // Coba load data dari localStorage
+        const hasData = loadFromLocalStorage();
+        
+        if (!hasData) {
+            // Mulai dengan data kosong
+            groupCounter = 0;
+            programCounter = 0;
+            groups = {};
+            showToast('Selamat datang! Mulai dengan menambah kelompok.', 'info');
+        } else {
+            showToast('Data berhasil dimuat dari penyimpanan', 'success');
+        }
         
         renderAll();
         saveHistory('Inisialisasi awal');
+        
+        // Auto-save saat user menutup tab
+        window.addEventListener('beforeunload', saveToLocalStorage);
     };
 </script>
 
