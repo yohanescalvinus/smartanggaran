@@ -20,11 +20,7 @@
             --bg: #f8fafc; --card-bg: #ffffff;
             --text: #1e293b; --text-muted: #64748b; --text-light: #94a3b8;
             --border: #e2e8f0;
-            
-            --accent: #ef4444;
-            --accent-light: #fee2e2;
-            --accent-dark: #b91c1c;
-            
+            --accent: #ef4444; --accent-light: #fee2e2; --accent-dark: #b91c1c;
             --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
             --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1);
@@ -33,12 +29,8 @@
         }
         
         body.dark-mode {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --text-light: #64748b;
-            --border: #334155;
+            --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9;
+            --text-muted: #94a3b8; --text-light: #64748b; --border: #334155;
         }
         body.dark-mode { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important; }
         body.dark-mode .card { border-color: rgba(51, 65, 85, 0.8); }
@@ -47,6 +39,9 @@
         body.dark-mode #scheduleTable td.col-group { background: #1e293b; }
         body.dark-mode .modal-content { background: #1e293b; color: #f1f5f9; }
         body.dark-mode .form-group input, body.dark-mode .form-group select { background: #0f172a; color: #f1f5f9; border-color: #334155; }
+        body.dark-mode .month-card { background: #1e293b; border-color: #334155; }
+        body.dark-mode .status-summary-card { background: #1e293b; }
+        body.dark-mode .program-chip { background: #0f172a; }
         
         * { box-sizing: border-box; }
         body {
@@ -72,7 +67,6 @@
             display: flex; align-items: center; justify-content: center;
             color: white; font-size: 22px; box-shadow: var(--shadow-md);
             flex-shrink: 0;
-            transition: all 0.4s ease;
         }
         .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
@@ -86,7 +80,7 @@
             padding: 8px 12px; border: 1px solid var(--border);
             border-radius: var(--radius-sm); font-family: inherit;
             font-size: 13px; background: var(--card-bg); color: var(--text);
-            font-weight: 600; min-width: 220px; transition: all 0.15s ease;
+            font-weight: 600; min-width: 220px;
         }
         .meta-input-group input:focus, .meta-input-group select:focus {
             outline: none; border-color: var(--primary);
@@ -118,7 +112,6 @@
             background: var(--card-bg); border-radius: var(--radius-lg);
             box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px;
             border: 1px solid rgba(226, 232, 240, 0.6);
-            transition: box-shadow 0.3s ease, background 0.3s ease;
         }
         .card-header {
             display: flex; justify-content: space-between; align-items: center;
@@ -234,9 +227,9 @@
         }
         #budgetTable th:nth-child(1) { width: 50px; }
         #budgetTable th:nth-child(2) { width: 180px; }
-        #budgetTable th:nth-child(3) { width: 130px; }
+        #budgetTable th:nth-child(3) { width: 140px; }
         #budgetTable th:nth-child(4) { width: auto; }
-        #budgetTable th:nth-child(5) { width: 150px; }
+        #budgetTable th:nth-child(5) { width: 140px; }
         
         #budgetTable input[type="text"] {
             width: 100%; padding: 8px 10px;
@@ -249,29 +242,130 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
         
-        .program-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: var(--accent-light); border: 1px solid var(--accent);
-            padding: 10px 12px; margin-bottom: 6px; border-radius: var(--radius-sm); font-size: 12px;
+        /* ============ PROGRAM GRID 3 KOLOM ============ */
+        .program-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
         }
-        .program-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-        .program-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .program-item .cost { font-weight: 700; color: var(--accent-dark); font-size: 13px; }
         
-        .btn-del-program {
-            color: var(--danger); background: var(--card-bg);
-            border: 1px solid var(--danger); border-radius: var(--radius-sm);
-            font-weight: 700; cursor: pointer; font-size: 14px;
-            width: 28px; height: 28px;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0; flex-shrink: 0; margin-left: 8px;
+        .program-chip {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: var(--accent-light);
+            border: 1px solid var(--accent);
+            border-left: 3px solid var(--accent-dark);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            font-size: 11px;
+            transition: all 0.15s ease;
+            position: relative;
+            cursor: pointer;
+            min-height: 62px;
         }
-        .btn-del-program:hover { background: var(--danger); color: white; transform: rotate(90deg); }
+        .program-chip:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            z-index: 2;
+        }
+        
+        .program-chip[data-status="draft"] {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-color: #cbd5e1; border-left-color: #94a3b8;
+        }
+        .program-chip[data-status="draft"] .pc-name,
+        .program-chip[data-status="draft"] .pc-cost { color: #64748b; }
+        
+        .program-chip[data-status="approved"] {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: #93c5fd; border-left-color: #3b82f6;
+        }
+        .program-chip[data-status="approved"] .pc-name,
+        .program-chip[data-status="approved"] .pc-cost { color: #1e40af; }
+        
+        .program-chip[data-status="inprogress"] {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-color: #fcd34d; border-left-color: #f59e0b;
+        }
+        .program-chip[data-status="inprogress"] .pc-name,
+        .program-chip[data-status="inprogress"] .pc-cost { color: #92400e; }
+        
+        .program-chip[data-status="done"] {
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            border-color: #6ee7b7; border-left-color: #10b981;
+        }
+        .program-chip[data-status="done"] .pc-name,
+        .program-chip[data-status="done"] .pc-cost { color: #065f46; }
+        
+        .program-chip[data-status="cancelled"] {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-color: #fca5a5; border-left-color: #ef4444;
+            opacity: 0.7;
+        }
+        .program-chip[data-status="cancelled"] .pc-name,
+        .program-chip[data-status="cancelled"] .pc-cost {
+            color: #991b1b; text-decoration: line-through;
+        }
+        
+        .program-chip .pc-name {
+            font-weight: 700;
+            color: var(--accent-dark);
+            font-size: 11px;
+            line-height: 1.3;
+            word-break: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding-right: 42px;
+        }
+        .program-chip .pc-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4px;
+        }
+        .program-chip .pc-cost { font-weight: 700; font-size: 11px; }
+        .program-chip .pc-status {
+            font-size: 8px; padding: 1px 5px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.7);
+            font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.03em; white-space: nowrap;
+        }
+        .program-chip .pc-actions {
+            position: absolute;
+            top: 4px; right: 4px;
+            display: flex; gap: 2px;
+        }
+        .program-chip .pc-btn {
+            width: 18px; height: 18px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; cursor: pointer; border: 1px solid; padding: 0;
+            transition: all 0.15s ease;
+        }
+        .program-chip .pc-btn-edit {
+            background: var(--card-bg); color: var(--primary); border-color: var(--primary);
+        }
+        .program-chip .pc-btn-edit:hover { background: var(--primary); color: white; }
+        .program-chip .pc-btn-del {
+            background: var(--card-bg); color: var(--danger); border-color: var(--danger);
+        }
+        .program-chip .pc-btn-del:hover { background: var(--danger); color: white; }
+        
+        .program-chip.highlight-match {
+            box-shadow: 0 0 0 2px var(--warning);
+            animation: pulseMatch 1s infinite;
+        }
+        
         .empty-state {
+            grid-column: 1 / -1;
             font-size: 12px; color: var(--text-light); font-style: italic;
             padding: 8px 12px; background: var(--bg); border-radius: var(--radius-sm);
             border: 1px dashed var(--border); text-align: center;
         }
+        
         .action-cell { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
         
         .add-group-row td {
@@ -287,6 +381,7 @@
         }
         .btn-add-group-row:hover { background: var(--success-light); border-style: solid; }
         
+        /* ============ TABEL 2 JADWAL ============ */
         .schedule-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card-bg); }
         #scheduleTable {
             width: 100%; table-layout: fixed;
@@ -321,21 +416,71 @@
         #scheduleTable td.col-remaining { vertical-align: middle; font-weight: 700; }
         #scheduleTable td.col-month { vertical-align: top; padding: 5px 4px; background: var(--card-bg); }
         
-        .activity-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 5px; }
+        .activity-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 5px; }
         .activity-item {
-            background: var(--accent-light); border: 1px solid var(--accent);
-            padding: 4px 6px; border-radius: var(--radius-sm); font-size: 10px;
+            padding: 5px 6px; border-radius: var(--radius-sm); font-size: 10px;
             text-align: left; position: relative; word-wrap: break-word;
+            cursor: pointer; transition: all 0.15s ease;
+            border: 1px solid;
         }
+        .activity-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); transform: translateY(-1px); }
+        
+        .activity-item[data-status="draft"] {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-color: #cbd5e1; border-left: 3px solid #94a3b8;
+        }
+        .activity-item[data-status="draft"] .title,
+        .activity-item[data-status="draft"] .cost { color: #64748b; }
+        
+        .activity-item[data-status="approved"] {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: #93c5fd; border-left: 3px solid #3b82f6;
+        }
+        .activity-item[data-status="approved"] .title,
+        .activity-item[data-status="approved"] .cost { color: #1e40af; }
+        
+        .activity-item[data-status="inprogress"] {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-color: #fcd34d; border-left: 3px solid #f59e0b;
+        }
+        .activity-item[data-status="inprogress"] .title,
+        .activity-item[data-status="inprogress"] .cost { color: #92400e; }
+        
+        .activity-item[data-status="done"] {
+            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+            border-color: #6ee7b7; border-left: 3px solid #10b981;
+        }
+        .activity-item[data-status="done"] .title,
+        .activity-item[data-status="done"] .cost { color: #065f46; }
+        
+        .activity-item[data-status="cancelled"] {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border-color: #fca5a5; border-left: 3px solid #ef4444;
+            opacity: 0.75;
+        }
+        .activity-item[data-status="cancelled"] .title,
+        .activity-item[data-status="cancelled"] .cost {
+            color: #991b1b; text-decoration: line-through;
+        }
+        
         .activity-item .title {
-            font-weight: 600; display: block; margin-bottom: 2px;
-            padding-right: 16px; color: var(--accent-dark); font-size: 10px;
+            font-weight: 600; display: block; margin-bottom: 3px;
+            padding-right: 16px; font-size: 10px;
             line-height: 1.2; word-break: break-word;
         }
-        .activity-item .cost { color: var(--accent-dark); font-weight: 700; font-size: 10px; }
+        .activity-item .cost { font-weight: 700; font-size: 10px; display: block; margin-bottom: 3px; }
+        
+        .activity-item .status-dot {
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 8px; padding: 1px 5px; border-radius: 999px;
+            background: rgba(255,255,255,0.7);
+            font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        
         .activity-item .btn-remove-schedule {
             position: absolute; top: 2px; right: 2px;
-            color: var(--danger); background: var(--card-bg);
+            color: var(--danger); background: white;
             border: 1px solid var(--danger); border-radius: 50%;
             cursor: pointer; font-weight: 700;
             width: 15px; height: 15px;
@@ -343,6 +488,7 @@
             font-size: 10px; padding: 0; line-height: 1;
         }
         .activity-item .btn-remove-schedule:hover { background: var(--danger); color: white; }
+        
         .btn-add-schedule {
             width: 100%; font-size: 9px; padding: 3px 4px;
             background: var(--primary); color: white;
@@ -408,6 +554,167 @@
             line-height: 1.5; word-wrap: break-word;
         }
         
+        .monthly-breakdown {
+            margin-top: 8px; padding-top: 16px;
+            border-top: 1px dashed var(--accent);
+        }
+        .monthly-breakdown-title {
+            font-size: 12px; font-weight: 700; color: var(--accent-dark);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .monthly-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        .month-card {
+            background: var(--card-bg); border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            transition: all 0.2s ease;
+        }
+        .month-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .month-card.empty { border-left-color: var(--border); opacity: 0.6; }
+        .month-card.highest {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, #fffbeb 0%, var(--card-bg) 100%);
+        }
+        .month-card.lowest {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, #f0fdf4 0%, var(--card-bg) 100%);
+        }
+        .month-card .month-name {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            color: var(--text-muted); letter-spacing: 0.05em;
+            margin-bottom: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .month-card .month-badge {
+            font-size: 8px; padding: 1px 5px;
+            border-radius: 999px; font-weight: 700;
+        }
+        .month-badge.badge-highest { background: var(--warning-light); color: #92400e; }
+        .month-badge.badge-lowest { background: var(--success-light); color: #065f46; }
+        .month-card .month-value {
+            font-size: 12px; font-weight: 800;
+            color: var(--text); word-break: break-word;
+        }
+        .month-card.empty .month-value { color: var(--text-light); font-style: italic; }
+        
+        /* ============ STATUS SUMMARY — GRID 6 KOLOM ============ */
+        .status-summary-section {
+            margin-top: 24px; padding: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .status-summary-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap; gap: 12px;
+        }
+        .status-summary-title {
+            font-size: 15px; font-weight: 700; color: var(--text);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .status-summary-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; }
+        .status-legend-item {
+            display: flex; align-items: center; gap: 5px;
+            color: var(--text-muted); font-weight: 600;
+        }
+        .status-legend-dot {
+            width: 12px; height: 12px; border-radius: 3px;
+            display: inline-block;
+        }
+        /* GRID 6 KOLOM */
+        .status-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+        .status-summary-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+        .status-summary-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .status-summary-card .group-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; padding-bottom: 6px;
+            border-bottom: 1px dashed var(--border);
+            flex-wrap: wrap; gap: 4px;
+        }
+        .status-summary-card .group-name {
+            font-size: 11px; font-weight: 700; color: var(--text);
+            line-height: 1.2; word-break: break-word;
+        }
+        .status-summary-card .group-total {
+            font-size: 10px; font-weight: 700; color: var(--accent-dark);
+        }
+        .status-breakdown {
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .status-row {
+            display: flex; flex-direction: column; gap: 3px;
+            padding: 4px 6px;
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            transition: background 0.15s ease;
+            cursor: pointer;
+        }
+        .status-row:hover { background: var(--card-bg); }
+        .status-row.empty { opacity: 0.4; cursor: default; }
+        .status-row.empty:hover { background: transparent; }
+        .status-row-header {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 4px;
+        }
+        .status-row .sr-label {
+            display: flex; align-items: center; gap: 4px;
+            font-weight: 700; color: var(--text);
+            font-size: 10px;
+        }
+        .status-row .sr-label .sr-icon { font-size: 10px; }
+        .status-row .sr-right {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 9px;
+        }
+        .status-row .sr-count {
+            font-weight: 700; color: var(--text-muted);
+            font-size: 9px;
+        }
+        .status-row .sr-amount { font-weight: 700; font-size: 9px; }
+        .status-row .sr-bar {
+            height: 5px;
+            background: var(--border);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .status-row .sr-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.6s ease;
+        }
+        .status-row[data-status="draft"] .sr-amount { color: #64748b; }
+        .status-row[data-status="draft"] .sr-bar-fill { background: #94a3b8; }
+        .status-row[data-status="approved"] .sr-amount { color: #1e40af; }
+        .status-row[data-status="approved"] .sr-bar-fill { background: #3b82f6; }
+        .status-row[data-status="inprogress"] .sr-amount { color: #92400e; }
+        .status-row[data-status="inprogress"] .sr-bar-fill { background: #f59e0b; }
+        .status-row[data-status="done"] .sr-amount { color: #065f46; }
+        .status-row[data-status="done"] .sr-bar-fill { background: #10b981; }
+        .status-row[data-status="cancelled"] .sr-amount { color: #991b1b; text-decoration: line-through; }
+        .status-row[data-status="cancelled"] .sr-bar-fill { background: #ef4444; }
+        
+        /* ============ CHART SECTION ============ */
         .chart-section {
             margin-top: 24px; padding: 20px;
             background: var(--card-bg);
@@ -420,6 +727,9 @@
             margin-bottom: 16px; padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap; gap: 12px;
+        }
+        .chart-header-controls {
+            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
         }
         .chart-title {
             font-size: 15px; font-weight: 700; color: var(--text);
@@ -445,17 +755,95 @@
             display: flex; gap: 10px; flex-wrap: wrap;
             font-size: 11px; margin-top: 16px;
             padding-top: 12px; border-top: 1px dashed var(--border);
+            align-items: center;
         }
         .legend-item {
             display: flex; align-items: center; gap: 5px;
             color: var(--text-muted); font-weight: 600;
             transition: all 0.2s ease;
+            cursor: default;
         }
         .legend-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-        .legend-color { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-        .chart-wrapper {
-            position: relative; height: 380px; width: 100%;
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+        .chart-wrapper { position: relative; height: 380px; width: 100%; }
+        .chart-empty-state {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 12px; text-align: center; padding: 20px;
+            color: var(--text-muted);
         }
+        .chart-empty-state .icon { font-size: 48px; opacity: 0.5; }
+        .chart-empty-state .title {
+            font-size: 15px; font-weight: 700; color: var(--text);
+        }
+        .chart-empty-state .desc {
+            font-size: 12px; max-width: 400px; line-height: 1.5;
+        }
+        
+        /* ============ MODAL ============ */
+        .modal {
+            display: none; position: fixed; z-index: 1000; inset: 0;
+            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background: var(--card-bg); margin: 8% auto; padding: 28px;
+            border-radius: var(--radius-lg); width: 420px; max-width: 90%;
+            box-shadow: var(--shadow-lg); color: var(--text);
+        }
+        .modal-content h3 { font-size: 20px; margin-bottom: 8px; }
+        .modal-subtitle {
+            font-size: 12px; color: var(--text-muted);
+            margin-bottom: 20px; padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            font-family: inherit; font-size: 14px;
+            background: var(--card-bg); color: var(--text);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
+        
+        .status-picker {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px; margin-bottom: 16px;
+        }
+        .status-pick-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 14px;
+            border: 2px solid var(--border); border-radius: var(--radius-sm);
+            background: var(--card-bg);
+            cursor: pointer; font-weight: 600; font-size: 13px;
+            transition: all 0.2s ease; text-align: left;
+        }
+        .status-pick-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .status-pick-btn.active { border-width: 2px; transform: scale(1.02); }
+        .status-pick-btn[data-status="draft"].active { border-color: #94a3b8; background: #f1f5f9; }
+        .status-pick-btn[data-status="approved"].active { border-color: #3b82f6; background: #dbeafe; }
+        .status-pick-btn[data-status="inprogress"].active { border-color: #f59e0b; background: #fef3c7; }
+        .status-pick-btn[data-status="done"].active { border-color: #10b981; background: #d1fae5; }
+        .status-pick-btn[data-status="cancelled"].active { border-color: #ef4444; background: #fee2e2; }
+        .status-pick-btn .sp-icon { font-size: 20px; }
+        .status-pick-btn .sp-label { font-size: 12px; font-weight: 700; }
+        
+        .confirm-modal .modal-content { width: 380px; text-align: center; }
+        .confirm-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--danger-light); color: var(--danger);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; margin: 0 auto 16px;
+        }
+        .confirm-modal h3 { font-size: 18px; margin-bottom: 8px; }
+        .confirm-modal p { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+        .confirm-modal .modal-actions { justify-content: center; }
         
         .history-panel {
             position: fixed; top: 0; right: 0;
@@ -498,47 +886,6 @@
         }
         .history-overlay.open { display: block; }
         
-        .modal {
-            display: none; position: fixed; z-index: 1000; inset: 0;
-            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
-            overflow-y: auto;
-        }
-        .modal-content {
-            background: var(--card-bg); margin: 8% auto; padding: 28px;
-            border-radius: var(--radius-lg); width: 420px; max-width: 90%;
-            box-shadow: var(--shadow-lg); color: var(--text);
-        }
-        .modal-content h3 { font-size: 20px; margin-bottom: 8px; }
-        .modal-subtitle {
-            font-size: 12px; color: var(--text-muted);
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 10px 12px;
-            border: 1px solid var(--border); border-radius: var(--radius-sm);
-            font-family: inherit; font-size: 14px;
-            background: var(--card-bg); color: var(--text);
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none; border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
-        
-        .confirm-modal .modal-content { width: 380px; text-align: center; }
-        .confirm-icon {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: var(--danger-light); color: var(--danger);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; margin: 0 auto 16px;
-        }
-        .confirm-modal h3 { font-size: 18px; margin-bottom: 8px; }
-        .confirm-modal p { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
-        .confirm-modal .modal-actions { justify-content: center; }
-        
         .loading-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
@@ -568,16 +915,21 @@
         .toast.error { background: var(--danger); color: white; }
         .toast.info { background: var(--info); color: white; }
         
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1200px) {
+            .program-grid { grid-template-columns: repeat(2, 1fr); }
+            .status-summary-grid { grid-template-columns: repeat(4, 1fr); }
+        }
         @media (max-width: 1024px) {
             .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+            .monthly-grid { grid-template-columns: repeat(4, 1fr); }
+            .status-summary-grid { grid-template-columns: repeat(3, 1fr); }
         }
         @media (max-width: 768px) {
             body { padding: 12px; }
             .page-title { font-size: 20px; }
             .page-title .icon { width: 36px; height: 36px; font-size: 18px; }
-            .meta-input-group input, .meta-input-group select, .meta-input-group.company input {
-                min-width: 100%; width: 100%;
-            }
+            .meta-input-group input, .meta-input-group select, .meta-input-group.company input { min-width: 100%; width: 100%; }
             .meta-inputs { flex-direction: column; align-items: stretch; }
             .meta-input-group { width: 100%; }
             .mode-toggle-wrapper { width: 100%; justify-content: center; }
@@ -588,7 +940,9 @@
             .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .kpi-value { font-size: 15px; }
             .kpi-icon { font-size: 18px; }
-            .chart-tabs { flex-wrap: wrap; }
+            .chart-header { flex-direction: column; align-items: stretch; }
+            .chart-header-controls { width: 100%; flex-direction: column; align-items: stretch; }
+            .chart-tabs { flex-wrap: wrap; justify-content: center; }
             .chart-tab { font-size: 10px; padding: 5px 10px; }
             .chart-wrapper { height: 280px; }
             .history-panel { width: 100%; }
@@ -596,34 +950,83 @@
             .search-box { width: 100%; }
             .filter-select { width: 100%; }
             .modal-content { margin: 5% auto; padding: 20px; }
+            .monthly-grid { grid-template-columns: repeat(3, 1fr); }
+            .status-summary-grid { grid-template-columns: repeat(2, 1fr); }
+            .status-picker { grid-template-columns: 1fr; }
+            .program-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
             .kpi-grid { grid-template-columns: 1fr; }
             .page-title { font-size: 18px; }
             .summary-grid { grid-template-columns: 1fr; }
+            .monthly-grid { grid-template-columns: repeat(2, 1fr); }
+            .status-summary-grid { grid-template-columns: 1fr; }
         }
         
+        /* ============ PRINT ============ */
         @media print {
-            body { background: white !important; padding: 0; font-size: 10pt; }
-            .page-header .card-actions, .search-filter-bar, .chart-tabs,
-            .add-group-row, .action-cell, .btn-add-schedule, .btn-del-program,
-            .btn-remove-schedule, .history-panel, .history-overlay, .modal,
-            .loading-overlay, .toast, .mode-toggle-wrapper, .no-print {
-                display: none !important;
+            body { background: white !important; padding: 0; font-size: 8pt; color: #000; }
+            .page-header .card-actions, .search-filter-bar, .chart-tabs, .chart-header-controls select,
+            .add-group-row, .action-cell, .btn-add-schedule, .btn-del-program, .btn-edit-program,
+            .btn-remove-schedule, .pc-actions, .btn-add-group-row,
+            .history-panel, .history-overlay, .modal, .loading-overlay, .toast,
+            .mode-toggle-wrapper, .no-print, .chart-empty-state,
+            .activity-item .btn-remove-schedule { display: none !important; }
+            
+            .card { 
+                box-shadow: none; border: 1px solid #ccc; 
+                page-break-inside: avoid; margin-bottom: 10px; padding: 10px;
+                background: white;
             }
-            .card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; margin-bottom: 12px; padding: 12px; }
-            .page-title { font-size: 18pt; }
-            .kpi-grid { grid-template-columns: repeat(4, 1fr); }
-            .kpi-card { border: 1px solid #ccc; page-break-inside: avoid; }
-            table { font-size: 8pt; }
-            table th, table td { padding: 4px !important; }
-            .chart-wrapper { height: 300px; page-break-inside: avoid; }
-            .summary-panel { background: #f5f5f5 !important; }
-            #scheduleTable { min-width: auto; table-layout: auto; }
-            #scheduleTable .col-month { min-width: 60px; }
-            #scheduleTable th.col-group, #scheduleTable td.col-group { position: static; box-shadow: none; }
-            .activity-item, .program-item { background: #f0f0f0 !important; border: 1px solid #999; }
-            @page { margin: 1cm; size: A3 landscape; }
+            .page-title { font-size: 14pt; color: #000; }
+            .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .kpi-card { border: 1px solid #ccc; page-break-inside: avoid; background: white; }
+            .kpi-value { font-size: 9pt; }
+            .kpi-icon { font-size: 12px; }
+            
+            table { font-size: 6.5pt; page-break-inside: auto; background: white; }
+            table th, table td { padding: 2px 3px !important; border: 1px solid #999; }
+            th { background: #f0f0f0 !important; color: #000 !important; }
+            tr { page-break-inside: avoid; }
+            
+            .program-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 3px !important; }
+            .program-chip { 
+                padding: 4px 5px !important; min-height: 40px !important;
+                font-size: 6pt !important; border: 1px solid #999 !important;
+                background: #f8f8f8 !important; page-break-inside: avoid;
+            }
+            .program-chip .pc-name { font-size: 6pt !important; color: #000 !important; -webkit-line-clamp: 2; }
+            .program-chip .pc-cost { font-size: 6pt !important; color: #000 !important; }
+            .program-chip .pc-status { font-size: 5pt !important; color: #000 !important; background: #e5e5e5 !important; }
+            
+            .chart-wrapper { height: 200px; page-break-inside: avoid; }
+            .chart-section { page-break-inside: avoid; border: 1px solid #ccc; }
+            
+            .summary-panel { background: #f5f5f5 !important; border: 2px solid #999; page-break-inside: avoid; }
+            .summary-item { border: 1px solid #ccc; background: white; }
+            .terbilang-box { border: 1px solid #ccc; background: white; }
+            
+            #scheduleTable { min-width: auto; table-layout: auto; font-size: 5.5pt; }
+            #scheduleTable .col-month { min-width: 40px; }
+            #scheduleTable th.col-group, #scheduleTable td.col-group { position: static; box-shadow: none; background: #f0f0f0; }
+            
+            .activity-item { 
+                background: #f0f0f0 !important; border: 1px solid #999 !important; 
+                color: #000 !important; page-break-inside: avoid; font-size: 6pt;
+            }
+            .activity-item .title, .activity-item .cost {
+                color: #000 !important; text-decoration: none !important; font-size: 6pt;
+            }
+            
+            .status-summary-section { page-break-inside: avoid; border: 1px solid #999; }
+            .status-summary-grid { grid-template-columns: repeat(3, 1fr); }
+            .status-summary-card { border: 1px solid #999; background: white; page-break-inside: avoid; }
+            .status-row .sr-bar { background: #e0e0e0; }
+            
+            .monthly-grid { grid-template-columns: repeat(6, 1fr); }
+            .month-card { border: 1px solid #ccc; background: white; }
+            
+            @page { margin: 0.8cm; size: A4 landscape; }
         }
     </style>
 </head>
@@ -648,16 +1051,11 @@
                     <label for="budgetYear">📅 Tahun Anggaran</label>
                     <select id="budgetYear"></select>
                 </div>
-                
                 <div class="meta-input-group">
                     <label>🎯 Mode Anggaran</label>
                     <div class="mode-toggle-wrapper">
-                        <button type="button" class="mode-btn active" data-mode="expense" onclick="setMode('expense')">
-                            💸 Pengeluaran
-                        </button>
-                        <button type="button" class="mode-btn" data-mode="income" onclick="setMode('income')">
-                            💰 Pemasukan
-                        </button>
+                        <button type="button" class="mode-btn active" data-mode="expense" onclick="setMode('expense')">💸 Pengeluaran</button>
+                        <button type="button" class="mode-btn" data-mode="income" onclick="setMode('income')">💰 Pemasukan</button>
                     </div>
                 </div>
             </div>
@@ -665,11 +1063,12 @@
         
         <div class="card-actions">
             <button type="button" class="btn-outline btn-sm" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
-            <button type="button" class="btn-outline btn-sm" onclick="toggleHistoryPanel()" title="Riwayat Perubahan">🕐 Riwayat</button>
+            <button type="button" class="btn-outline btn-sm" onclick="toggleHistoryPanel()" title="Riwayat">🕐 Riwayat</button>
             <button type="button" class="btn-outline btn-sm" onclick="window.print()" title="Print">🖨️ Print</button>
-            <button type="button" class="btn-outline btn-sm" onclick="exportToExcel()">📊 Excel</button>
-            <button type="button" class="btn-outline btn-sm" onclick="document.getElementById('excelInput').click()">📁 Import</button>
+            <button type="button" class="btn-outline btn-sm" onclick="exportToExcel()" title="Export">📊 Export</button>
+            <button type="button" class="btn-outline btn-sm" onclick="document.getElementById('excelInput').click()" title="Import">📁 Import</button>
             <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="importFromExcel(event)">
+            <button type="button" class="btn-outline btn-sm" onclick="clearSavedData()" title="Hapus Data">🗑️ Clear</button>
             <button type="button" class="btn-primary btn-sm" onclick="exportToPDF()">📄 PDF</button>
         </div>
     </div>
@@ -701,7 +1100,7 @@
                 <option value="scheduled">📅 Sudah Terjadwal</option>
                 <option value="unscheduled">⏳ Belum Terjadwal</option>
             </select>
-            <button class="btn-outline btn-sm" onclick="resetFilters()" title="Reset Filter">🔄 Reset</button>
+            <button class="btn-outline btn-sm" onclick="resetFilters()" title="Reset">🔄 Reset</button>
             <span class="filter-result-count" id="filterCount"></span>
         </div>
         
@@ -757,10 +1156,7 @@
         </div>
 
         <div class="summary-panel">
-            <div class="summary-panel-title">
-                📊 <span id="summaryTitle">RINGKASAN TOTAL PENGELUARAN</span>
-            </div>
-            
+            <div class="summary-panel-title">📊 <span id="summaryTitle">RINGKASAN TOTAL PENGELUARAN</span></div>
             <div class="summary-grid">
                 <div class="summary-item">
                     <div class="label" id="labelTotalExpenses">Total Pengeluaran (Jan - Des)</div>
@@ -775,10 +1171,13 @@
                     <div class="value" id="totalBudgetAll">Rp 0</div>
                 </div>
             </div>
-
             <div class="terbilang-box">
                 <div class="label">🔤 Terbilang</div>
                 <div class="value" id="terbilangText">Nol Rupiah</div>
+            </div>
+            <div class="monthly-breakdown">
+                <div class="monthly-breakdown-title">📅 <span id="monthlyTitle">RINCIAN PENGELUARAN PER BULAN</span></div>
+                <div class="monthly-grid" id="monthlyGrid"></div>
             </div>
         </div>
 
@@ -788,17 +1187,50 @@
                     <span>📈</span>
                     <span id="chartTitleText">Grafik Fluktuasi Pengeluaran Per Bulan</span>
                 </div>
-                <div class="chart-tabs no-print">
-                    <button class="chart-tab active" data-chart="bar" onclick="switchChart('bar')">📊 Bar</button>
-                    <button class="chart-tab" data-chart="line" onclick="switchChart('line')">📈 Line</button>
-                    <button class="chart-tab" data-chart="pie" onclick="switchChart('pie')">🥧 Pie</button>
-                    <button class="chart-tab" data-chart="doughnut" onclick="switchChart('doughnut')">🍩 Donut</button>
+                <div class="chart-header-controls">
+                    <select class="filter-select" id="chartStatusFilter" onchange="changeChartStatusFilter(this.value)" style="font-size:12px; padding:6px 10px; min-width:180px;">
+                        <option value="all">📋 Semua Status</option>
+                        <option value="active">✨ Hanya Aktif</option>
+                        <option value="non-cancelled">🚫 Kecuali Cancelled</option>
+                        <option value="draft">📝 Draft</option>
+                        <option value="approved">✅ Approved</option>
+                        <option value="inprogress">⚙️ In Progress</option>
+                        <option value="done">🎉 Done</option>
+                        <option value="cancelled">❌ Cancelled</option>
+                    </select>
+                    <div class="chart-tabs no-print">
+                        <button class="chart-tab active" data-chart="bar" onclick="switchChart('bar')">📊 Bar</button>
+                        <button class="chart-tab" data-chart="line" onclick="switchChart('line')">📈 Line</button>
+                        <button class="chart-tab" data-chart="pie" onclick="switchChart('pie')">🥧 Pie</button>
+                    </div>
                 </div>
             </div>
             <div class="chart-wrapper">
                 <canvas id="budgetChart"></canvas>
+                <div class="chart-empty-state" id="chartEmptyState" style="display:none;">
+                    <div class="icon">📊</div>
+                    <div class="title">Belum cukup data untuk Pie Chart</div>
+                    <div class="desc">Tambah minimal <strong>2 kelompok</strong> dengan program yang sudah dijadwalkan (bukan Cancelled) untuk melihat pie chart yang informatif.</div>
+                </div>
             </div>
             <div class="chart-legend" id="chartLegend"></div>
+        </div>
+
+        <div class="status-summary-section">
+            <div class="status-summary-header">
+                <div class="status-summary-title">
+                    <span>📊</span>
+                    <span>SUMMARY STATUS PER KELOMPOK</span>
+                </div>
+                <div class="status-summary-legend">
+                    <div class="status-legend-item"><span class="status-legend-dot" style="background:#94a3b8;"></span>Draft</div>
+                    <div class="status-legend-item"><span class="status-legend-dot" style="background:#3b82f6;"></span>Approved</div>
+                    <div class="status-legend-item"><span class="status-legend-dot" style="background:#f59e0b;"></span>In Progress</div>
+                    <div class="status-legend-item"><span class="status-legend-dot" style="background:#10b981;"></span>Done</div>
+                    <div class="status-legend-item"><span class="status-legend-dot" style="background:#ef4444;"></span>Cancelled</div>
+                </div>
+            </div>
+            <div class="status-summary-grid" id="statusSummaryGrid"></div>
         </div>
     </div>
 
@@ -815,7 +1247,7 @@
 
 <div id="programModal" class="modal">
     <div class="modal-content">
-        <h3>Tambah Program</h3>
+        <h3 id="programModalTitle">Tambah Program</h3>
         <p class="modal-subtitle">Kelompok: <strong id="modalProgramGroup"></strong></p>
         <div class="form-group">
             <label>Nama Program:</label>
@@ -859,6 +1291,27 @@
     </div>
 </div>
 
+<div id="statusPickerModal" class="modal">
+    <div class="modal-content">
+        <h3>🎯 Ubah Status Program</h3>
+        <p class="modal-subtitle">
+            Program: <strong id="statusPickerProgramName"></strong><br>
+            Kelompok: <strong id="statusPickerGroupName"></strong>
+        </p>
+        <div class="status-picker" id="statusPicker">
+            <button type="button" class="status-pick-btn" data-status="draft" onclick="pickStatus('draft')"><span class="sp-icon">📝</span><span class="sp-label">Draft</span></button>
+            <button type="button" class="status-pick-btn" data-status="approved" onclick="pickStatus('approved')"><span class="sp-icon">✅</span><span class="sp-label">Approved</span></button>
+            <button type="button" class="status-pick-btn" data-status="inprogress" onclick="pickStatus('inprogress')"><span class="sp-icon">⚙️</span><span class="sp-label">In Progress</span></button>
+            <button type="button" class="status-pick-btn" data-status="done" onclick="pickStatus('done')"><span class="sp-icon">🎉</span><span class="sp-label">Done</span></button>
+            <button type="button" class="status-pick-btn" data-status="cancelled" onclick="pickStatus('cancelled')"><span class="sp-icon">❌</span><span class="sp-label">Cancelled</span></button>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-outline" onclick="closeModal('statusPickerModal')">Batal</button>
+            <button type="button" class="btn-primary" onclick="savePickedStatus()">💾 Simpan Status</button>
+        </div>
+    </div>
+</div>
+
 <div id="confirmModal" class="modal confirm-modal">
     <div class="modal-content">
         <div class="confirm-icon">⚠️</div>
@@ -885,68 +1338,64 @@
     let currentMode = 'expense';
     let budgetChart = null;
     let currentChartType = 'bar';
+    let currentChartStatusFilter = 'all';
     
     let currentFilters = { search: '', status: '', schedule: '' };
-    
     let historyStack = [];
     let historyIndex = -1;
     const MAX_HISTORY = 30;
     
     const STATUS_FLOW = {
-        draft: { label: 'Draft', icon: '📝', class: 'status-draft' },
-        approved: { label: 'Approved', icon: '✅', class: 'status-approved' },
-        inprogress: { label: 'In Progress', icon: '⚙️', class: 'status-inprogress' },
-        done: { label: 'Done', icon: '🎉', class: 'status-done' },
-        cancelled: { label: 'Cancelled', icon: '❌', class: 'status-cancelled' }
+        draft: { label: 'Draft', icon: '📝', class: 'status-draft', color: '#94a3b8', pdfLabel: 'DRAFT', pdfShort: 'D' },
+        approved: { label: 'Approved', icon: '✅', class: 'status-approved', color: '#3b82f6', pdfLabel: 'APPROVED', pdfShort: 'A' },
+        inprogress: { label: 'In Progress', icon: '⚙️', class: 'status-inprogress', color: '#f59e0b', pdfLabel: 'IN PROGRESS', pdfShort: 'P' },
+        done: { label: 'Done', icon: '🎉', class: 'status-done', color: '#10b981', pdfLabel: 'DONE', pdfShort: 'V' },
+        cancelled: { label: 'Cancelled', icon: '❌', class: 'status-cancelled', color: '#ef4444', pdfLabel: 'CANCELLED', pdfShort: 'X' }
     };
     
     let currentProgramContext = { groupId: null };
+    let currentEditContext = { groupId: null, programId: null };
     let currentScheduleContext = { groupId: null, monthIndex: null };
+    let currentStatusContext = { groupId: null, programId: null, pickedStatus: null };
 
     const MODE_CONFIG = {
         expense: {
             title: 'Agenda Rencana Pengeluaran',
             subtitle: 'Kelola rencana pengeluaran & jadwal kegiatan kelompok Anda',
-            icon: '💸',
-            labelTabel1: 'Pengeluaran',
-            labelTotalBudget: 'Total Pengeluaran',
-            labelSisa: 'Sisa',
-            labelProgramCost: 'Biaya Pengeluaran (Rp)',
-            summaryTitle: 'RINGKASAN TOTAL PENGELUARAN',
-            labelTotalExpenses: 'Total Pengeluaran (Jan - Des)',
-            labelRemaining: 'Sisa Anggaran Keseluruhan',
+            icon: '💸', labelTabel1: 'Pengeluaran', labelTotalBudget: 'Total Pengeluaran',
+            labelSisa: 'Sisa', labelProgramCost: 'Biaya Pengeluaran (Rp)',
+            summaryTitle: 'RINGKASAN TOTAL PENGELUARAN', monthlyTitle: 'RINCIAN PENGELUARAN PER BULAN',
+            labelTotalExpenses: 'Total Pengeluaran (Jan - Des)', labelRemaining: 'Sisa Anggaran Keseluruhan',
             labelTotalAll: 'Total Anggaran Keseluruhan',
-            terbilangSuffix: 'Rupiah',
             accentColor: '#ef4444', accentLight: '#fee2e2', accentDark: '#b91c1c',
             pdfTitle: 'AGENDA RENCANA PENGELUARAN',
             pdfSection1: 'RINGKASAN PENGELUARAN PER KELOMPOK',
             pdfSection2: 'JADWAL KEGIATAN PENGELUARAN',
             pdfSection3: 'RINGKASAN TOTAL PENGELUARAN',
+            pdfSection4: 'SUMMARY STATUS PER KELOMPOK',
+            pdfSection5: 'DETAIL PROGRAM PER KELOMPOK',
+            pdfSection6: 'EXECUTIVE SUMMARY',
             filename: 'Agenda_Rencana_Pengeluaran',
-            excelLabel: 'Pengeluaran',
-            chartTitle: 'Grafik Fluktuasi Pengeluaran Per Bulan'
+            excelLabel: 'Pengeluaran', chartTitle: 'Grafik Fluktuasi Pengeluaran Per Bulan'
         },
         income: {
             title: 'Agenda Rencana Pemasukan',
             subtitle: 'Kelola rencana pemasukan & jadwal kegiatan kelompok Anda',
-            icon: '💰',
-            labelTabel1: 'Pemasukan',
-            labelTotalBudget: 'Total Pemasukan',
-            labelSisa: 'Sisa',
-            labelProgramCost: 'Jumlah Pemasukan (Rp)',
-            summaryTitle: 'RINGKASAN TOTAL PEMASUKAN',
-            labelTotalExpenses: 'Total Pemasukan (Jan - Des)',
-            labelRemaining: 'Sisa Anggaran Keseluruhan',
+            icon: '💰', labelTabel1: 'Pemasukan', labelTotalBudget: 'Total Pemasukan',
+            labelSisa: 'Sisa', labelProgramCost: 'Jumlah Pemasukan (Rp)',
+            summaryTitle: 'RINGKASAN TOTAL PEMASUKAN', monthlyTitle: 'RINCIAN PEMASUKAN PER BULAN',
+            labelTotalExpenses: 'Total Pemasukan (Jan - Des)', labelRemaining: 'Sisa Anggaran Keseluruhan',
             labelTotalAll: 'Total Anggaran Keseluruhan',
-            terbilangSuffix: 'Rupiah',
             accentColor: '#10b981', accentLight: '#d1fae5', accentDark: '#047857',
             pdfTitle: 'AGENDA RENCANA PEMASUKAN',
             pdfSection1: 'RINGKASAN PEMASUKAN PER KELOMPOK',
             pdfSection2: 'JADWAL KEGIATAN PEMASUKAN',
             pdfSection3: 'RINGKASAN TOTAL PEMASUKAN',
+            pdfSection4: 'SUMMARY STATUS PER KELOMPOK',
+            pdfSection5: 'DETAIL PROGRAM PER KELOMPOK',
+            pdfSection6: 'EXECUTIVE SUMMARY',
             filename: 'Agenda_Rencana_Pemasukan',
-            excelLabel: 'Pemasukan',
-            chartTitle: 'Grafik Fluktuasi Pemasukan Per Bulan'
+            excelLabel: 'Pemasukan', chartTitle: 'Grafik Fluktuasi Pemasukan Per Bulan'
         }
     };
 
@@ -956,75 +1405,84 @@
         '#eab308', '#ef4444', '#22c55e', '#3b82f6', '#d946ef'
     ];
 
-    // ==========================================
-    // AUTO-SAVE & LOAD DARI LOCALSTORAGE
-    // ==========================================
+    // ================= AUTO-SAVE =================
     function saveToLocalStorage() {
         try {
             const data = {
-                groups: groups,
-                groupCounter: groupCounter,
-                programCounter: programCounter,
-                mode: currentMode,
+                groups, groupCounter, programCounter, mode: currentMode,
                 companyName: document.getElementById('companyName').value,
                 budgetYear: document.getElementById('budgetYear').value,
                 savedAt: new Date().toISOString()
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch (e) {
-            console.warn('Gagal menyimpan ke localStorage:', e);
-        }
+        } catch (e) { console.warn('Save error:', e); }
     }
     
     function loadFromLocalStorage() {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return false;
-            
             const data = JSON.parse(raw);
             if (!data || !data.groups) return false;
-            
             groups = data.groups || {};
             groupCounter = data.groupCounter || 0;
             programCounter = data.programCounter || 0;
-            
-            // Restore meta
-            if (data.companyName) {
-                document.getElementById('companyName').value = data.companyName;
-            }
+            if (data.companyName) document.getElementById('companyName').value = data.companyName;
             if (data.budgetYear) {
                 const yearSelect = document.getElementById('budgetYear');
-                if (Array.from(yearSelect.options).some(o => o.value === data.budgetYear)) {
-                    yearSelect.value = data.budgetYear;
-                }
+                if (Array.from(yearSelect.options).some(o => o.value === data.budgetYear)) yearSelect.value = data.budgetYear;
             }
-            
-            // Restore mode
-            if (data.mode) {
-                setMode(data.mode);
-            }
-            
+            if (data.mode) setMode(data.mode);
             return true;
-        } catch (e) {
-            console.warn('Gagal load dari localStorage:', e);
-            return false;
-        }
+        } catch (e) { console.warn('Load error:', e); return false; }
     }
     
-    // Auto-save setiap kali ada perubahan penting
     function triggerAutoSave() {
-        // Debounce supaya tidak terlalu sering save
         if (window._saveTimeout) clearTimeout(window._saveTimeout);
         window._saveTimeout = setTimeout(saveToLocalStorage, 500);
     }
     
-    // Helper: konversi hex ke RGB
     function hexToRgb(hex) {
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? [parseInt(result[1],16), parseInt(result[2],16), parseInt(result[3],16)] : [0,0,0];
     }
 
-    // ================= CHART JENIS =================
+    function clearSavedData() {
+        showConfirm('Hapus Semua Data Tersimpan?',
+            'Semua data akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.',
+            function() {
+                localStorage.removeItem(STORAGE_KEY);
+                groups = {}; groupCounter = 0; programCounter = 0;
+                historyStack = []; historyIndex = -1;
+                document.getElementById('companyName').value = '';
+                renderAll(); renderHistoryList();
+                showToast('Data tersimpan berhasil dihapus', 'success');
+            }
+        );
+    }
+
+    // ================= CHART =================
+    function changeChartStatusFilter(status) {
+        currentChartStatusFilter = status;
+        renderChart();
+        const labels = {
+            'all': 'Semua Status', 'active': 'Hanya Aktif', 'non-cancelled': 'Kecuali Cancelled',
+            'draft': 'Draft', 'approved': 'Approved', 'inprogress': 'In Progress',
+            'done': 'Done', 'cancelled': 'Cancelled'
+        };
+        showToast(`📊 Grafik: ${labels[status] || status}`, 'info');
+    }
+    
+    function programMatchesChartFilter(program) {
+        const status = program.status || 'draft';
+        switch (currentChartStatusFilter) {
+            case 'all': return true;
+            case 'active': return status === 'approved' || status === 'inprogress' || status === 'done';
+            case 'non-cancelled': return status !== 'cancelled';
+            default: return status === currentChartStatusFilter;
+        }
+    }
+
     function switchChart(type) {
         currentChartType = type;
         document.querySelectorAll('.chart-tab').forEach(tab => {
@@ -1036,6 +1494,23 @@
     function renderChart() {
         const ctx = document.getElementById('budgetChart').getContext('2d');
         const groupIds = Object.keys(groups);
+        const emptyState = document.getElementById('chartEmptyState');
+        
+        const groupTotals = groupIds.map(gid => {
+            return groups[gid].programs
+                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
+                .reduce((sum, p) => sum + p.cost, 0);
+        });
+        
+        const nonZeroCount = groupTotals.filter(v => v > 0).length;
+        
+        if (currentChartType === 'pie' && nonZeroCount < 2) {
+            emptyState.style.display = 'flex';
+            if (budgetChart) { budgetChart.destroy(); budgetChart = null; }
+            renderChartLegend(groupIds);
+            return;
+        }
+        emptyState.style.display = 'none';
         
         let datasets = [];
         let chartLabels = months;
@@ -1046,7 +1521,7 @@
                 const color = CHART_COLORS[index % CHART_COLORS.length];
                 const monthlyData = new Array(12).fill(0);
                 group.programs.forEach(p => {
-                    if (p.scheduledMonth !== null) {
+                    if (p.scheduledMonth !== null && programMatchesChartFilter(p)) {
                         monthlyData[p.scheduledMonth] += p.cost;
                     }
                 });
@@ -1064,18 +1539,11 @@
                     pointHoverRadius: 6
                 });
             });
-        } else if (currentChartType === 'pie' || currentChartType === 'doughnut') {
-            const totals = groupIds.map(gid => {
-                return groups[gid].programs
-                    .filter(p => p.scheduledMonth !== null)
-                    .reduce((sum, p) => sum + p.cost, 0);
-            });
-            
+        } else if (currentChartType === 'pie') {
             chartLabels = groupIds.map(gid => groups[gid].name);
-            
             datasets.push({
                 label: 'Total',
-                data: totals,
+                data: groupTotals,
                 backgroundColor: groupIds.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
                 borderColor: '#fff',
                 borderWidth: 3,
@@ -1083,50 +1551,41 @@
             });
         }
         
-        if (datasets.length === 0) {
-            datasets.push({
+        const hasData = datasets.some(d => d.data.some(v => v > 0));
+        
+        if (datasets.length === 0 || !hasData) {
+            datasets = [{
                 label: 'Belum ada data',
-                data: currentChartType === 'pie' || currentChartType === 'doughnut' ? [1] : new Array(12).fill(0),
+                data: currentChartType === 'pie' ? [1] : new Array(12).fill(0),
                 backgroundColor: '#e2e8f0',
                 borderColor: '#cbd5e1',
                 borderWidth: 1
-            });
-            if (currentChartType === 'pie' || currentChartType === 'doughnut') {
-                chartLabels = ['Belum ada data'];
-            }
+            }];
+            if (currentChartType === 'pie') chartLabels = ['Belum ada data'];
         }
         
         renderChartLegend(groupIds);
         
         if (budgetChart) budgetChart.destroy();
         
-        const isCircular = currentChartType === 'pie' || currentChartType === 'doughnut';
+        const isCircular = currentChartType === 'pie';
         
         budgetChart = new Chart(ctx, {
             type: currentChartType,
-            data: {
-                labels: chartLabels,
-                datasets: datasets
-            },
+            data: { labels: chartLabels, datasets },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                layout: {
-                    padding: isCircular ? { top: 20, bottom: 20, left: 20, right: 20 } : { top: 10, bottom: 10 }
-                },
+                layout: { padding: isCircular ? { top: 20, bottom: 20, left: 20, right: 20 } : { top: 10, bottom: 10 } },
                 interaction: { mode: isCircular ? 'nearest' : 'index', intersect: false },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
                         backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        titleColor: '#fff',
-                        bodyColor: '#e2e8f0',
-                        borderColor: 'rgba(255,255,255,0.1)',
-                        borderWidth: 1,
-                        padding: 12,
-                        cornerRadius: 8,
-                        titleFont: { size: 13, weight: 'bold' },
-                        bodyFont: { size: 12 },
+                        titleColor: '#fff', bodyColor: '#e2e8f0',
+                        borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+                        padding: 12, cornerRadius: 8,
+                        titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 12 },
                         displayColors: true,
                         callbacks: {
                             label: function(context) {
@@ -1146,18 +1605,9 @@
                     }
                 },
                 scales: isCircular ? {} : {
-                    x: {
-                        stacked: currentChartType === 'bar',
-                        grid: { display: false },
-                        ticks: { font: { size: 11, weight: '600' }, color: '#64748b' }
-                    },
-                    y: {
-                        stacked: currentChartType === 'bar',
-                        beginAtZero: true,
-                        grid: { color: '#f1f5f9', drawBorder: false },
-                        ticks: {
-                            font: { size: 10 },
-                            color: '#64748b',
+                    x: { stacked: currentChartType === 'bar', grid: { display: false }, ticks: { font: { size: 11, weight: '600' }, color: '#64748b' } },
+                    y: { stacked: currentChartType === 'bar', beginAtZero: true, grid: { color: '#f1f5f9', drawBorder: false },
+                        ticks: { font: { size: 10 }, color: '#64748b',
                             callback: function(value) {
                                 if (value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
                                 if (value >= 1000000) return (value / 1000000).toFixed(1) + ' jt';
@@ -1172,20 +1622,17 @@
             plugins: [{
                 id: 'customPieLabels',
                 afterDatasetsDraw: function(chart) {
-                    if (chart.config.type !== 'pie' && chart.config.type !== 'doughnut') return;
-                    
+                    if (chart.config.type !== 'pie') return;
                     const ctx = chart.ctx;
                     const meta = chart.getDatasetMeta(0);
                     const dataset = chart.data.datasets[0];
                     if (!dataset || !meta.data) return;
-                    
                     const total = dataset.data.reduce((s, v) => s + v, 0);
                     if (total === 0) return;
                     
                     meta.data.forEach((arc, i) => {
                         const value = dataset.data[i];
                         if (value === 0) return;
-                        
                         const percentage = ((value / total) * 100).toFixed(1);
                         const angle = (arc.startAngle + arc.endAngle) / 2;
                         const radius = (arc.innerRadius + arc.outerRadius) / 2;
@@ -1199,28 +1646,19 @@
                         else valueStr = value.toString();
                         
                         const arcSize = arc.endAngle - arc.startAngle;
-                        
-                        ctx.save();
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
+                        ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                         
                         if (arcSize > 0.3) {
-                            ctx.fillStyle = '#ffffff';
-                            ctx.font = 'bold 11px Inter, sans-serif';
-                            ctx.shadowColor = 'rgba(0,0,0,0.4)';
-                            ctx.shadowBlur = 3;
+                            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Inter, sans-serif';
+                            ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 3;
                             ctx.fillText(valueStr, x, y - 6);
-                            
                             ctx.font = 'bold 10px Inter, sans-serif';
                             ctx.fillText(percentage + '%', x, y + 8);
                         } else if (arcSize > 0.15) {
-                            ctx.fillStyle = '#ffffff';
-                            ctx.font = 'bold 10px Inter, sans-serif';
-                            ctx.shadowColor = 'rgba(0,0,0,0.4)';
-                            ctx.shadowBlur = 3;
+                            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Inter, sans-serif';
+                            ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 3;
                             ctx.fillText(percentage + '%', x, y);
                         }
-                        
                         ctx.restore();
                     });
                 }
@@ -1237,18 +1675,37 @@
             return;
         }
         
-        const isCircular = currentChartType === 'pie' || currentChartType === 'doughnut';
+        const isCircular = currentChartType === 'pie';
+        const showEmpty = document.getElementById('showEmptyLegend')?.checked || false;
         
         let grandTotal = 0;
         const groupTotals = groupIds.map(gid => {
             const total = groups[gid].programs
-                .filter(p => p.scheduledMonth !== null)
+                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
                 .reduce((sum, p) => sum + p.cost, 0);
             grandTotal += total;
             return total;
         });
         
+        const totalGroups = groupIds.length;
+        const visibleGroups = groupTotals.filter(v => v > 0).length;
+        const hiddenGroups = totalGroups - visibleGroups;
+        
+        const visibleIndices = [];
         groupIds.forEach((gid, index) => {
+            const total = groupTotals[index];
+            if (total > 0 || showEmpty) visibleIndices.push(index);
+        });
+        
+        if (hiddenGroups > 0 && !showEmpty) {
+            const infoBadge = document.createElement('div');
+            infoBadge.style.cssText = 'display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; background:var(--warning-light); color:#92400e; font-size:11px; font-weight:700;';
+            infoBadge.innerHTML = `<span>ℹ️</span><span>${hiddenGroups} kelompok dengan Rp 0 disembunyikan</span>`;
+            legendContainer.appendChild(infoBadge);
+        }
+        
+        visibleIndices.forEach(index => {
+            const gid = groupIds[index];
             const group = groups[gid];
             const color = CHART_COLORS[index % CHART_COLORS.length];
             const total = groupTotals[index];
@@ -1272,11 +1729,12 @@
             } else {
                 item.innerHTML = `
                     <span class="legend-color" style="background:${color};"></span>
-                    <span>${group.name}</span>
-                    <span style="font-size:10px; color:var(--text-muted); font-weight:700;">Rp ${total.toLocaleString('id-ID')}</span>
+                    <span style="color:var(--text);">${group.name}</span>
+                    <span style="font-size:10px; color:${total > 0 ? 'var(--text-muted)' : 'var(--text-light)'}; font-weight:700; ${total === 0 ? 'opacity:0.5;' : ''}">
+                        ${total > 0 ? 'Rp ' + total.toLocaleString('id-ID') : 'Rp 0'}
+                    </span>
                 `;
             }
-            
             legendContainer.appendChild(item);
         });
         
@@ -1291,6 +1749,16 @@
             `;
             legendContainer.appendChild(totalItem);
         }
+        
+        const toggleWrapper = document.createElement('div');
+        toggleWrapper.style.cssText = 'display:flex; align-items:center; gap:6px; margin-left:auto; padding:4px 10px; border-radius:999px; background:var(--bg); border:1px solid var(--border); font-size:11px;';
+        toggleWrapper.innerHTML = `
+            <input type="checkbox" id="showEmptyLegend" ${showEmpty ? 'checked' : ''} style="cursor:pointer; margin:0;" onchange="renderChartLegend(Object.keys(groups));">
+            <label for="showEmptyLegend" style="cursor:pointer; font-weight:600; color:var(--text-muted); user-select:none; margin:0;">
+                Tampilkan Rp 0 (${hiddenGroups})
+            </label>
+        `;
+        legendContainer.appendChild(toggleWrapper);
     }
 
     // ================= KPI =================
@@ -1299,7 +1767,7 @@
         const config = MODE_CONFIG[currentMode];
         
         let totalBudget = 0, totalScheduled = 0, totalPrograms = 0, totalGroups = Object.keys(groups).length;
-        let scheduledCount = 0;
+        let totalScheduledActive = 0, scheduledCount = 0;
         let monthlyTotals = new Array(12).fill(0);
         
         Object.values(groups).forEach(group => {
@@ -1309,18 +1777,21 @@
                 if (p.scheduledMonth !== null) {
                     scheduledCount++;
                     totalScheduled += p.cost;
-                    monthlyTotals[p.scheduledMonth] += p.cost;
+                    if ((p.status || 'draft') !== 'cancelled') {
+                        monthlyTotals[p.scheduledMonth] += p.cost;
+                        totalScheduledActive += p.cost;
+                    }
                 }
             });
         });
         
-        const remaining = totalBudget - totalScheduled;
-        const realisasi = totalBudget > 0 ? (totalScheduled / totalBudget * 100) : 0;
-        const avgPerMonth = totalScheduled / 12;
+        const remaining = totalBudget - totalScheduledActive;
+        const realisasi = totalBudget > 0 ? (totalScheduledActive / totalBudget * 100) : 0;
         
-        let maxMonth = 0, maxVal = 0;
+        let maxMonth = 0, maxVal = 0, minMonth = -1, minVal = Infinity;
         monthlyTotals.forEach((val, i) => {
             if (val > maxVal) { maxVal = val; maxMonth = i; }
+            if (val > 0 && val < minVal) { minVal = val; minMonth = i; }
         });
         
         kpiGrid.innerHTML = `
@@ -1343,10 +1814,10 @@
                 <div class="kpi-progress"><div class="kpi-progress-fill" style="width:${Math.min(realisasi, 100)}%"></div></div>
             </div>
             <div class="kpi-card kpi-info">
-                <div class="kpi-icon">📊</div>
-                <div class="kpi-label">Rata-rata / Bulan</div>
-                <div class="kpi-value">Rp ${Math.round(avgPerMonth).toLocaleString('id-ID')}</div>
-                <div class="kpi-sub">12 bulan</div>
+                <div class="kpi-icon">📉</div>
+                <div class="kpi-label">Bulan Terendah</div>
+                <div class="kpi-value">${minMonth !== -1 ? months[minMonth] : '—'}</div>
+                <div class="kpi-sub">${minMonth !== -1 ? 'Rp ' + minVal.toLocaleString('id-ID') : 'Belum ada'}</div>
             </div>
             <div class="kpi-card kpi-warning">
                 <div class="kpi-icon">🔥</div>
@@ -1361,6 +1832,82 @@
                 <div class="kpi-sub">${scheduledCount} dari ${totalPrograms} terjadwal</div>
             </div>
         `;
+    }
+
+    // ================= STATUS SUMMARY (GRID 6 KOLOM) =================
+    function renderStatusSummary() {
+        const grid = document.getElementById('statusSummaryGrid');
+        if (!grid) return;
+        
+        const groupIds = Object.keys(groups);
+        if (groupIds.length === 0) {
+            grid.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted); font-style:italic;">Belum ada kelompok</div>';
+            return;
+        }
+        
+        grid.innerHTML = '';
+        
+        groupIds.forEach((gid, idx) => {
+            const group = groups[gid];
+            const color = CHART_COLORS[idx % CHART_COLORS.length];
+            
+            const statusCount = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
+            const statusAmount = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
+            
+            group.programs.forEach(p => {
+                const st = p.status || 'draft';
+                if (statusCount[st] !== undefined) {
+                    statusCount[st]++;
+                    statusAmount[st] += p.cost;
+                }
+            });
+            
+            const totalPrograms = group.programs.length;
+            const totalAmount = group.programs.reduce((s, p) => s + p.cost, 0);
+            
+            const card = document.createElement('div');
+            card.className = 'status-summary-card';
+            card.style.borderLeftColor = color;
+            
+            let rowsHtml = '';
+            ['draft', 'approved', 'inprogress', 'done', 'cancelled'].forEach(st => {
+                const info = STATUS_FLOW[st];
+                const count = statusCount[st];
+                const amount = statusAmount[st];
+                const isEmpty = count === 0;
+                const percent = totalPrograms > 0 ? (count / totalPrograms * 100) : 0;
+                
+                rowsHtml += `
+                    <div class="status-row ${isEmpty ? 'empty' : ''}" data-status="${st}" ${!isEmpty ? `onclick="filterByStatus('${st}', '${gid}')"` : ''}>
+                        <div class="status-row-header">
+                            <span class="sr-label"><span class="sr-icon">${info.icon}</span>${info.label}</span>
+                            <span class="sr-right">
+                                <span class="sr-count">${count}p</span>
+                                <span class="sr-amount">${isEmpty ? '—' : 'Rp ' + amount.toLocaleString('id-ID')}</span>
+                            </span>
+                        </div>
+                        <div class="sr-bar"><div class="sr-bar-fill" style="width:${percent}%"></div></div>
+                    </div>
+                `;
+            });
+            
+            card.innerHTML = `
+                <div class="group-header">
+                    <div class="group-name">${group.name}</div>
+                    <div class="group-total">Rp ${totalAmount.toLocaleString('id-ID')}</div>
+                </div>
+                <div class="status-breakdown">${rowsHtml}</div>
+            `;
+            
+            grid.appendChild(card);
+        });
+    }
+    
+    function filterByStatus(status, groupId) {
+        document.getElementById('filterStatus').value = status;
+        document.getElementById('searchInput').value = groups[groupId].name;
+        applyFilters();
+        showToast(`Filter: ${STATUS_FLOW[status].label} di ${groups[groupId].name}`, 'info');
     }
 
     // ================= FILTER =================
@@ -1397,23 +1944,19 @@
             if (!search && !status && !schedule) return true;
             return group.programs.some(p => matchesFilter(group, false, p));
         }
-        
         if (search) {
             const matchGroup = group.name.toLowerCase().includes(search);
             const matchProg = program.name.toLowerCase().includes(search);
             if (!matchGroup && !matchProg) return false;
         }
-        
         if (status) {
             const progStatus = program.status || 'draft';
             if (progStatus !== status) return false;
         }
-        
         if (schedule) {
             if (schedule === 'scheduled' && program.scheduledMonth === null) return false;
             if (schedule === 'unscheduled' && program.scheduledMonth !== null) return false;
         }
-        
         return true;
     }
     
@@ -1424,30 +1967,57 @@
         applyFilters();
     }
 
+    // ================= STATUS PICKER =================
+    function openStatusPicker(groupId, programId) {
+        const group = groups[groupId];
+        if (!group) return;
+        const program = group.programs.find(p => p.id === programId);
+        if (!program) return;
+        
+        currentStatusContext = { groupId, programId, pickedStatus: program.status || 'draft' };
+        document.getElementById('statusPickerProgramName').textContent = program.name;
+        document.getElementById('statusPickerGroupName').textContent = group.name;
+        document.querySelectorAll('.status-pick-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.status === currentStatusContext.pickedStatus);
+        });
+        document.getElementById('statusPickerModal').style.display = 'block';
+    }
+    
+    function pickStatus(status) {
+        currentStatusContext.pickedStatus = status;
+        document.querySelectorAll('.status-pick-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.status === status);
+        });
+    }
+    
+    function savePickedStatus() {
+        const { groupId, programId, pickedStatus } = currentStatusContext;
+        const program = groups[groupId].programs.find(p => p.id === programId);
+        if (!program) return;
+        const oldStatus = program.status || 'draft';
+        program.status = pickedStatus;
+        closeModal('statusPickerModal');
+        renderAll();
+        saveHistory(`Ubah status "${program.name}": ${STATUS_FLOW[oldStatus].label} → ${STATUS_FLOW[pickedStatus].label}`);
+        triggerAutoSave();
+        showToast(`${STATUS_FLOW[pickedStatus].icon} Status: ${STATUS_FLOW[pickedStatus].label}`, 'success');
+    }
+
     // ================= HISTORY =================
     function saveHistory(description) {
         const snapshot = {
             timestamp: new Date().toISOString(),
-            description: description,
+            description,
             groups: JSON.parse(JSON.stringify(groups)),
-            groupCounter: groupCounter,
-            programCounter: programCounter,
+            groupCounter, programCounter,
             mode: currentMode,
             stats: getSnapshotStats()
         };
         
-        if (historyIndex < historyStack.length - 1) {
-            historyStack = historyStack.slice(0, historyIndex + 1);
-        }
-        
+        if (historyIndex < historyStack.length - 1) historyStack = historyStack.slice(0, historyIndex + 1);
         historyStack.push(snapshot);
-        
-        if (historyStack.length > MAX_HISTORY) {
-            historyStack.shift();
-        } else {
-            historyIndex++;
-        }
-        
+        if (historyStack.length > MAX_HISTORY) historyStack.shift();
+        else historyIndex++;
         historyIndex = historyStack.length - 1;
         renderHistoryList();
     }
@@ -1456,10 +2026,7 @@
         let totalBudget = 0, totalPrograms = 0, groups_count = 0;
         Object.values(groups).forEach(g => {
             groups_count++;
-            g.programs.forEach(p => {
-                totalPrograms++;
-                totalBudget += p.cost;
-            });
+            g.programs.forEach(p => { totalPrograms++; totalBudget += p.cost; });
         });
         return { totalBudget, totalPrograms, groups: groups_count };
     }
@@ -1470,7 +2037,6 @@
             list.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted); font-style:italic;">Belum ada riwayat</div>';
             return;
         }
-        
         list.innerHTML = '';
         [...historyStack].reverse().forEach((snap, revIdx) => {
             const actualIdx = historyStack.length - 1 - revIdx;
@@ -1478,7 +2044,6 @@
             const time = new Date(snap.timestamp);
             const timeStr = time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             const dateStr = time.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-            
             const item = document.createElement('div');
             item.className = 'history-item' + (isCurrent ? ' current' : '');
             item.innerHTML = `
@@ -1494,32 +2059,24 @@
     function restoreSnapshot(idx) {
         const snap = historyStack[idx];
         if (!snap) return;
-        
-        showConfirm('Restore Snapshot?', 
-            `Kembalikan data ke "${snap.description}"?\nData saat ini akan digantikan.`, 
+        showConfirm('Restore Snapshot?', `Kembalikan data ke "${snap.description}"?\nData saat ini akan digantikan.`,
             function() {
                 groups = JSON.parse(JSON.stringify(snap.groups));
                 groupCounter = snap.groupCounter;
                 programCounter = snap.programCounter;
-                
                 historyStack = historyStack.slice(0, idx + 1);
                 historyIndex = idx;
-                
-                renderAll();
-                renderHistoryList();
+                renderAll(); renderHistoryList(); triggerAutoSave();
                 showToast('Data berhasil di-restore', 'success');
             }
         );
     }
     
     function toggleHistoryPanel() {
-        const panel = document.getElementById('historyPanel');
-        const overlay = document.getElementById('historyOverlay');
-        panel.classList.toggle('open');
-        overlay.classList.toggle('open');
+        document.getElementById('historyPanel').classList.toggle('open');
+        document.getElementById('historyOverlay').classList.toggle('open');
     }
 
-    // ================= DARK MODE =================
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
@@ -1527,7 +2084,6 @@
         showToast(isDark ? '🌙 Dark mode aktif' : '☀️ Light mode aktif', 'info');
     }
 
-    // ================= SET MODE =================
     function setMode(mode) {
         if (mode !== 'expense' && mode !== 'income') return;
         currentMode = mode;
@@ -1538,11 +2094,8 @@
         document.documentElement.style.setProperty('--accent-dark', config.accentDark);
         
         if (!document.body.classList.contains('dark-mode')) {
-            if (mode === 'income') {
-                document.body.style.background = 'linear-gradient(135deg, #f8fafc 0%, #d1fae5 100%)';
-            } else {
-                document.body.style.background = 'linear-gradient(135deg, #f8fafc 0%, #fee2e2 100%)';
-            }
+            if (mode === 'income') document.body.style.background = 'linear-gradient(135deg, #f8fafc 0%, #d1fae5 100%)';
+            else document.body.style.background = 'linear-gradient(135deg, #f8fafc 0%, #fee2e2 100%)';
         }
         
         document.getElementById('mainTitle').textContent = config.title;
@@ -1552,6 +2105,7 @@
         document.getElementById('labelTotalBudget').textContent = config.labelTotalBudget;
         document.getElementById('labelSisa').textContent = config.labelSisa;
         document.getElementById('summaryTitle').textContent = config.summaryTitle;
+        document.getElementById('monthlyTitle').textContent = config.monthlyTitle;
         document.getElementById('labelTotalExpenses').textContent = config.labelTotalExpenses;
         document.getElementById('labelRemaining').textContent = config.labelRemaining;
         document.getElementById('labelTotalAll').textContent = config.labelTotalAll;
@@ -1563,6 +2117,7 @@
         });
         
         renderAll();
+        triggerAutoSave();
     }
 
     // ================= TERBILANG =================
@@ -1597,8 +2152,7 @@
         select.innerHTML = '';
         for (let y = currentYear - 3; y <= currentYear + 5; y++) {
             const opt = document.createElement('option');
-            opt.value = y;
-            opt.textContent = y;
+            opt.value = y; opt.textContent = y;
             if (y === currentYear) opt.selected = true;
             select.appendChild(opt);
         }
@@ -1644,6 +2198,7 @@
         updateTotals();
         renderChart();
         renderKPIs();
+        renderStatusSummary();
     }
 
     function renderBudgetTable() {
@@ -1654,7 +2209,6 @@
 
         Object.keys(groups).forEach(groupId => {
             const group = groups[groupId];
-            
             if (!matchesFilter(group, true)) return;
             
             hasVisibleGroup = true;
@@ -1687,8 +2241,8 @@
             tr.appendChild(tdTotal);
 
             const tdPrograms = document.createElement('td');
-            const programContainer = document.createElement('div');
-            programContainer.style.cssText = 'display:flex; flex-direction:column;';
+            const programGrid = document.createElement('div');
+            programGrid.className = 'program-grid';
             
             const unscheduledPrograms = group.programs.filter(p => p.scheduledMonth === null);
             const visiblePrograms = unscheduledPrograms.filter(p => matchesFilter(group, false, p));
@@ -1697,61 +2251,77 @@
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'empty-state';
                 emptyMsg.textContent = unscheduledPrograms.length === 0 ? 'Belum ada program' : 'Tidak ada yang cocok dengan filter';
-                programContainer.appendChild(emptyMsg);
+                programGrid.appendChild(emptyMsg);
             } else {
                 visiblePrograms.forEach(p => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'program-item';
-                    
-                    if (currentFilters.search && p.name.toLowerCase().includes(currentFilters.search)) {
-                        itemDiv.style.boxShadow = '0 0 0 2px var(--warning)';
-                    }
-                    
-                    const infoDiv = document.createElement('div');
-                    infoDiv.className = 'program-info';
-                    const nameSpan = document.createElement('span');
-                    nameSpan.style.cssText = 'font-weight:600; color:var(--text); font-size:13px;';
-                    nameSpan.textContent = p.name;
-                    const metaDiv = document.createElement('div');
-                    metaDiv.className = 'program-meta';
-                    
                     const statusKey = p.status || 'draft';
                     const statusInfo = STATUS_FLOW[statusKey];
-                    const statusBadge = document.createElement('span');
-                    statusBadge.className = `status-flow-badge ${statusInfo.class}`;
-                    statusBadge.textContent = `${statusInfo.icon} ${statusInfo.label}`;
-                    statusBadge.title = 'Klik untuk ubah status';
-                    statusBadge.onclick = (function(gid, pid) {
-                        return function(e) {
-                            e.stopPropagation();
-                            cycleStatus(gid, pid);
-                        };
-                    })(groupId, p.id);
                     
-                    const costSpan = document.createElement('span');
-                    costSpan.className = 'cost';
-                    costSpan.textContent = 'Rp ' + p.cost.toLocaleString('id-ID');
-                    metaDiv.appendChild(statusBadge);
-                    metaDiv.appendChild(costSpan);
-                    infoDiv.appendChild(nameSpan);
-                    infoDiv.appendChild(metaDiv);
+                    const chip = document.createElement('div');
+                    chip.className = 'program-chip';
+                    chip.dataset.status = statusKey;
+                    chip.title = `${p.name}\nRp ${p.cost.toLocaleString('id-ID')}\nStatus: ${statusInfo.label}`;
+                    
+                    if (currentFilters.search && p.name.toLowerCase().includes(currentFilters.search)) {
+                        chip.classList.add('highlight-match');
+                    }
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'pc-actions';
+                    
+                    const btnEdit = document.createElement('button');
+                    btnEdit.type = 'button';
+                    btnEdit.className = 'pc-btn pc-btn-edit';
+                    btnEdit.title = 'Edit';
+                    btnEdit.textContent = '✏️';
+                    btnEdit.onclick = (function(gid, pid) {
+                        return function(e) { e.stopPropagation(); openEditProgramModal(gid, pid); };
+                    })(groupId, p.id);
                     
                     const btnDel = document.createElement('button');
                     btnDel.type = 'button';
-                    btnDel.className = 'btn-del-program';
-                    btnDel.title = 'Hapus Permanen';
+                    btnDel.className = 'pc-btn pc-btn-del';
+                    btnDel.title = 'Hapus';
                     btnDel.textContent = '×';
                     btnDel.onclick = (function(gid, pid, pname) {
-                        return function() { hapusProgramPermanen(gid, pid, pname); };
+                        return function(e) { e.stopPropagation(); hapusProgramPermanen(gid, pid, pname); };
                     })(groupId, p.id, p.name);
                     
-                    itemDiv.appendChild(infoDiv);
-                    itemDiv.appendChild(btnDel);
-                    programContainer.appendChild(itemDiv);
+                    actionsDiv.appendChild(btnEdit);
+                    actionsDiv.appendChild(btnDel);
+                    
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'pc-name';
+                    nameDiv.textContent = p.name;
+                    
+                    const bottomDiv = document.createElement('div');
+                    bottomDiv.className = 'pc-bottom';
+                    
+                    const costSpan = document.createElement('span');
+                    costSpan.className = 'pc-cost';
+                    costSpan.textContent = 'Rp ' + p.cost.toLocaleString('id-ID');
+                    
+                    const statusSpan = document.createElement('span');
+                    statusSpan.className = 'pc-status';
+                    statusSpan.style.color = statusInfo.color;
+                    statusSpan.textContent = `${statusInfo.icon} ${statusInfo.label}`;
+                    
+                    bottomDiv.appendChild(costSpan);
+                    bottomDiv.appendChild(statusSpan);
+                    
+                    chip.appendChild(actionsDiv);
+                    chip.appendChild(nameDiv);
+                    chip.appendChild(bottomDiv);
+                    
+                    chip.onclick = (function(gid, pid) {
+                        return function() { openStatusPicker(gid, pid); };
+                    })(groupId, p.id);
+                    
+                    programGrid.appendChild(chip);
                 });
             }
             
-            tdPrograms.appendChild(programContainer);
+            tdPrograms.appendChild(programGrid);
             tr.appendChild(tdPrograms);
 
             const tdAction = document.createElement('td');
@@ -1771,7 +2341,6 @@
             tdAction.appendChild(btnAddProgram);
             tdAction.appendChild(btnDelGroup);
             tr.appendChild(tdAction);
-
             tbody.appendChild(tr);
         });
         
@@ -1799,37 +2368,25 @@
         addRow.appendChild(tdAddAction);
         tbody.appendChild(addRow);
     }
-    
-    function cycleStatus(groupId, programId) {
-        const program = groups[groupId].programs.find(p => p.id === programId);
-        if (!program) return;
-        
-        const cycle = ['draft', 'approved', 'inprogress', 'done', 'cancelled'];
-        const currentIdx = cycle.indexOf(program.status || 'draft');
-        const nextStatus = cycle[(currentIdx + 1) % cycle.length];
-        program.status = nextStatus;
-        
-        renderAll();
-        saveHistory(`Ubah status "${program.name}" jadi ${STATUS_FLOW[nextStatus].label}`);
-        triggerAutoSave();
-        showToast(`${STATUS_FLOW[nextStatus].icon} Status: ${STATUS_FLOW[nextStatus].label}`, 'info');
-    }
 
     function updateGroupName(groupId, newName) {
         groups[groupId].name = newName;
         renderScheduleTable();
         renderChart();
         renderKPIs();
+        renderStatusSummary();
     }
 
     function hapusKelompok(groupId, groupName) {
-        showConfirm('Hapus Kelompok?', `"${groupName}" beserta semua programnya akan dihapus permanen.`, function() {
-            delete groups[groupId];
-            renderAll();
-            saveHistory('Hapus kelompok: ' + groupName);
-            triggerAutoSave();
-            showToast('Kelompok dihapus', 'success');
-        });
+        showConfirm('Hapus Kelompok?', `"${groupName}" beserta semua programnya akan dihapus permanen.`,
+            function() {
+                delete groups[groupId];
+                renderAll();
+                saveHistory('Hapus kelompok: ' + groupName);
+                triggerAutoSave();
+                showToast('Kelompok dihapus', 'success');
+            }
+        );
     }
 
     function openProgramModal(groupId) {
@@ -1838,6 +2395,25 @@
         document.getElementById('programName').value = '';
         document.getElementById('programCost').value = '';
         document.getElementById('programStatus').value = 'draft';
+        document.getElementById('programModal').dataset.mode = 'add';
+        document.getElementById('programModalTitle').textContent = 'Tambah Program';
+        document.getElementById('programModal').style.display = 'block';
+        setTimeout(() => document.getElementById('programName').focus(), 100);
+    }
+    
+    function openEditProgramModal(groupId, programId) {
+        const group = groups[groupId];
+        if (!group) return;
+        const program = group.programs.find(p => p.id === programId);
+        if (!program) return;
+        
+        currentEditContext = { groupId, programId };
+        document.getElementById('modalProgramGroup').textContent = group.name + ' (Edit)';
+        document.getElementById('programName').value = program.name;
+        document.getElementById('programCost').value = program.cost;
+        document.getElementById('programStatus').value = program.status || 'draft';
+        document.getElementById('programModal').dataset.mode = 'edit';
+        document.getElementById('programModalTitle').textContent = '✏️ Edit Program';
         document.getElementById('programModal').style.display = 'block';
         setTimeout(() => document.getElementById('programName').focus(), 100);
     }
@@ -1847,36 +2423,55 @@
         const cost = parseFloat(document.getElementById('programCost').value) || 0;
         const status = document.getElementById('programStatus').value;
         if (!name) { showToast('Nama program harus diisi!', 'error'); return; }
-        programCounter++;
-        const programId = 'prog_' + programCounter;
-        groups[currentProgramContext.groupId].programs.push({ 
-            id: programId, name, cost, scheduledMonth: null, status 
-        });
-        closeModal('programModal');
-        renderAll();
-        saveHistory('Tambah program: ' + name);
-        triggerAutoSave();
-        showToast('Program berhasil disimpan', 'success');
+        
+        const modalMode = document.getElementById('programModal').dataset.mode || 'add';
+        
+        if (modalMode === 'edit') {
+            const { groupId, programId } = currentEditContext;
+            const program = groups[groupId].programs.find(p => p.id === programId);
+            if (!program) { showToast('Program tidak ditemukan', 'error'); return; }
+            const oldName = program.name;
+            program.name = name;
+            program.cost = cost;
+            program.status = status;
+            closeModal('programModal');
+            renderAll();
+            saveHistory(`Edit program "${oldName}" jadi "${name}"`);
+            triggerAutoSave();
+            showToast('Program berhasil diupdate', 'success');
+        } else {
+            programCounter++;
+            const programId = 'prog_' + programCounter;
+            groups[currentProgramContext.groupId].programs.push({ 
+                id: programId, name, cost, scheduledMonth: null, status 
+            });
+            closeModal('programModal');
+            renderAll();
+            saveHistory('Tambah program: ' + name);
+            triggerAutoSave();
+            showToast('Program berhasil disimpan', 'success');
+        }
     }
 
     function hapusProgramPermanen(groupId, programId, programName) {
         if (!groups[groupId]) return;
-        showConfirm('Hapus Program?', `Hapus program "${programName}" secara permanen?`, function() {
-            groups[groupId].programs = groups[groupId].programs.filter(p => p.id !== programId);
-            renderAll();
-            saveHistory('Hapus program: ' + programName);
-            triggerAutoSave();
-            showToast('Program dihapus', 'success');
-        });
+        showConfirm('Hapus Program?', `Hapus program "${programName}" secara permanen?`,
+            function() {
+                groups[groupId].programs = groups[groupId].programs.filter(p => p.id !== programId);
+                renderAll();
+                saveHistory('Hapus program: ' + programName);
+                triggerAutoSave();
+                showToast('Program dihapus', 'success');
+            }
+        );
     }
 
     function renderScheduleTable() {
         const tbody = document.getElementById('scheduleBody');
         tbody.innerHTML = '';
-
+        
         Object.keys(groups).forEach(groupId => {
             const group = groups[groupId];
-            
             if (!matchesFilter(group, true)) return;
             
             const tr = document.createElement('tr');
@@ -1933,20 +2528,33 @@
         
         scheduledPrograms.forEach(prog => {
             if (!matchesFilter(group, false, prog)) return;
+            const statusKey = prog.status || 'draft';
+            const statusInfo = STATUS_FLOW[statusKey];
             
             const div = document.createElement('div');
             div.className = 'activity-item';
+            div.dataset.status = statusKey;
+            div.title = 'Klik untuk ubah status | Klik × untuk batalkan jadwal';
             
             if (currentFilters.search && prog.name.toLowerCase().includes(currentFilters.search)) {
                 div.classList.add('highlight-match');
             }
+            
+            div.onclick = (function(gid, pid) {
+                return function(e) {
+                    if (e.target.classList.contains('btn-remove-schedule')) return;
+                    openStatusPicker(gid, pid);
+                };
+            })(groupId, prog.id);
             
             const btnRemove = document.createElement('button');
             btnRemove.type = 'button';
             btnRemove.className = 'btn-remove-schedule no-print';
             btnRemove.title = 'Batalkan Jadwal';
             btnRemove.textContent = '×';
-            btnRemove.onclick = (function(gid, pid, pname) { return function() { unscheduleProgram(gid, pid, pname); }; })(groupId, prog.id, prog.name);
+            btnRemove.onclick = (function(gid, pid, pname) { 
+                return function(e) { e.stopPropagation(); unscheduleProgram(gid, pid, pname); }; 
+            })(groupId, prog.id, prog.name);
             
             const titleSpan = document.createElement('span');
             titleSpan.className = 'title';
@@ -1956,9 +2564,15 @@
             costSpan.className = 'cost';
             costSpan.textContent = 'Rp ' + prog.cost.toLocaleString('id-ID');
             
+            const statusDot = document.createElement('span');
+            statusDot.className = 'status-dot';
+            statusDot.style.color = statusInfo.color;
+            statusDot.textContent = `${statusInfo.icon} ${statusInfo.label}`;
+            
             div.appendChild(btnRemove);
             div.appendChild(titleSpan);
             div.appendChild(costSpan);
+            div.appendChild(statusDot);
             container.appendChild(div);
         });
     }
@@ -1998,35 +2612,81 @@
     }
 
     function unscheduleProgram(groupId, programId, programName) {
-        showConfirm('Batalkan Jadwal?', `Kembalikan "${programName}" ke daftar "Belum Terjadwal"?`, function() {
-            const group = groups[groupId];
-            const program = group.programs.find(p => p.id === programId);
-            if (program) { program.scheduledMonth = null; }
-            renderAll();
-            saveHistory('Batalkan jadwal: ' + programName);
-            triggerAutoSave();
-            showToast('Jadwal dibatalkan', 'info');
-        });
+        showConfirm('Batalkan Jadwal?', `Kembalikan "${programName}" ke daftar "Belum Terjadwal"?`,
+            function() {
+                const group = groups[groupId];
+                const program = group.programs.find(p => p.id === programId);
+                if (program) { program.scheduledMonth = null; }
+                renderAll();
+                saveHistory('Batalkan jadwal: ' + programName);
+                triggerAutoSave();
+                showToast('Jadwal dibatalkan', 'info');
+            }
+        );
     }
 
     function updateTotals() {
         let totalBudgetAll = 0, totalExpensesAll = 0;
+        const monthlyTotals = new Array(12).fill(0);
+        
         Object.keys(groups).forEach(groupId => {
             const group = groups[groupId];
             const totalBudget = group.programs.reduce((sum, p) => sum + p.cost, 0);
             totalBudgetAll += totalBudget;
             group.programs.forEach(p => {
-                if (p.scheduledMonth !== null) totalExpensesAll += p.cost;
+                if (p.scheduledMonth !== null && (p.status || 'draft') !== 'cancelled') {
+                    totalExpensesAll += p.cost;
+                    monthlyTotals[p.scheduledMonth] += p.cost;
+                }
             });
         });
+        
         const totalRemaining = totalBudgetAll - totalExpensesAll;
         document.getElementById('totalExpenses').textContent = 'Rp ' + totalExpensesAll.toLocaleString('id-ID');
         document.getElementById('totalRemaining').textContent = 'Rp ' + totalRemaining.toLocaleString('id-ID');
         document.getElementById('totalBudgetAll').textContent = 'Rp ' + totalBudgetAll.toLocaleString('id-ID');
+        
         const remainingItem = document.getElementById('remainingItem');
         if (totalRemaining < 0) remainingItem.classList.add('negative');
         else remainingItem.classList.remove('negative');
+        
         document.getElementById('terbilangText').textContent = formatTerbilang(totalExpensesAll);
+        renderMonthlyBreakdown(monthlyTotals);
+    }
+    
+    function renderMonthlyBreakdown(monthlyTotals) {
+        const grid = document.getElementById('monthlyGrid');
+        if (!grid) return;
+        
+        const filledMonths = monthlyTotals.map((v, i) => ({ value: v, index: i })).filter(m => m.value > 0);
+        const maxVal = filledMonths.length > 0 ? Math.max(...filledMonths.map(m => m.value)) : 0;
+        const minVal = filledMonths.length > 0 ? Math.min(...filledMonths.map(m => m.value)) : 0;
+        
+        grid.innerHTML = '';
+        months.forEach((month, i) => {
+            const value = monthlyTotals[i];
+            const isHighest = filledMonths.length > 1 && value === maxVal && value > 0;
+            const isLowest = filledMonths.length > 1 && value === minVal && value > 0;
+            const isEmpty = value === 0;
+            
+            let cardClass = 'month-card';
+            if (isEmpty) cardClass += ' empty';
+            else if (isHighest) cardClass += ' highest';
+            else if (isLowest) cardClass += ' lowest';
+            
+            const card = document.createElement('div');
+            card.className = cardClass;
+            
+            let badge = '';
+            if (isHighest) badge = '<span class="month-badge badge-highest">🔥</span>';
+            else if (isLowest) badge = '<span class="month-badge badge-lowest">📉</span>';
+            
+            card.innerHTML = `
+                <div class="month-name"><span>${month}</span>${badge}</div>
+                <div class="month-value">${isEmpty ? '—' : 'Rp ' + value.toLocaleString('id-ID')}</div>
+            `;
+            grid.appendChild(card);
+        });
     }
 
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
@@ -2052,281 +2712,9 @@
                 if (hp.classList.contains('open')) toggleHistoryPanel();
             }
         });
-        
-        // Auto-save meta inputs
         document.getElementById('companyName').addEventListener('change', triggerAutoSave);
         document.getElementById('budgetYear').addEventListener('change', triggerAutoSave);
     });
-
-    // ========================================================
-    // FUNGSI: GAMBAR CHART NATIVE DI PDF (BUKAN SCREENSHOT)
-    // ========================================================
-    function drawChartInPDF(doc, x, y, width, height, chartData, chartType, groupIds) {
-        const isCircular = chartType === 'pie' || chartType === 'doughnut';
-        
-        if (isCircular) {
-            const totals = groupIds.map(gid => {
-                return groups[gid].programs
-                    .filter(p => p.scheduledMonth !== null)
-                    .reduce((sum, p) => sum + p.cost, 0);
-            });
-            const grandTotal = totals.reduce((s, v) => s + v, 0);
-            
-            doc.setFillColor(250, 250, 252);
-            doc.setDrawColor(226, 232, 240);
-            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
-            
-            if (grandTotal === 0) {
-                doc.setTextColor(150, 150, 150);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'italic');
-                doc.text('Belum ada data untuk ditampilkan', x + width/2, y + height/2, { align: 'center' });
-                return;
-            }
-            
-            const chartAreaWidth = width * 0.55;
-            const centerX = x + chartAreaWidth / 2;
-            const centerY = y + height / 2;
-            const maxRadius = Math.min(chartAreaWidth, height) / 2 - 10;
-            const outerRadius = maxRadius;
-            const innerRadius = chartType === 'doughnut' ? maxRadius * 0.55 : 0;
-            
-            let currentAngle = -Math.PI / 2;
-            const segments = [];
-            
-            totals.forEach((value, i) => {
-                if (value === 0) return;
-                const angle = (value / grandTotal) * Math.PI * 2;
-                segments.push({
-                    value,
-                    startAngle: currentAngle,
-                    endAngle: currentAngle + angle,
-                    color: hexToRgb(CHART_COLORS[i % CHART_COLORS.length]),
-                    percentage: (value / grandTotal) * 100,
-                    groupName: groups[groupIds[i]].name,
-                    index: i
-                });
-                currentAngle += angle;
-            });
-            
-            segments.forEach(seg => {
-                const steps = Math.max(20, Math.ceil((seg.endAngle - seg.startAngle) / (Math.PI / 60)));
-                const points = [];
-                
-                for (let s = 0; s <= steps; s++) {
-                    const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
-                    points.push({
-                        x: centerX + Math.cos(t) * outerRadius,
-                        y: centerY + Math.sin(t) * outerRadius
-                    });
-                }
-                
-                if (innerRadius > 0) {
-                    for (let s = steps; s >= 0; s--) {
-                        const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
-                        points.push({
-                            x: centerX + Math.cos(t) * innerRadius,
-                            y: centerY + Math.sin(t) * innerRadius
-                        });
-                    }
-                } else {
-                    points.push({ x: centerX, y: centerY });
-                }
-                
-                const deltas = [];
-                for (let i = 0; i < points.length - 1; i++) {
-                    deltas.push([points[i+1].x - points[i].x, points[i+1].y - points[i].y]);
-                }
-                
-                doc.setFillColor(...seg.color);
-                doc.setDrawColor(255, 255, 255);
-                doc.setLineWidth(0.3);
-                doc.lines(deltas, points[0].x, points[0].y, [1, 1], 'FD', true);
-                
-                const midAngle = (seg.startAngle + seg.endAngle) / 2;
-                const labelRadius = innerRadius > 0 ? (innerRadius + outerRadius) / 2 : outerRadius * 0.65;
-                const labelX = centerX + Math.cos(midAngle) * labelRadius;
-                const labelY = centerY + Math.sin(midAngle) * labelRadius;
-                
-                const arcSize = seg.endAngle - seg.startAngle;
-                if (arcSize > 0.3) {
-                    let valueStr;
-                    if (seg.value >= 1000000000) valueStr = (seg.value / 1000000000).toFixed(1) + 'M';
-                    else if (seg.value >= 1000000) valueStr = (seg.value / 1000000).toFixed(1) + 'jt';
-                    else if (seg.value >= 1000) valueStr = (seg.value / 1000).toFixed(0) + 'rb';
-                    else valueStr = seg.value.toString();
-                    
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(valueStr, labelX, labelY - 1, { align: 'center' });
-                    
-                    doc.setFontSize(8);
-                    doc.text(seg.percentage.toFixed(1) + '%', labelX, labelY + 3.5, { align: 'center' });
-                } else if (arcSize > 0.15) {
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(8);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(seg.percentage.toFixed(1) + '%', labelX, labelY, { align: 'center' });
-                }
-            });
-            
-            const legendX = x + chartAreaWidth + 5;
-            const legendY = y + 15;
-            const legendItemHeight = 11;
-            const legendWidth = width - chartAreaWidth - 10;
-            
-            doc.setTextColor(30, 41, 59);
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'bold');
-            doc.text('RINCIAN PER KELOMPOK', legendX, legendY);
-            
-            let legendItemY = legendY + 6;
-            segments.forEach(seg => {
-                doc.setFillColor(...seg.color);
-                doc.rect(legendX, legendItemY - 2, 4, 4, 'F');
-                
-                doc.setTextColor(30, 41, 59);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'bold');
-                doc.text(seg.groupName, legendX + 6, legendItemY);
-                
-                doc.setTextColor(...seg.color);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + seg.value.toLocaleString('id-ID'), legendX + 6, legendItemY + 4);
-                
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(7);
-                doc.setFont('helvetica', 'normal');
-                doc.text(seg.percentage.toFixed(1) + '%', legendX + 6, legendItemY + 8);
-                
-                legendItemY += legendItemHeight;
-            });
-            
-            doc.setFillColor(238, 242, 255);
-            doc.setDrawColor(99, 102, 241);
-            doc.roundedRect(legendX, legendItemY + 2, legendWidth, 12, 2, 2, 'FD');
-            doc.setTextColor(99, 102, 241);
-            doc.setFontSize(7);
-            doc.setFont('helvetica', 'bold');
-            doc.text('TOTAL KESELURUHAN', legendX + 3, legendItemY + 6);
-            doc.setFontSize(10);
-            doc.text('Rp ' + grandTotal.toLocaleString('id-ID'), legendX + 3, legendItemY + 11);
-            
-        } else if (chartType === 'bar' || chartType === 'line') {
-            const monthlyByGroup = groupIds.map(gid => {
-                const arr = new Array(12).fill(0);
-                groups[gid].programs.forEach(p => {
-                    if (p.scheduledMonth !== null) arr[p.scheduledMonth] += p.cost;
-                });
-                return arr;
-            });
-            
-            const monthlyTotals = new Array(12).fill(0);
-            monthlyByGroup.forEach(arr => arr.forEach((v, i) => monthlyTotals[i] += v));
-            const maxValue = Math.max(...monthlyTotals, 1);
-            
-            doc.setFillColor(250, 250, 252);
-            doc.setDrawColor(226, 232, 240);
-            doc.roundedRect(x, y, width, height, 2, 2, 'FD');
-            
-            const chartPadding = { left: 20, right: 5, top: 10, bottom: 15 };
-            const chartW = width - chartPadding.left - chartPadding.right;
-            const chartH = height - chartPadding.top - chartPadding.bottom;
-            const chartX = x + chartPadding.left;
-            const chartY = y + chartPadding.top;
-            
-            doc.setFontSize(6);
-            doc.setTextColor(150, 150, 150);
-            doc.setFont('helvetica', 'normal');
-            for (let g = 0; g <= 4; g++) {
-                const gy = chartY + chartH - (chartH * g / 4);
-                doc.setDrawColor(240, 240, 245);
-                doc.setLineWidth(0.1);
-                doc.line(chartX, gy, chartX + chartW, gy);
-                
-                const val = maxValue * g / 4;
-                let label;
-                if (val >= 1000000000) label = (val / 1000000000).toFixed(1) + 'M';
-                else if (val >= 1000000) label = (val / 1000000).toFixed(1) + 'jt';
-                else if (val >= 1000) label = (val / 1000).toFixed(0) + 'rb';
-                else label = val.toFixed(0);
-                
-                doc.text(label, chartX - 2, gy + 1, { align: 'right' });
-            }
-            
-            doc.setFontSize(6);
-            doc.setTextColor(100, 116, 139);
-            const colWidth = chartW / 12;
-            
-            if (chartType === 'bar') {
-                const barGroupWidth = colWidth * 0.7;
-                const barWidth = barGroupWidth / groupIds.length;
-                
-                months.forEach((m, i) => {
-                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
-                    
-                    let stackY = chartY + chartH;
-                    groupIds.forEach((gid, gi) => {
-                        const value = monthlyByGroup[gi][i];
-                        if (value === 0) return;
-                        const barHeight = (value / maxValue) * chartH;
-                        const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
-                        
-                        doc.setFillColor(...color);
-                        doc.setDrawColor(255, 255, 255);
-                        doc.setLineWidth(0.1);
-                        doc.rect(
-                            chartX + colWidth * i + (colWidth - barGroupWidth) / 2 + barWidth * gi,
-                            stackY - barHeight,
-                            barWidth,
-                            barHeight,
-                            'FD'
-                        );
-                        stackY -= barHeight;
-                    });
-                });
-            } else {
-                months.forEach((m, i) => {
-                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
-                });
-                
-                groupIds.forEach((gid, gi) => {
-                    const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
-                    doc.setDrawColor(...color);
-                    doc.setLineWidth(0.5);
-                    
-                    let prevX = null, prevY = null;
-                    monthlyByGroup[gi].forEach((val, i) => {
-                        const px = chartX + colWidth * i + colWidth / 2;
-                        const py = chartY + chartH - (val / maxValue) * chartH;
-                        
-                        if (prevX !== null) doc.line(prevX, prevY, px, py);
-                        
-                        doc.setFillColor(...color);
-                        doc.circle(px, py, 0.8, 'F');
-                        
-                        prevX = px;
-                        prevY = py;
-                    });
-                });
-            }
-            
-            const legendY = y + height - 6;
-            let legendX = x + chartPadding.left;
-            doc.setFontSize(6);
-            groupIds.forEach((gid, i) => {
-                const color = hexToRgb(CHART_COLORS[i % CHART_COLORS.length]);
-                doc.setFillColor(...color);
-                doc.rect(legendX, legendY - 2, 3, 3, 'F');
-                doc.setTextColor(30, 41, 59);
-                doc.setFont('helvetica', 'normal');
-                doc.text(groups[gid].name, legendX + 4, legendY);
-                legendX += 4 + doc.getTextWidth(groups[gid].name) + 5;
-            });
-        }
-    }
 
     // ================= EXPORT PDF =================
     function exportToPDF() {
@@ -2345,89 +2733,221 @@
 
                 const companyName = document.getElementById('companyName').value.trim() || '—';
                 const budgetYear = document.getElementById('budgetYear').value || new Date().getFullYear();
+                const groupIds = Object.keys(groups);
 
                 let totalBudget = 0, totalScheduled = 0, totalPrograms = 0;
-                const groupIds = Object.keys(groups);
-                
+                const statusGlobal = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
+                const groupStats = [];
+
                 groupIds.forEach(gid => {
                     const group = groups[gid];
-                    totalPrograms += group.programs.length;
-                    totalBudget += group.programs.reduce((s, p) => s + p.cost, 0);
-                    totalScheduled += group.programs.filter(p => p.scheduledMonth !== null).reduce((s, p) => s + p.cost, 0);
-                });
-                const remaining = totalBudget - totalScheduled;
+                    let gBudget = 0, gScheduled = 0, gUnscheduled = 0;
+                    const gStatusCount = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
+                    const gStatusAmount = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
 
+                    group.programs.forEach(p => {
+                        totalPrograms++;
+                        gBudget += p.cost;
+                        totalBudget += p.cost;
+                        const st = p.status || 'draft';
+                        gStatusCount[st]++;
+                        gStatusAmount[st] += p.cost;
+                        statusGlobal[st]++;
+                        
+                        if (p.scheduledMonth !== null) {
+                            gScheduled += p.cost;
+                            if (st !== 'cancelled') totalScheduled += p.cost;
+                        } else {
+                            gUnscheduled += p.cost;
+                        }
+                    });
+
+                    groupStats.push({
+                        gid, group, gBudget, gScheduled, gUnscheduled,
+                        gStatusCount, gStatusAmount,
+                        remaining: gBudget - gScheduled
+                    });
+                });
+
+                const remaining = totalBudget - totalScheduled;
+                const realisasi = totalBudget > 0 ? (totalScheduled / totalBudget * 100) : 0;
                 const accentRGB = hexToRgb(config.accentColor);
                 const accentDarkRGB = hexToRgb(config.accentDark);
 
-                doc.setFillColor(...accentDarkRGB);
-                doc.rect(0, 0, pageWidth, 32, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
-                doc.setFont('helvetica', 'bold');
-                doc.text(config.pdfTitle, pageWidth / 2, 12, { align: 'center' });
-                doc.setFontSize(14.4);
-                doc.text(companyName, pageWidth / 2, 20, { align: 'center' });
-                doc.setFontSize(11.5);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Tahun Anggaran: ' + budgetYear, pageWidth / 2, 27, { align: 'center' });
-                
-                yPos = 36;
+                const drawHeader = () => {
+                    doc.setFillColor(...accentDarkRGB);
+                    doc.rect(0, 0, pageWidth, 22, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(config.pdfTitle, pageWidth / 2, 10, { align: 'center' });
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(companyName + ' | Tahun Anggaran: ' + budgetYear, pageWidth / 2, 17, { align: 'center' });
+                };
+
+                const drawFooter = () => {
+                    const pageCount = doc.internal.getNumberOfPages();
+                    for (let i = 1; i <= pageCount; i++) {
+                        doc.setPage(i);
+                        doc.setFontSize(7);
+                        doc.setTextColor(148, 163, 184);
+                        doc.setFont('helvetica', 'italic');
+                        doc.text(config.title + ' - ' + companyName + ' - Tahun ' + budgetYear, pageWidth / 2, pageHeight - 6, { align: 'center' });
+                        doc.text(`Halaman ${i} dari ${pageCount}`, pageWidth - margin, pageHeight - 6, { align: 'right' });
+                    }
+                };
+
+                const drawSectionTitle = (text) => {
+                    doc.setFillColor(...accentDarkRGB);
+                    doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(text, margin + 3, yPos + 5);
+                    yPos += 9;
+                };
+
+                // ============ HALAMAN 1: EXECUTIVE SUMMARY ============
+                drawHeader();
+                yPos = 30;
+
                 const now = new Date();
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
+                doc.setFont('helvetica', 'normal');
                 doc.text('Dicetak pada: ' + now.toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}), margin, yPos);
                 yPos += 8;
 
-                const summaryData = [
-                    { label: 'TOTAL KELOMPOK', value: String(groupIds.length), color: [99, 102, 241] },
-                    { label: 'TOTAL PROGRAM', value: String(totalPrograms), color: [59, 130, 246] },
-                    { label: 'TOTAL ANGGARAN', value: 'Rp ' + totalBudget.toLocaleString('id-ID'), color: [30, 41, 59] },
-                    { label: 'TERJADWAL', value: 'Rp ' + totalScheduled.toLocaleString('id-ID'), color: accentRGB },
-                    { label: 'SISA', value: 'Rp ' + remaining.toLocaleString('id-ID'), color: remaining < 0 ? [220, 38, 38] : accentRGB }
+                drawSectionTitle(config.pdfSection6);
+
+                const monthlyTotals = new Array(12).fill(0);
+                groupIds.forEach(gid => {
+                    groups[gid].programs.forEach(p => {
+                        if (p.scheduledMonth !== null && (p.status || 'draft') !== 'cancelled') {
+                            monthlyTotals[p.scheduledMonth] += p.cost;
+                        }
+                    });
+                });
+                let maxMonth = 0, maxVal = 0, minMonth = -1, minVal = Infinity;
+                monthlyTotals.forEach((v, i) => {
+                    if (v > maxVal) { maxVal = v; maxMonth = i; }
+                    if (v > 0 && v < minVal) { minVal = v; minMonth = i; }
+                });
+
+                const kpiData = [
+                    { label: 'TOTAL KELOMPOK', value: String(groupIds.length), color: [99, 102, 241], sub: totalPrograms + ' program' },
+                    { label: 'TOTAL ANGGARAN', value: 'Rp ' + totalBudget.toLocaleString('id-ID'), color: [30, 41, 59], sub: 'Seluruh kelompok' },
+                    { label: 'REALISASI', value: realisasi.toFixed(1) + '%', color: accentRGB, sub: 'Terjadwal aktif' },
+                    { label: 'BULAN TERENDAH', value: minMonth !== -1 ? months[minMonth] : '-', color: [59, 130, 246], sub: minMonth !== -1 ? 'Rp ' + minVal.toLocaleString('id-ID') : 'Belum ada' },
+                    { label: 'BULAN TERPADAT', value: maxVal > 0 ? months[maxMonth] : '-', color: [245, 158, 11], sub: maxVal > 0 ? 'Rp ' + maxVal.toLocaleString('id-ID') : 'Belum ada' },
+                    { label: 'SISA ANGGARAN', value: 'Rp ' + remaining.toLocaleString('id-ID'), color: remaining < 0 ? [220, 38, 38] : [16, 185, 129], sub: 'Terjadwal aktif' }
                 ];
-                const boxCount = summaryData.length;
-                const boxGap = 3;
-                const boxWidth = (pageWidth - 2 * margin - (boxCount - 1) * boxGap) / boxCount;
-                const boxHeight = 16;
-                const boxY = yPos;
-                summaryData.forEach((item, i) => {
-                    const x = margin + i * (boxWidth + boxGap);
+
+                const kpiCount = kpiData.length;
+                const kpiGap = 3;
+                const kpiWidth = (pageWidth - 2 * margin - (kpiCount - 1) * kpiGap) / kpiCount;
+                const kpiHeight = 20;
+                const kpiY = yPos;
+
+                kpiData.forEach((item, i) => {
+                    const x = margin + i * (kpiWidth + kpiGap);
                     doc.setFillColor(248, 250, 252);
                     doc.setDrawColor(226, 232, 240);
-                    doc.roundedRect(x, boxY, boxWidth, boxHeight, 1.5, 1.5, 'FD');
+                    doc.roundedRect(x, kpiY, kpiWidth, kpiHeight, 1.5, 1.5, 'FD');
                     doc.setFillColor(...item.color);
-                    doc.rect(x, boxY, 2, boxHeight, 'F');
+                    doc.rect(x, kpiY, 2, kpiHeight, 'F');
                     doc.setTextColor(100, 116, 139);
-                    doc.setFontSize(7);
-                    doc.text(item.label, x + 4, boxY + 5);
+                    doc.setFontSize(6.5);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(item.label, x + 4, kpiY + 5);
                     doc.setTextColor(...item.color);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(item.value, x + 4, kpiY + 12);
+                    doc.setFontSize(7);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(100, 116, 139);
+                    doc.text(item.sub, x + 4, kpiY + 17);
+                });
+                yPos = kpiY + kpiHeight + 8;
+
+                const insights = [];
+                if (totalPrograms > 0) {
+                    const unscheduledCount = totalPrograms - groupStats.reduce((sum, g) => sum + (g.group.programs.filter(p => p.scheduledMonth !== null).length), 0);
+                    if (unscheduledCount > 0) insights.push(`- ${unscheduledCount} dari ${totalPrograms} program belum terjadwal.`);
+                    if (realisasi < 50) insights.push(`- Realisasi baru ${realisasi.toFixed(1)}% - perlu percepatan penjadwalan.`);
+                    else if (realisasi < 90) insights.push(`- Realisasi ${realisasi.toFixed(1)}% - on track.`);
+                    else insights.push(`- Realisasi ${realisasi.toFixed(1)}% - hampir selesai.`);
+                    
+                    const cancelledCount = statusGlobal.cancelled;
+                    if (cancelledCount > 0) insights.push(`- ${cancelledCount} program dibatalkan (Cancelled) - perlu review.`);
+                }
+
+                if (insights.length > 0) {
+                    const insightHeight = 8 + insights.length * 5;
+                    doc.setFillColor(255, 251, 235);
+                    doc.setDrawColor(245, 158, 11);
+                    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, insightHeight, 2, 2, 'FD');
+                    doc.setTextColor(146, 64, 14);
+                    doc.setFontSize(8);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('INSIGHT & REKOMENDASI', margin + 4, yPos + 5);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setFontSize(8);
+                    insights.forEach((insight, i) => {
+                        doc.text(insight, margin + 4, yPos + 10 + i * 4.5);
+                    });
+                    yPos += insightHeight + 6;
+                }
+
+                const topGroups = [...groupStats].sort((a, b) => b.gBudget - a.gBudget).slice(0, 5);
+                if (topGroups.length > 0) {
+                    doc.setTextColor(...accentDarkRGB);
                     doc.setFontSize(10);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(item.value, x + 4, boxY + 12);
-                });
-                yPos = boxY + boxHeight + 8;
+                    doc.text('TOP 5 KELOMPOK DENGAN ANGGARAN TERBESAR', margin, yPos);
+                    yPos += 6;
 
-                doc.setFillColor(...accentDarkRGB);
-                doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text(config.pdfSection1, margin + 3, yPos + 5);
-                yPos += 9;
+                    const maxBudget = topGroups[0].gBudget;
+                    topGroups.forEach((gs, i) => {
+                        const barWidth = (gs.gBudget / maxBudget) * (pageWidth - 2 * margin - 80);
+                        doc.setFillColor(240, 240, 245);
+                        doc.rect(margin, yPos, pageWidth - 2 * margin - 80, 6, 'F');
+                        doc.setFillColor(...accentRGB);
+                        doc.rect(margin, yPos, barWidth, 6, 'F');
+                        
+                        doc.setTextColor(30, 41, 59);
+                        doc.setFontSize(8);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(`${i+1}. ${gs.group.name}`, margin + 3, yPos + 4);
+                        
+                        doc.setTextColor(100, 116, 139);
+                        doc.setFontSize(8);
+                        doc.text('Rp ' + gs.gBudget.toLocaleString('id-ID'), pageWidth - margin, yPos + 4, { align: 'right' });
+                        yPos += 8;
+                    });
+                }
 
-                const budgetTableData = [];
-                let no = 1;
-                groupIds.forEach(gid => {
-                    const group = groups[gid];
-                    const groupBudget = group.programs.reduce((s, p) => s + p.cost, 0);
-                    const groupScheduled = group.programs.filter(p => p.scheduledMonth !== null).reduce((s, p) => s + p.cost, 0);
-                    const groupRemaining = groupBudget - groupScheduled;
-                    const unscheduled = group.programs.filter(p => p.scheduledMonth === null);
+                // ============ HALAMAN 2: RINGKASAN PER KELOMPOK ============
+                doc.addPage();
+                drawHeader();
+                yPos = 30;
+                drawSectionTitle(config.pdfSection1);
+
+                const budgetTableData = groupStats.map((gs, i) => {
+                    const unscheduled = gs.group.programs.filter(p => p.scheduledMonth === null);
                     const unscheduledText = unscheduled.length > 0 
-                        ? unscheduled.map(p => `${p.name} (Rp ${p.cost.toLocaleString('id-ID')})`).join(', ')
-                        : '—';
-                    budgetTableData.push([String(no++), group.name, 'Rp ' + groupBudget.toLocaleString('id-ID'), 'Rp ' + groupScheduled.toLocaleString('id-ID'), 'Rp ' + groupRemaining.toLocaleString('id-ID'), unscheduledText]);
+                        ? `${unscheduled.length} program (Rp ${gs.gUnscheduled.toLocaleString('id-ID')})`
+                        : '-';
+                    return [
+                        String(i+1),
+                        gs.group.name,
+                        'Rp ' + gs.gBudget.toLocaleString('id-ID'),
+                        'Rp ' + gs.gScheduled.toLocaleString('id-ID'),
+                        'Rp ' + gs.remaining.toLocaleString('id-ID'),
+                        unscheduledText
+                    ];
                 });
 
                 doc.autoTable({
@@ -2436,43 +2956,33 @@
                     body: budgetTableData,
                     foot: [['', 'TOTAL', 'Rp ' + totalBudget.toLocaleString('id-ID'), 'Rp ' + totalScheduled.toLocaleString('id-ID'), 'Rp ' + remaining.toLocaleString('id-ID'), '']],
                     theme: 'grid',
-                    styles: { fontSize: 8, cellPadding: 2, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle' },
-                    headStyles: { fillColor: [226, 232, 240], textColor: [30, 41, 59], fontStyle: 'bold', fontSize: 8, halign: 'center' },
-                    footStyles: { fillColor: config.accentLight === '#d1fae5' ? [209, 250, 229] : [254, 226, 226], textColor: accentDarkRGB, fontStyle: 'bold', fontSize: 8 },
-                    columnStyles: { 0: { cellWidth: 10, halign: 'center' }, 1: { cellWidth: 45, fontStyle: 'bold' }, 2: { cellWidth: 35, halign: 'right' }, 3: { cellWidth: 35, halign: 'right' }, 4: { cellWidth: 35, halign: 'right' }, 5: { cellWidth: 'auto' } },
-                    alternateRowStyles: { fillColor: [248, 250, 252] },
-                    didParseCell: function(data) {
-                        if (data.section === 'body' && data.column.index === 4) {
-                            const value = String(data.cell.raw || '');
-                            data.cell.styles.textColor = value.includes('-') ? [220, 38, 38] : accentDarkRGB;
-                        }
-                    }
+                    styles: { fontSize: 9, cellPadding: 3, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle' },
+                    headStyles: { fillColor: [226, 232, 240], textColor: [30, 41, 59], fontStyle: 'bold', fontSize: 9, halign: 'center' },
+                    footStyles: { fillColor: config.accentLight === '#d1fae5' ? [209, 250, 229] : [254, 226, 226], textColor: accentDarkRGB, fontStyle: 'bold', fontSize: 9 },
+                    columnStyles: { 0: { cellWidth: 12, halign: 'center' }, 1: { cellWidth: 60, fontStyle: 'bold' }, 2: { cellWidth: 45, halign: 'right' }, 3: { cellWidth: 45, halign: 'right' }, 4: { cellWidth: 45, halign: 'right' }, 5: { cellWidth: 'auto' } },
+                    alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
-                yPos = doc.lastAutoTable.finalY + 10;
+                yPos = doc.lastAutoTable.finalY + 8;
 
-                if (yPos > pageHeight - 60) { doc.addPage(); yPos = margin; }
-                doc.setFillColor(...accentDarkRGB);
-                doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text(config.pdfSection2, margin + 3, yPos + 5);
-                yPos += 9;
+                // ============ HALAMAN 3: JADWAL ============
+                doc.addPage();
+                drawHeader();
+                yPos = 30;
+                drawSectionTitle(config.pdfSection2);
 
                 const scheduleHead = [['Kelompok', 'Sisa', ...months]];
-                const scheduleBody = [];
-                groupIds.forEach(gid => {
-                    const group = groups[gid];
-                    const groupBudget = group.programs.reduce((s, p) => s + p.cost, 0);
-                    const groupScheduled = group.programs.filter(p => p.scheduledMonth !== null).reduce((s, p) => s + p.cost, 0);
-                    const groupRemaining = groupBudget - groupScheduled;
-                    const row = [group.name, 'Rp ' + groupRemaining.toLocaleString('id-ID')];
+                const scheduleBody = groupStats.map(gs => {
+                    const row = [gs.group.name, 'Rp ' + gs.remaining.toLocaleString('id-ID')];
                     months.forEach((_, mIndex) => {
-                        const activities = group.programs.filter(p => p.scheduledMonth === mIndex);
-                        if (activities.length === 0) row.push('—');
-                        else row.push(activities.map(a => `${a.name}\nRp ${a.cost.toLocaleString('id-ID')}`).join('\n\n'));
+                        const activities = gs.group.programs.filter(p => p.scheduledMonth === mIndex);
+                        if (activities.length === 0) row.push('-');
+                        else {
+                            const totalMonth = activities.reduce((s, a) => s + a.cost, 0);
+                            const statuses = activities.map(a => `[${STATUS_FLOW[a.status || 'draft'].pdfShort}]`).join(' ');
+                            row.push(`${activities.length} prog ${statuses}\nRp ${totalMonth.toLocaleString('id-ID')}`);
+                        }
                     });
-                    scheduleBody.push(row);
+                    return row;
                 });
 
                 doc.autoTable({
@@ -2480,89 +2990,208 @@
                     head: scheduleHead,
                     body: scheduleBody,
                     theme: 'grid',
-                    styles: { fontSize: 6.5, cellPadding: 1.5, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'top', overflow: 'linebreak' },
-                    headStyles: { fillColor: accentDarkRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7, halign: 'center', valign: 'middle' },
-                    columnStyles: { 0: { cellWidth: 30, fontStyle: 'bold', halign: 'left' }, 1: { cellWidth: 22, halign: 'right', fontStyle: 'bold' }, 2: { cellWidth: 'auto' }, 3: { cellWidth: 'auto' }, 4: { cellWidth: 'auto' }, 5: { cellWidth: 'auto' }, 6: { cellWidth: 'auto' }, 7: { cellWidth: 'auto' }, 8: { cellWidth: 'auto' }, 9: { cellWidth: 'auto' }, 10: { cellWidth: 'auto' }, 11: { cellWidth: 'auto' }, 12: { cellWidth: 'auto' }, 13: { cellWidth: 'auto' } },
+                    styles: { fontSize: 7, cellPadding: 2, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle', halign: 'center' },
+                    headStyles: { fillColor: accentDarkRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7.5, halign: 'center', valign: 'middle' },
+                    columnStyles: { 0: { cellWidth: 45, fontStyle: 'bold', halign: 'left' }, 1: { cellWidth: 35, halign: 'right', fontStyle: 'bold' } },
                     alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
                 yPos = doc.lastAutoTable.finalY + 8;
 
-                if (yPos > pageHeight - 100) { doc.addPage(); yPos = margin; }
-                doc.setFillColor(...accentDarkRGB);
-                doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text('GRAFIK FLUKTUASI ' + config.labelTabel1.toUpperCase() + ' PER BULAN', margin + 3, yPos + 5);
-                yPos += 9;
-                
-                const chartW = pageWidth - 2 * margin;
-                const chartH = 90;
-                drawChartInPDF(doc, margin, yPos, chartW, chartH, null, currentChartType, groupIds);
-                yPos += chartH + 6;
+                // ============ HALAMAN 4: CHART + STATUS SUMMARY ============
+                doc.addPage();
+                drawHeader();
+                yPos = 30;
 
-                if (yPos > pageHeight - 50) { doc.addPage(); yPos = margin; }
+                drawSectionTitle('GRAFIK FLUKTUASI ' + config.labelTabel1.toUpperCase() + ' PER BULAN');
+                const chartW = pageWidth - 2 * margin;
+                const chartH = 75;
+                drawChartInPDF(doc, margin, yPos, chartW, chartH, null, currentChartType, groupIds);
+                yPos += chartH + 8;
+
+                drawSectionTitle(config.pdfSection4);
+
+                const statusHead = [['Kelompok', 'Total', '[D] Draft', '[A] Approved', '[P] In Prog', '[V] Done', '[X] Cancel']];
+                const statusBody = groupStats.map(gs => {
+                    const cell = (st) => {
+                        const c = gs.gStatusCount[st];
+                        const a = gs.gStatusAmount[st];
+                        return c > 0 ? `${c} prog\nRp ${a.toLocaleString('id-ID')}` : '-';
+                    };
+                    return [
+                        gs.group.name,
+                        'Rp ' + gs.gBudget.toLocaleString('id-ID'),
+                        cell('draft'), cell('approved'), cell('inprogress'), cell('done'), cell('cancelled')
+                    ];
+                });
+
+                doc.autoTable({
+                    startY: yPos,
+                    head: statusHead,
+                    body: statusBody,
+                    theme: 'grid',
+                    styles: { fontSize: 7, cellPadding: 2, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle', halign: 'center' },
+                    headStyles: { fillColor: accentDarkRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7.5, halign: 'center', valign: 'middle' },
+                    columnStyles: {
+                        0: { cellWidth: 50, fontStyle: 'bold', halign: 'left' },
+                        1: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
+                    },
+                    alternateRowStyles: { fillColor: [248, 250, 252] }
+                });
+                yPos = doc.lastAutoTable.finalY + 8;
+
+                // ============ HALAMAN 5+: DETAIL PROGRAM (3 KOLOM) ============
+                doc.addPage();
+                drawHeader();
+                yPos = 30;
+                drawSectionTitle(config.pdfSection5);
+
+                groupStats.forEach((gs, gIdx) => {
+                    const programs = gs.group.programs;
+                    if (programs.length === 0) return;
+                    
+                    if (yPos > pageHeight - 30) {
+                        doc.addPage();
+                        drawHeader();
+                        yPos = 30;
+                    }
+
+                    doc.setFillColor(...accentRGB);
+                    doc.rect(margin, yPos, pageWidth - 2 * margin, 8, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${gIdx + 1}. ${gs.group.name}`, margin + 3, yPos + 5.5);
+                    doc.setFontSize(8);
+                    doc.text(`Total: Rp ${gs.gBudget.toLocaleString('id-ID')} | ${programs.length} program`, pageWidth - margin - 3, yPos + 5.5, { align: 'right' });
+                    yPos += 10;
+
+                    const cols = 3;
+                    const colWidth = (pageWidth - 2 * margin - (cols - 1) * 2) / cols;
+                    const cardHeight = 13;
+                    const cardGap = 2;
+                    let col = 0;
+                    let colY = yPos;
+
+                    programs.forEach((p, pIdx) => {
+                        const statusKey = p.status || 'draft';
+                        const statusInfo = STATUS_FLOW[statusKey];
+                        const statusRGB = hexToRgb(statusInfo.color);
+                        
+                        if (colY + cardHeight > pageHeight - 15) {
+                            doc.addPage();
+                            drawHeader();
+                            colY = 30;
+                            col = 0;
+                            
+                            doc.setFillColor(...accentRGB);
+                            doc.rect(margin, colY, pageWidth - 2 * margin, 8, 'F');
+                            doc.setTextColor(255, 255, 255);
+                            doc.setFontSize(10);
+                            doc.setFont('helvetica', 'bold');
+                            doc.text(`${gIdx + 1}. ${gs.group.name} (lanjutan)`, margin + 3, colY + 5.5);
+                            colY += 10;
+                        }
+                        
+                        const x = margin + col * (colWidth + 2);
+                        
+                        doc.setFillColor(250, 250, 252);
+                        doc.setDrawColor(226, 232, 240);
+                        doc.roundedRect(x, colY, colWidth, cardHeight, 1, 1, 'FD');
+                        
+                        doc.setFillColor(...statusRGB);
+                        doc.rect(x, colY, 2, cardHeight, 'F');
+                        
+                        doc.setTextColor(30, 41, 59);
+                        doc.setFontSize(7);
+                        doc.setFont('helvetica', 'bold');
+                        let displayName = p.name;
+                        if (displayName.length > 45) displayName = displayName.substring(0, 42) + '...';
+                        doc.text(`${pIdx + 1}. ${displayName}`, x + 4, colY + 4);
+                        
+                        doc.setFontSize(6.5);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(...statusRGB);
+                        doc.text(`[${statusInfo.pdfShort}] ${statusInfo.pdfLabel}`, x + 4, colY + 8.5);
+                        
+                        doc.setTextColor(30, 41, 59);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(7);
+                        doc.text(`Rp ${p.cost.toLocaleString('id-ID')}`, x + colWidth - 3, colY + 8.5, { align: 'right' });
+                        
+                        if (p.scheduledMonth !== null) {
+                            doc.setFontSize(6);
+                            doc.setTextColor(100, 116, 139);
+                            doc.setFont('helvetica', 'italic');
+                            doc.text(`Jadwal: ${months[p.scheduledMonth]}`, x + 4, colY + 11.5);
+                        }
+                        
+                        col++;
+                        if (col >= cols) {
+                            col = 0;
+                            colY += cardHeight + cardGap;
+                        }
+                    });
+                    
+                    if (col > 0) colY += cardHeight + cardGap;
+                    yPos = colY + 4;
+                });
+
+                // ============ RINGKASAN TOTAL AKHIR ============
+                if (yPos > pageHeight - 50) {
+                    doc.addPage();
+                    drawHeader();
+                    yPos = 30;
+                }
+
+                drawSectionTitle(config.pdfSection3);
+                
                 const panelBgColor = config.accentLight === '#d1fae5' ? [240, 253, 244] : [254, 242, 242];
                 doc.setFillColor(...panelBgColor);
                 doc.setDrawColor(...accentRGB);
-                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 32, 3, 3, 'FD');
-                doc.setTextColor(...accentDarkRGB);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'bold');
-                doc.text(config.pdfSection3, margin + 5, yPos + 7);
-                doc.setDrawColor(...accentRGB);
-                doc.setLineWidth(0.3);
-                doc.line(margin + 5, yPos + 10, pageWidth - margin - 5, yPos + 10);
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 25, 3, 3, 'FD');
+
                 const midX = margin + (pageWidth - 2 * margin) / 2;
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Total Terjadwal:', margin + 5, yPos + 16);
+                doc.text('Total Terjadwal:', margin + 5, yPos + 8);
                 doc.setTextColor(...accentDarkRGB);
                 doc.setFontSize(11);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + totalScheduled.toLocaleString('id-ID'), margin + 5, yPos + 22);
+                doc.text('Rp ' + totalScheduled.toLocaleString('id-ID'), margin + 5, yPos + 15);
+
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Sisa Anggaran:', midX - 30, yPos + 16);
+                doc.text('Sisa Anggaran:', midX - 20, yPos + 8);
                 doc.setTextColor(...(remaining < 0 ? [220, 38, 38] : accentDarkRGB));
                 doc.setFontSize(11);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + remaining.toLocaleString('id-ID'), midX - 30, yPos + 22);
+                doc.text('Rp ' + remaining.toLocaleString('id-ID'), midX - 20, yPos + 15);
+
                 doc.setTextColor(100, 116, 139);
                 doc.setFontSize(8);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Total Anggaran:', pageWidth - margin - 60, yPos + 16);
+                doc.text('Total Anggaran:', pageWidth - margin - 60, yPos + 8);
                 doc.setTextColor(30, 41, 59);
                 doc.setFontSize(11);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + totalBudget.toLocaleString('id-ID'), pageWidth - margin - 60, yPos + 22);
-                yPos += 35;
+                doc.text('Rp ' + totalBudget.toLocaleString('id-ID'), pageWidth - margin - 60, yPos + 15);
+                yPos += 28;
 
                 doc.setFillColor(238, 242, 255);
                 doc.setDrawColor(99, 102, 241);
-                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 16, 3, 3, 'FD');
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 12, 3, 3, 'FD');
                 doc.setTextColor(99, 102, 241);
                 doc.setFontSize(7);
                 doc.setFont('helvetica', 'bold');
-                doc.text('TERBILANG:', margin + 5, yPos + 5);
+                doc.text('TERBILANG:', margin + 4, yPos + 4);
                 doc.setTextColor(30, 41, 59);
                 doc.setFontSize(9);
                 doc.setFont('helvetica', 'italic');
-                const terbilangStr = formatTerbilang(totalScheduled);
-                const splitText = doc.splitTextToSize(terbilangStr, pageWidth - 2 * margin - 10);
-                doc.text(splitText, margin + 5, yPos + 11);
+                doc.text(formatTerbilang(totalScheduled), margin + 4, yPos + 9);
 
-                const pageCount = doc.internal.getNumberOfPages();
-                for (let i = 1; i <= pageCount; i++) {
-                    doc.setPage(i);
-                    doc.setFontSize(7);
-                    doc.setTextColor(148, 163, 184);
-                    doc.setFont('helvetica', 'italic');
-                    doc.text(config.title + ' - ' + companyName + ' - Tahun ' + budgetYear, pageWidth / 2, pageHeight - 6, { align: 'center' });
-                    doc.text(`Halaman ${i} dari ${pageCount}`, pageWidth - margin, pageHeight - 6, { align: 'right' });
-                }
+                drawFooter();
 
                 doc.save(config.filename + '_' + budgetYear + '.pdf');
                 overlay.classList.remove('active');
@@ -2573,6 +3202,227 @@
                 console.error(err);
             }
         }, 100);
+    }
+
+    function drawChartInPDF(doc, x, y, width, height, chartData, chartType, groupIds) {
+        const isCircular = chartType === 'pie';
+        
+        const groupTotals = groupIds.map(gid => {
+            return groups[gid].programs
+                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
+                .reduce((sum, p) => sum + p.cost, 0);
+        });
+        const grandTotal = groupTotals.reduce((s, v) => s + v, 0);
+        const nonZeroCount = groupTotals.filter(v => v > 0).length;
+        
+        doc.setFillColor(250, 250, 252);
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(x, y, width, height, 2, 2, 'FD');
+        
+        if (grandTotal === 0) {
+            doc.setTextColor(150, 150, 150);
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.text('Belum ada data untuk ditampilkan', x + width/2, y + height/2, { align: 'center' });
+            return;
+        }
+        
+        if (isCircular) {
+            if (nonZeroCount < 2) {
+                doc.setTextColor(150, 150, 150);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'italic');
+                doc.text('Belum cukup data untuk Pie Chart', x + width/2, y + height/2 - 5, { align: 'center' });
+                doc.setFontSize(7);
+                doc.text('(minimal 2 kelompok dengan data terjadwal)', x + width/2, y + height/2 + 2, { align: 'center' });
+                return;
+            }
+            
+            const chartAreaWidth = width * 0.5;
+            const centerX = x + chartAreaWidth / 2;
+            const centerY = y + height / 2;
+            const maxRadius = Math.min(chartAreaWidth, height) / 2 - 10;
+            const outerRadius = maxRadius;
+            
+            let currentAngle = -Math.PI / 2;
+            const segments = [];
+            
+            groupTotals.forEach((value, i) => {
+                if (value === 0) return;
+                const angle = (value / grandTotal) * Math.PI * 2;
+                segments.push({
+                    value, startAngle: currentAngle, endAngle: currentAngle + angle,
+                    color: hexToRgb(CHART_COLORS[i % CHART_COLORS.length]),
+                    percentage: (value / grandTotal) * 100,
+                    groupName: groups[groupIds[i]].name
+                });
+                currentAngle += angle;
+            });
+            
+            segments.forEach(seg => {
+                const steps = Math.max(20, Math.ceil((seg.endAngle - seg.startAngle) / (Math.PI / 60)));
+                const points = [];
+                for (let s = 0; s <= steps; s++) {
+                    const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
+                    points.push({ x: centerX + Math.cos(t) * outerRadius, y: centerY + Math.sin(t) * outerRadius });
+                }
+                points.push({ x: centerX, y: centerY });
+                
+                const deltas = [];
+                for (let i = 0; i < points.length - 1; i++) {
+                    deltas.push([points[i+1].x - points[i].x, points[i+1].y - points[i].y]);
+                }
+                
+                doc.setFillColor(...seg.color);
+                doc.setDrawColor(255, 255, 255);
+                doc.setLineWidth(0.3);
+                doc.lines(deltas, points[0].x, points[0].y, [1, 1], 'FD', true);
+                
+                const midAngle = (seg.startAngle + seg.endAngle) / 2;
+                const labelRadius = outerRadius * 0.65;
+                const labelX = centerX + Math.cos(midAngle) * labelRadius;
+                const labelY = centerY + Math.sin(midAngle) * labelRadius;
+                const arcSize = seg.endAngle - seg.startAngle;
+                
+                if (arcSize > 0.3) {
+                    let valueStr;
+                    if (seg.value >= 1000000000) valueStr = (seg.value / 1000000000).toFixed(1) + 'M';
+                    else if (seg.value >= 1000000) valueStr = (seg.value / 1000000).toFixed(1) + 'jt';
+                    else if (seg.value >= 1000) valueStr = (seg.value / 1000).toFixed(0) + 'rb';
+                    else valueStr = seg.value.toString();
+                    
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(valueStr, labelX, labelY - 1, { align: 'center' });
+                    doc.setFontSize(8);
+                    doc.text(seg.percentage.toFixed(1) + '%', labelX, labelY + 3.5, { align: 'center' });
+                }
+            });
+            
+            const legendX = x + chartAreaWidth + 5;
+            const legendY = y + 12;
+            let legendItemY = legendY;
+            
+            doc.setTextColor(30, 41, 59);
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            doc.text('RINCIAN PER KELOMPOK', legendX, legendItemY);
+            legendItemY += 6;
+            
+            const nonZeroSegments = segments.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
+            
+            nonZeroSegments.forEach(seg => {
+                if (legendItemY > y + height - 15) return;
+                doc.setFillColor(...seg.color);
+                doc.rect(legendX, legendItemY - 2, 3.5, 3.5, 'F');
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(7.5);
+                doc.setFont('helvetica', 'bold');
+                const name = seg.groupName.length > 20 ? seg.groupName.substring(0, 18) + '..' : seg.groupName;
+                doc.text(name, legendX + 5, legendItemY);
+                doc.setTextColor(...seg.color);
+                doc.text('Rp ' + seg.value.toLocaleString('id-ID') + ' (' + seg.percentage.toFixed(1) + '%)', legendX + 5, legendItemY + 3.5);
+                legendItemY += 7;
+            });
+        } else if (chartType === 'bar' || chartType === 'line') {
+            const monthlyByGroup = groupIds.map(gid => {
+                const arr = new Array(12).fill(0);
+                groups[gid].programs.forEach(p => {
+                    if (p.scheduledMonth !== null && programMatchesChartFilter(p)) {
+                        arr[p.scheduledMonth] += p.cost;
+                    }
+                });
+                return arr;
+            });
+            
+            const monthlyTotals = new Array(12).fill(0);
+            monthlyByGroup.forEach(arr => arr.forEach((v, i) => monthlyTotals[i] += v));
+            const maxValue = Math.max(...monthlyTotals, 1);
+            
+            const chartPadding = { left: 22, right: 8, top: 8, bottom: 14 };
+            const chartW = width - chartPadding.left - chartPadding.right;
+            const chartH = height - chartPadding.top - chartPadding.bottom;
+            const chartX = x + chartPadding.left;
+            const chartY = y + chartPadding.top;
+            
+            doc.setFontSize(6);
+            doc.setTextColor(150, 150, 150);
+            doc.setFont('helvetica', 'normal');
+            for (let g = 0; g <= 4; g++) {
+                const gy = chartY + chartH - (chartH * g / 4);
+                doc.setDrawColor(240, 240, 245);
+                doc.setLineWidth(0.1);
+                doc.line(chartX, gy, chartX + chartW, gy);
+                const val = maxValue * g / 4;
+                let label;
+                if (val >= 1000000000) label = (val / 1000000000).toFixed(1) + 'M';
+                else if (val >= 1000000) label = (val / 1000000).toFixed(1) + 'jt';
+                else if (val >= 1000) label = (val / 1000).toFixed(0) + 'rb';
+                else label = val.toFixed(0);
+                doc.text(label, chartX - 2, gy + 1, { align: 'right' });
+            }
+            
+            doc.setFontSize(7);
+            doc.setTextColor(100, 116, 139);
+            const colWidth = chartW / 12;
+            
+            if (chartType === 'bar') {
+                const barGroupWidth = colWidth * 0.75;
+                const barWidth = barGroupWidth / groupIds.length;
+                
+                months.forEach((m, i) => {
+                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
+                    let stackY = chartY + chartH;
+                    groupIds.forEach((gid, gi) => {
+                        const value = monthlyByGroup[gi][i];
+                        if (value === 0) return;
+                        const barHeight = (value / maxValue) * chartH;
+                        const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
+                        doc.setFillColor(...color);
+                        doc.setDrawColor(255, 255, 255);
+                        doc.setLineWidth(0.1);
+                        doc.rect(chartX + colWidth * i + (colWidth - barGroupWidth) / 2 + barWidth * gi, stackY - barHeight, barWidth, barHeight, 'FD');
+                        stackY -= barHeight;
+                    });
+                });
+            } else {
+                months.forEach((m, i) => {
+                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
+                });
+                groupIds.forEach((gid, gi) => {
+                    const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
+                    doc.setDrawColor(...color);
+                    doc.setLineWidth(0.5);
+                    let prevX = null, prevY = null;
+                    monthlyByGroup[gi].forEach((val, i) => {
+                        const px = chartX + colWidth * i + colWidth / 2;
+                        const py = chartY + chartH - (val / maxValue) * chartH;
+                        if (prevX !== null) doc.line(prevX, prevY, px, py);
+                        doc.setFillColor(...color);
+                        doc.circle(px, py, 0.8, 'F');
+                        prevX = px; prevY = py;
+                    });
+                });
+            }
+            
+            const legendY = y + height - 5;
+            let legendX = x + chartPadding.left;
+            doc.setFontSize(6.5);
+            const visibleGroups = groupIds.map((gid, i) => ({ gid, val: monthlyByGroup[i].reduce((s,v)=>s+v,0) }))
+                .filter(g => g.val > 0)
+                .slice(0, 10);
+            visibleGroups.forEach((g) => {
+                const color = hexToRgb(CHART_COLORS[groupIds.indexOf(g.gid) % CHART_COLORS.length]);
+                doc.setFillColor(...color);
+                doc.rect(legendX, legendY - 2, 3, 3, 'F');
+                doc.setTextColor(30, 41, 59);
+                doc.setFont('helvetica', 'normal');
+                const gname = groups[g.gid].name.length > 15 ? groups[g.gid].name.substring(0,13) + '..' : groups[g.gid].name;
+                doc.text(gname, legendX + 4, legendY);
+                legendX += 4 + doc.getTextWidth(gname) + 4;
+            });
+        }
     }
 
     // ================= EXPORT EXCEL =================
@@ -2621,8 +3471,7 @@
                 for (let i = 0; i < Math.min(rows.length, 10); i++) {
                     const rowStr = rows[i].map(c => String(c).toLowerCase()).join(' ');
                     if (rowStr.includes('kelompok') && rowStr.includes('program')) {
-                        headerRowIndex = i;
-                        break;
+                        headerRowIndex = i; break;
                     }
                 }
                 const header = rows[headerRowIndex].map(h => String(h).trim().toLowerCase());
@@ -2685,7 +3534,7 @@
                 saveHistory('Import dari Excel');
                 triggerAutoSave();
                 overlay.classList.remove('active');
-                showToast(`Import berhasil`, 'success');
+                showToast('Import berhasil', 'success');
             } catch (err) {
                 overlay.classList.remove('active');
                 showToast('Gagal import: ' + err.message, 'error');
@@ -2698,7 +3547,6 @@
 
     // ================= INIT =================
     window.onload = function() {
-        // Restore dark mode
         if (localStorage.getItem('darkMode') === '1') {
             document.body.classList.add('dark-mode');
         }
@@ -2706,14 +3554,10 @@
         initYearDropdown();
         setMode('expense');
         
-        // Coba load data dari localStorage
         const hasData = loadFromLocalStorage();
         
         if (!hasData) {
-            // Mulai dengan data kosong
-            groupCounter = 0;
-            programCounter = 0;
-            groups = {};
+            groupCounter = 0; programCounter = 0; groups = {};
             showToast('Selamat datang! Mulai dengan menambah kelompok.', 'info');
         } else {
             showToast('Data berhasil dimuat dari penyimpanan', 'success');
@@ -2721,8 +3565,6 @@
         
         renderAll();
         saveHistory('Inisialisasi awal');
-        
-        // Auto-save saat user menutup tab
         window.addEventListener('beforeunload', saveToLocalStorage);
     };
 </script>
