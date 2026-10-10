@@ -42,6 +42,8 @@
         body.dark-mode .month-card { background: #1e293b; border-color: #334155; }
         body.dark-mode .status-summary-card { background: #1e293b; }
         body.dark-mode .program-chip { background: #0f172a; }
+        body.dark-mode .rank-item { background: #1e293b; border-color: #334155; }
+        body.dark-mode .ranking-panel { background: #1e293b; border-color: #334155; }
         
         * { box-sizing: border-box; }
         body {
@@ -214,6 +216,7 @@
         .status-done { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
         .status-cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
         
+        /* ============ TABEL 1 ============ */
         #budgetTable { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; table-layout: fixed; }
         #budgetTable th, #budgetTable td {
             padding: 12px 14px; text-align: left; vertical-align: top;
@@ -242,7 +245,6 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
         
-        /* ============ PROGRAM GRID 3 KOLOM ============ */
         .program-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -250,25 +252,16 @@
         }
         
         .program-chip {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            display: flex; flex-direction: column; gap: 4px;
             background: var(--accent-light);
             border: 1px solid var(--accent);
             border-left: 3px solid var(--accent-dark);
             border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            font-size: 11px;
+            padding: 8px 10px; font-size: 11px;
             transition: all 0.15s ease;
-            position: relative;
-            cursor: pointer;
-            min-height: 62px;
+            position: relative; cursor: pointer; min-height: 62px;
         }
-        .program-chip:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            z-index: 2;
-        }
+        .program-chip:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); z-index: 2; }
         
         .program-chip[data-status="draft"] {
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -309,55 +302,30 @@
         }
         
         .program-chip .pc-name {
-            font-weight: 700;
-            color: var(--accent-dark);
-            font-size: 11px;
-            line-height: 1.3;
-            word-break: break-word;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            padding-right: 42px;
+            font-weight: 700; color: var(--accent-dark); font-size: 11px;
+            line-height: 1.3; word-break: break-word;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; padding-right: 42px;
         }
-        .program-chip .pc-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 4px;
-        }
+        .program-chip .pc-bottom { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
         .program-chip .pc-cost { font-weight: 700; font-size: 11px; }
         .program-chip .pc-status {
-            font-size: 8px; padding: 1px 5px;
-            border-radius: 999px;
+            font-size: 8px; padding: 1px 5px; border-radius: 999px;
             background: rgba(255,255,255,0.7);
-            font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.03em; white-space: nowrap;
+            font-weight: 700; text-transform: uppercase; white-space: nowrap;
         }
-        .program-chip .pc-actions {
-            position: absolute;
-            top: 4px; right: 4px;
-            display: flex; gap: 2px;
-        }
+        .program-chip .pc-actions { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; }
         .program-chip .pc-btn {
             width: 18px; height: 18px; border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
             font-size: 10px; cursor: pointer; border: 1px solid; padding: 0;
-            transition: all 0.15s ease;
         }
-        .program-chip .pc-btn-edit {
-            background: var(--card-bg); color: var(--primary); border-color: var(--primary);
-        }
+        .program-chip .pc-btn-edit { background: var(--card-bg); color: var(--primary); border-color: var(--primary); }
         .program-chip .pc-btn-edit:hover { background: var(--primary); color: white; }
-        .program-chip .pc-btn-del {
-            background: var(--card-bg); color: var(--danger); border-color: var(--danger);
-        }
+        .program-chip .pc-btn-del { background: var(--card-bg); color: var(--danger); border-color: var(--danger); }
         .program-chip .pc-btn-del:hover { background: var(--danger); color: white; }
         
-        .program-chip.highlight-match {
-            box-shadow: 0 0 0 2px var(--warning);
-            animation: pulseMatch 1s infinite;
-        }
+        .program-chip.highlight-match { box-shadow: 0 0 0 2px var(--warning); animation: pulseMatch 1s infinite; }
         
         .empty-state {
             grid-column: 1 / -1;
@@ -381,7 +349,7 @@
         }
         .btn-add-group-row:hover { background: var(--success-light); border-style: solid; }
         
-        /* ============ TABEL 2 JADWAL ============ */
+        /* ============ TABEL 2 ============ */
         .schedule-container { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card-bg); }
         #scheduleTable {
             width: 100%; table-layout: fixed;
@@ -389,8 +357,7 @@
         }
         #scheduleTable th, #scheduleTable td {
             padding: 6px 4px; text-align: center; vertical-align: top;
-            border-bottom: 1px solid var(--border);
-            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border); border-right: 1px solid var(--border);
         }
         #scheduleTable th {
             background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
@@ -420,64 +387,29 @@
         .activity-item {
             padding: 5px 6px; border-radius: var(--radius-sm); font-size: 10px;
             text-align: left; position: relative; word-wrap: break-word;
-            cursor: pointer; transition: all 0.15s ease;
-            border: 1px solid;
+            cursor: pointer; transition: all 0.15s ease; border: 1px solid;
         }
         .activity-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); transform: translateY(-1px); }
         
-        .activity-item[data-status="draft"] {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-color: #cbd5e1; border-left: 3px solid #94a3b8;
-        }
-        .activity-item[data-status="draft"] .title,
-        .activity-item[data-status="draft"] .cost { color: #64748b; }
+        .activity-item[data-status="draft"] { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-color: #cbd5e1; border-left: 3px solid #94a3b8; }
+        .activity-item[data-status="draft"] .title, .activity-item[data-status="draft"] .cost { color: #64748b; }
+        .activity-item[data-status="approved"] { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-color: #93c5fd; border-left: 3px solid #3b82f6; }
+        .activity-item[data-status="approved"] .title, .activity-item[data-status="approved"] .cost { color: #1e40af; }
+        .activity-item[data-status="inprogress"] { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-color: #fcd34d; border-left: 3px solid #f59e0b; }
+        .activity-item[data-status="inprogress"] .title, .activity-item[data-status="inprogress"] .cost { color: #92400e; }
+        .activity-item[data-status="done"] { background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%); border-color: #6ee7b7; border-left: 3px solid #10b981; }
+        .activity-item[data-status="done"] .title, .activity-item[data-status="done"] .cost { color: #065f46; }
+        .activity-item[data-status="cancelled"] { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-color: #fca5a5; border-left: 3px solid #ef4444; opacity: 0.75; }
+        .activity-item[data-status="cancelled"] .title, .activity-item[data-status="cancelled"] .cost { color: #991b1b; text-decoration: line-through; }
         
-        .activity-item[data-status="approved"] {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-color: #93c5fd; border-left: 3px solid #3b82f6;
-        }
-        .activity-item[data-status="approved"] .title,
-        .activity-item[data-status="approved"] .cost { color: #1e40af; }
-        
-        .activity-item[data-status="inprogress"] {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            border-color: #fcd34d; border-left: 3px solid #f59e0b;
-        }
-        .activity-item[data-status="inprogress"] .title,
-        .activity-item[data-status="inprogress"] .cost { color: #92400e; }
-        
-        .activity-item[data-status="done"] {
-            background: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
-            border-color: #6ee7b7; border-left: 3px solid #10b981;
-        }
-        .activity-item[data-status="done"] .title,
-        .activity-item[data-status="done"] .cost { color: #065f46; }
-        
-        .activity-item[data-status="cancelled"] {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
-            border-color: #fca5a5; border-left: 3px solid #ef4444;
-            opacity: 0.75;
-        }
-        .activity-item[data-status="cancelled"] .title,
-        .activity-item[data-status="cancelled"] .cost {
-            color: #991b1b; text-decoration: line-through;
-        }
-        
-        .activity-item .title {
-            font-weight: 600; display: block; margin-bottom: 3px;
-            padding-right: 16px; font-size: 10px;
-            line-height: 1.2; word-break: break-word;
-        }
+        .activity-item .title { font-weight: 600; display: block; margin-bottom: 3px; padding-right: 16px; font-size: 10px; line-height: 1.2; word-break: break-word; }
         .activity-item .cost { font-weight: 700; font-size: 10px; display: block; margin-bottom: 3px; }
-        
         .activity-item .status-dot {
             display: inline-flex; align-items: center; justify-content: center;
             font-size: 8px; padding: 1px 5px; border-radius: 999px;
-            background: rgba(255,255,255,0.7);
-            font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.03em;
+            background: rgba(255,255,255,0.7); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.03em;
         }
-        
         .activity-item .btn-remove-schedule {
             position: absolute; top: 2px; right: 2px;
             color: var(--danger); background: white;
@@ -496,11 +428,7 @@
             border: none; cursor: pointer;
         }
         .btn-add-schedule:hover { background: var(--primary-hover); }
-        
-        .activity-item.highlight-match {
-            box-shadow: 0 0 0 2px var(--warning);
-            animation: pulseMatch 1s infinite;
-        }
+        .activity-item.highlight-match { box-shadow: 0 0 0 2px var(--warning); animation: pulseMatch 1s infinite; }
         @keyframes pulseMatch {
             0%, 100% { box-shadow: 0 0 0 2px var(--warning); }
             50% { box-shadow: 0 0 0 4px var(--warning-light); }
@@ -525,15 +453,8 @@
             padding: 14px 16px; box-shadow: var(--shadow-sm);
             border-left: 4px solid var(--accent);
         }
-        .summary-item .label {
-            font-size: 11px; color: var(--text-muted);
-            font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.05em; margin-bottom: 6px;
-        }
-        .summary-item .value {
-            font-size: 20px; font-weight: 800;
-            color: var(--accent-dark); letter-spacing: -0.02em;
-        }
+        .summary-item .label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .summary-item .value { font-size: 20px; font-weight: 800; color: var(--accent-dark); letter-spacing: -0.02em; }
         .summary-item.remaining .value { color: var(--accent); }
         .summary-item.remaining.negative .value { color: var(--danger); }
         .summary-item.remaining.negative { border-left-color: var(--danger); }
@@ -543,68 +464,36 @@
             padding: 14px 18px; border-left: 4px solid var(--primary);
             box-shadow: var(--shadow-sm);
         }
-        .terbilang-box .label {
-            font-size: 11px; color: var(--text-muted);
-            font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.05em; margin-bottom: 6px;
-        }
-        .terbilang-box .value {
-            font-size: 14px; font-weight: 700;
-            color: var(--primary); font-style: italic;
-            line-height: 1.5; word-wrap: break-word;
-        }
+        .terbilang-box .label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .terbilang-box .value { font-size: 14px; font-weight: 700; color: var(--primary); font-style: italic; line-height: 1.5; word-wrap: break-word; }
         
-        .monthly-breakdown {
-            margin-top: 8px; padding-top: 16px;
-            border-top: 1px dashed var(--accent);
-        }
+        .monthly-breakdown { margin-top: 8px; padding-top: 16px; border-top: 1px dashed var(--accent); }
         .monthly-breakdown-title {
             font-size: 12px; font-weight: 700; color: var(--accent-dark);
             text-transform: uppercase; letter-spacing: 0.08em;
-            margin-bottom: 12px;
-            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
         }
-        .monthly-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-        }
+        .monthly-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
         .month-card {
             background: var(--card-bg); border-radius: var(--radius-sm);
-            padding: 10px 12px;
-            border: 1px solid var(--border);
+            padding: 10px 12px; border: 1px solid var(--border);
             border-left: 3px solid var(--accent);
-            transition: all 0.2s ease;
         }
-        .month-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
         .month-card.empty { border-left-color: var(--border); opacity: 0.6; }
-        .month-card.highest {
-            border-left-color: var(--warning);
-            background: linear-gradient(135deg, #fffbeb 0%, var(--card-bg) 100%);
-        }
-        .month-card.lowest {
-            border-left-color: var(--success);
-            background: linear-gradient(135deg, #f0fdf4 0%, var(--card-bg) 100%);
-        }
+        .month-card.highest { border-left-color: var(--warning); background: linear-gradient(135deg, #fffbeb 0%, var(--card-bg) 100%); }
+        .month-card.lowest { border-left-color: var(--success); background: linear-gradient(135deg, #f0fdf4 0%, var(--card-bg) 100%); }
         .month-card .month-name {
             font-size: 10px; font-weight: 700; text-transform: uppercase;
-            color: var(--text-muted); letter-spacing: 0.05em;
-            margin-bottom: 4px;
+            color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 4px;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .month-card .month-badge {
-            font-size: 8px; padding: 1px 5px;
-            border-radius: 999px; font-weight: 700;
-        }
+        .month-card .month-badge { font-size: 8px; padding: 1px 5px; border-radius: 999px; font-weight: 700; }
         .month-badge.badge-highest { background: var(--warning-light); color: #92400e; }
         .month-badge.badge-lowest { background: var(--success-light); color: #065f46; }
-        .month-card .month-value {
-            font-size: 12px; font-weight: 800;
-            color: var(--text); word-break: break-word;
-        }
+        .month-card .month-value { font-size: 12px; font-weight: 800; color: var(--text); word-break: break-word; }
         .month-card.empty .month-value { color: var(--text-light); font-style: italic; }
         
-        /* ============ STATUS SUMMARY — GRID 6 KOLOM ============ */
+        /* ============ STATUS SUMMARY ============ */
         .status-summary-section {
             margin-top: 24px; padding: 20px;
             background: var(--card-bg);
@@ -615,94 +504,38 @@
         .status-summary-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 16px; padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap; gap: 12px;
+            border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
         }
-        .status-summary-title {
-            font-size: 15px; font-weight: 700; color: var(--text);
-            display: flex; align-items: center; gap: 8px;
-        }
+        .status-summary-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
         .status-summary-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; }
-        .status-legend-item {
-            display: flex; align-items: center; gap: 5px;
-            color: var(--text-muted); font-weight: 600;
-        }
-        .status-legend-dot {
-            width: 12px; height: 12px; border-radius: 3px;
-            display: inline-block;
-        }
-        /* GRID 6 KOLOM */
-        .status-summary-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-        }
+        .status-legend-item { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-weight: 600; }
+        .status-legend-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+        .status-summary-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
         .status-summary-card {
-            background: var(--bg);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            border: 1px solid var(--border);
+            background: var(--bg); border-radius: var(--radius);
+            padding: 10px 12px; border: 1px solid var(--border);
             border-left: 3px solid var(--primary);
-            transition: all 0.2s ease;
         }
-        .status-summary-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .status-summary-card .group-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 8px; padding-bottom: 6px;
-            border-bottom: 1px dashed var(--border);
-            flex-wrap: wrap; gap: 4px;
+            border-bottom: 1px dashed var(--border); flex-wrap: wrap; gap: 4px;
         }
-        .status-summary-card .group-name {
-            font-size: 11px; font-weight: 700; color: var(--text);
-            line-height: 1.2; word-break: break-word;
-        }
-        .status-summary-card .group-total {
-            font-size: 10px; font-weight: 700; color: var(--accent-dark);
-        }
-        .status-breakdown {
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .status-row {
-            display: flex; flex-direction: column; gap: 3px;
-            padding: 4px 6px;
-            border-radius: var(--radius-sm);
-            font-size: 10px;
-            transition: background 0.15s ease;
-            cursor: pointer;
-        }
+        .status-summary-card .group-name { font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.2; word-break: break-word; }
+        .status-summary-card .group-total { font-size: 10px; font-weight: 700; color: var(--accent-dark); }
+        .status-breakdown { display: flex; flex-direction: column; gap: 6px; }
+        .status-row { display: flex; flex-direction: column; gap: 3px; padding: 4px 6px; border-radius: var(--radius-sm); font-size: 10px; cursor: pointer; }
         .status-row:hover { background: var(--card-bg); }
         .status-row.empty { opacity: 0.4; cursor: default; }
         .status-row.empty:hover { background: transparent; }
-        .status-row-header {
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 4px;
-        }
-        .status-row .sr-label {
-            display: flex; align-items: center; gap: 4px;
-            font-weight: 700; color: var(--text);
-            font-size: 10px;
-        }
+        .status-row-header { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
+        .status-row .sr-label { display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--text); font-size: 10px; }
         .status-row .sr-label .sr-icon { font-size: 10px; }
-        .status-row .sr-right {
-            display: flex; align-items: center; gap: 4px;
-            font-size: 9px;
-        }
-        .status-row .sr-count {
-            font-weight: 700; color: var(--text-muted);
-            font-size: 9px;
-        }
+        .status-row .sr-right { display: flex; align-items: center; gap: 4px; font-size: 9px; }
+        .status-row .sr-count { font-weight: 700; color: var(--text-muted); font-size: 9px; }
         .status-row .sr-amount { font-weight: 700; font-size: 9px; }
-        .status-row .sr-bar {
-            height: 5px;
-            background: var(--border);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-        .status-row .sr-bar-fill {
-            height: 100%;
-            border-radius: 999px;
-            transition: width 0.6s ease;
-        }
+        .status-row .sr-bar { height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+        .status-row .sr-bar-fill { height: 100%; border-radius: 999px; }
         .status-row[data-status="draft"] .sr-amount { color: #64748b; }
         .status-row[data-status="draft"] .sr-bar-fill { background: #94a3b8; }
         .status-row[data-status="approved"] .sr-amount { color: #1e40af; }
@@ -717,115 +550,189 @@
         /* ============ CHART SECTION ============ */
         .chart-section {
             margin-top: 24px; padding: 20px;
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
+            background: var(--card-bg); border-radius: var(--radius-lg);
+            border: 1px solid var(--border); box-shadow: var(--shadow-sm);
         }
         .chart-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 16px; padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap; gap: 12px;
+            border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px;
         }
-        .chart-header-controls {
-            display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-        }
-        .chart-title {
-            font-size: 15px; font-weight: 700; color: var(--text);
-            display: flex; align-items: center; gap: 8px;
-        }
-        .chart-tabs {
-            display: flex; gap: 4px; padding: 4px;
-            background: var(--bg); border-radius: 999px;
-            border: 1px solid var(--border);
-        }
-        .chart-tab {
-            padding: 6px 14px; border: none; background: transparent;
-            border-radius: 999px; font-size: 11px; font-weight: 700;
-            cursor: pointer; color: var(--text-muted);
-            transition: all 0.2s ease; white-space: nowrap;
-        }
+        .chart-header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .chart-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .chart-tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg); border-radius: 999px; border: 1px solid var(--border); }
+        .chart-tab { padding: 6px 14px; border: none; background: transparent; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-muted); white-space: nowrap; }
         .chart-tab:hover { color: var(--text); }
-        .chart-tab.active {
-            background: var(--primary); color: white;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.3);
-        }
+        .chart-tab.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(99,102,241,0.3); }
         .chart-legend {
             display: flex; gap: 10px; flex-wrap: wrap;
-            font-size: 11px; margin-top: 16px;
-            padding-top: 12px; border-top: 1px dashed var(--border);
-            align-items: center;
+            font-size: 11px; margin-top: 16px; padding-top: 12px;
+            border-top: 1px dashed var(--border); align-items: center;
         }
-        .legend-item {
-            display: flex; align-items: center; gap: 5px;
-            color: var(--text-muted); font-weight: 600;
-            transition: all 0.2s ease;
-            cursor: default;
-        }
-        .legend-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+        .legend-item { display: flex; align-items: center; gap: 5px; color: var(--text-muted); font-weight: 600; }
         .legend-color { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
         .chart-wrapper { position: relative; height: 380px; width: 100%; }
         .chart-empty-state {
             position: absolute; inset: 0;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 12px; text-align: center; padding: 20px;
-            color: var(--text-muted);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 12px; text-align: center; padding: 20px; color: var(--text-muted);
         }
         .chart-empty-state .icon { font-size: 48px; opacity: 0.5; }
-        .chart-empty-state .title {
-            font-size: 15px; font-weight: 700; color: var(--text);
+        .chart-empty-state .title { font-size: 15px; font-weight: 700; color: var(--text); }
+        .chart-empty-state .desc { font-size: 12px; max-width: 400px; line-height: 1.5; }
+        
+        /* ============ INSIGHT & RANKING ============ */
+        .insight-panel {
+            background: linear-gradient(135deg, #fffbeb 0%, var(--card-bg) 100%);
+            border: 2px solid var(--warning);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-bottom: 20px;
         }
-        .chart-empty-state .desc {
-            font-size: 12px; max-width: 400px; line-height: 1.5;
+        .insight-panel-title {
+            font-size: 13px; font-weight: 700; color: #92400e;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 12px; padding-bottom: 8px;
+            border-bottom: 1px dashed var(--warning);
+        }
+        .insight-list { display: flex; flex-direction: column; gap: 6px; }
+        .insight-item {
+            font-size: 13px; color: #78350f; line-height: 1.5;
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .insight-item::before { content: '•'; font-weight: 700; color: var(--warning); flex-shrink: 0; }
+        
+        .ranking-panel {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .ranking-panel-title {
+            font-size: 13px; font-weight: 700; color: var(--primary);
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 12px; padding-bottom: 8px;
+            border-bottom: 1px dashed var(--primary);
+        }
+        .ranking-filter-bar {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            margin-bottom: 12px; padding: 8px 12px;
+            background: var(--bg); border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .ranking-filter-bar label {
+            font-size: 12px; font-weight: 600; color: var(--text-muted);
+        }
+        .ranking-filter-select {
+            padding: 6px 10px; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); font-family: inherit;
+            font-size: 12px; font-weight: 600; background: var(--card-bg);
+            color: var(--text); cursor: pointer; min-width: 140px;
+        }
+        .ranking-filter-select:focus { outline: none; border-color: var(--primary); }
+        .custom-group-selector {
+            display: none; align-items: center; gap: 8px; flex-wrap: wrap;
+            padding: 8px 12px; background: var(--primary-light);
+            border-radius: var(--radius-sm); border: 1px dashed var(--primary);
+            margin-bottom: 12px;
+        }
+        .custom-group-selector.active { display: flex; }
+        .custom-group-selector label {
+            font-size: 12px; font-weight: 600; color: var(--primary);
+            display: flex; align-items: center; gap: 4px; cursor: pointer;
+        }
+        .custom-group-selector input[type="checkbox"] {
+            cursor: pointer; width: 16px; height: 16px; accent-color: var(--primary);
+        }
+        
+        /* ============ FLOATING SHORTCUT ============ */
+        .floating-shortcut {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .floating-shortcut:hover {
+            opacity: 1;
+        }
+        .floating-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            position: relative;
+            color: var(--text);
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .floating-btn .tooltip {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--text);
+            color: var(--card-bg);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            box-shadow: var(--shadow-md);
+        }
+        .floating-btn:hover .tooltip {
+            opacity: 1;
         }
         
         /* ============ MODAL ============ */
-        .modal {
-            display: none; position: fixed; z-index: 1000; inset: 0;
-            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px);
-            overflow-y: auto;
-        }
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); overflow-y: auto; }
         .modal-content {
             background: var(--card-bg); margin: 8% auto; padding: 28px;
             border-radius: var(--radius-lg); width: 420px; max-width: 90%;
             box-shadow: var(--shadow-lg); color: var(--text);
         }
         .modal-content h3 { font-size: 20px; margin-bottom: 8px; }
-        .modal-subtitle {
-            font-size: 12px; color: var(--text-muted);
-            margin-bottom: 20px; padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
+        .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; }
         .form-group input, .form-group select {
-            width: 100%; padding: 10px 12px;
-            border: 1px solid var(--border); border-radius: var(--radius-sm);
-            font-family: inherit; font-size: 14px;
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); font-family: inherit; font-size: 14px;
             background: var(--card-bg); color: var(--text);
         }
         .form-group input:focus, .form-group select:focus {
-            outline: none; border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light);
         }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
         
-        .status-picker {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 8px; margin-bottom: 16px;
-        }
+        .status-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
         .status-pick-btn {
             display: flex; align-items: center; gap: 8px;
-            padding: 12px 14px;
-            border: 2px solid var(--border); border-radius: var(--radius-sm);
-            background: var(--card-bg);
-            cursor: pointer; font-weight: 600; font-size: 13px;
-            transition: all 0.2s ease; text-align: left;
+            padding: 12px 14px; border: 2px solid var(--border);
+            border-radius: var(--radius-sm); background: var(--card-bg);
+            cursor: pointer; font-weight: 600; font-size: 13px; text-align: left;
         }
-        .status-pick-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-        .status-pick-btn.active { border-width: 2px; transform: scale(1.02); }
+        .status-pick-btn.active { border-width: 2px; }
         .status-pick-btn[data-status="draft"].active { border-color: #94a3b8; background: #f1f5f9; }
         .status-pick-btn[data-status="approved"].active { border-color: #3b82f6; background: #dbeafe; }
         .status-pick-btn[data-status="inprogress"].active { border-color: #f59e0b; background: #fef3c7; }
@@ -855,10 +762,7 @@
             display: flex; flex-direction: column;
         }
         .history-panel.open { transform: translateX(0); }
-        .history-header {
-            padding: 20px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .history-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .history-header h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
         .history-close {
             background: var(--bg); border: none; width: 32px; height: 32px;
@@ -868,22 +772,17 @@
         .history-close:hover { background: var(--danger-light); color: var(--danger); }
         .history-list { flex: 1; overflow-y: auto; padding: 12px; }
         .history-item {
-            padding: 12px; background: var(--bg);
-            border-radius: var(--radius); margin-bottom: 8px;
-            border-left: 3px solid var(--primary);
-            cursor: pointer; transition: all 0.2s ease;
+            padding: 12px; background: var(--bg); border-radius: var(--radius);
+            margin-bottom: 8px; border-left: 3px solid var(--primary); cursor: pointer;
         }
-        .history-item:hover { background: var(--primary-light); transform: translateX(-4px); }
+        .history-item:hover { background: var(--primary-light); }
         .history-item.current { background: var(--primary-light); border-left-color: var(--success); }
         .history-item .h-time { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
         .history-item .h-desc { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
         .history-item .h-stats { font-size: 10px; color: var(--text-muted); }
         .history-item .h-actions { margin-top: 8px; display: flex; gap: 6px; }
         .history-item .h-actions button { padding: 4px 10px; font-size: 10px; border-radius: 4px; }
-        .history-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.4); z-index: 1499;
-        }
+        .history-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1499; }
         .history-overlay.open { display: block; }
         
         .loading-overlay {
@@ -895,8 +794,7 @@
         .loading-overlay.active { display: flex; }
         .spinner {
             width: 48px; height: 48px;
-            border: 4px solid var(--primary-light);
-            border-top-color: var(--primary);
+            border: 4px solid var(--primary-light); border-top-color: var(--primary);
             border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -907,8 +805,7 @@
             padding: 14px 20px; border-radius: var(--radius);
             box-shadow: var(--shadow-lg); font-size: 14px; font-weight: 500;
             z-index: 3000; opacity: 0; transform: translateY(20px);
-            transition: all 0.3s ease; pointer-events: none;
-            max-width: 320px;
+            transition: all 0.3s ease; pointer-events: none; max-width: 320px;
         }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background: var(--success); color: white; }
@@ -924,6 +821,7 @@
             .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
             .monthly-grid { grid-template-columns: repeat(4, 1fr); }
             .status-summary-grid { grid-template-columns: repeat(3, 1fr); }
+            .floating-shortcut { display: none; }
         }
         @media (max-width: 768px) {
             body { padding: 12px; }
@@ -954,6 +852,9 @@
             .status-summary-grid { grid-template-columns: repeat(2, 1fr); }
             .status-picker { grid-template-columns: 1fr; }
             .program-grid { grid-template-columns: 1fr; }
+            .rank-item { grid-template-columns: 26px 1fr 90px; font-size: 11px; }
+            .ranking-filter-bar { flex-direction: column; align-items: stretch; }
+            .ranking-filter-select { width: 100%; }
         }
         @media (max-width: 480px) {
             .kpi-grid { grid-template-columns: 1fr; }
@@ -963,70 +864,307 @@
             .status-summary-grid { grid-template-columns: 1fr; }
         }
         
-        /* ============ PRINT ============ */
+        /* ============================================ */
+        /* ============ PRINT STYLES ================== */
+        /* ============================================ */
+        .print-only { display: none; }
+        
         @media print {
-            body { background: white !important; padding: 0; font-size: 8pt; color: #000; }
-            .page-header .card-actions, .search-filter-bar, .chart-tabs, .chart-header-controls select,
-            .add-group-row, .action-cell, .btn-add-schedule, .btn-del-program, .btn-edit-program,
-            .btn-remove-schedule, .pc-actions, .btn-add-group-row,
-            .history-panel, .history-overlay, .modal, .loading-overlay, .toast,
-            .mode-toggle-wrapper, .no-print, .chart-empty-state,
-            .activity-item .btn-remove-schedule { display: none !important; }
+            body { 
+                background: white !important; 
+                padding: 0; 
+                margin: 0;
+                font-size: 10pt; 
+                color: #000;
+            }
+            
+            .no-print, .card-actions, .search-filter-bar, .chart-tabs, 
+            .chart-header-controls select, .btn-add-schedule, .btn-del-program, 
+            .btn-edit-program, .btn-remove-schedule, .pc-actions, .btn-add-group-row,
+            .history-panel, .history-overlay, .modal, .loading-overlay, .toast, 
+            .mode-toggle-wrapper, .chart-empty-state,
+            .activity-item .btn-remove-schedule,
+            .add-group-row,
+            .action-cell,
+            .page-header,
+            .floating-shortcut,
+            .ranking-filter-bar,
+            .custom-group-selector,
+            .ranking-list,
+            .print-chart-grid { 
+                display: none !important; 
+            }
+            /* Tampilkan ranking canvas saat print */
+            .ranking-panel .no-print {
+                display: none !important;
+            }
+            .ranking-panel .print-only {
+                display: block !important;
+                page-break-inside: avoid;
+            }
+            .ranking-panel .print-only canvas {
+                max-height: 250px !important;
+                height: 250px !important;
+            }
+            
+            .print-only { display: block !important; }
+            .container { max-width: 100%; margin: 0; padding: 0; }
+            
+            .print-header-print {
+                text-align: center;
+                padding: 10px 0;
+                margin-bottom: 12px;
+                border-bottom: 2px solid #000;
+            }
+            .print-header-print .ph-title {
+                font-size: 16pt;
+                font-weight: 800;
+                color: #000;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 4px;
+            }
+            .print-header-print .ph-company {
+                font-size: 12pt;
+                font-weight: 700;
+                color: #333;
+                margin-bottom: 2px;
+            }
+            .print-header-print .ph-year {
+                font-size: 10pt;
+                font-weight: 600;
+                color: #555;
+            }
+            .print-header-print .ph-date {
+                font-size: 8pt;
+                color: #777;
+                margin-top: 3px;
+                font-style: italic;
+            }
+            
+            .kpi-grid { 
+                display: grid !important;
+                grid-template-columns: repeat(6, 1fr) !important; 
+                gap: 5px; 
+                margin-bottom: 12px;
+                page-break-after: avoid;
+            }
+            .kpi-card { 
+                border: 1px solid #ccc; 
+                page-break-inside: avoid; 
+                background: white !important;
+                padding: 6px;
+                border-top: 2px solid #333 !important;
+            }
+            .kpi-icon { font-size: 12px; margin-bottom: 3px; }
+            .kpi-label { font-size: 7pt; margin-bottom: 3px; }
+            .kpi-value { font-size: 11pt; }
+            .kpi-sub { font-size: 7pt; }
+            
+            .insight-panel {
+                background: #fffbeb !important;
+                border: 1px solid #f59e0b;
+                padding: 8px 12px;
+                margin-bottom: 10px;
+                page-break-inside: avoid;
+            }
+            .insight-panel-title {
+                font-size: 10pt;
+                font-weight: 700;
+                color: #92400e;
+                margin-bottom: 5px;
+                padding-bottom: 4px;
+                border-bottom: 1px solid #f59e0b;
+            }
+            .insight-list { gap: 3px; }
+            .insight-item { font-size: 9pt; color: #78350f; line-height: 1.4; }
+            
+            .ranking-panel {
+                background: white !important;
+                border: 1px solid #6366f1;
+                padding: 8px 12px;
+                margin-bottom: 10px;
+                page-break-inside: avoid;
+                page-break-after: always;
+            }
+            .ranking-panel-title {
+                font-size: 10pt;
+                font-weight: 700;
+                color: #4338ca;
+                margin-bottom: 5px;
+                padding-bottom: 4px;
+                border-bottom: 1px solid #6366f1;
+            }
             
             .card { 
-                box-shadow: none; border: 1px solid #ccc; 
-                page-break-inside: avoid; margin-bottom: 10px; padding: 10px;
-                background: white;
+                box-shadow: none !important; 
+                border: 1px solid #999; 
+                margin-bottom: 10px; 
+                padding: 8px;
+                background: white !important;
+                border-radius: 0;
             }
-            .page-title { font-size: 14pt; color: #000; }
-            .kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
-            .kpi-card { border: 1px solid #ccc; page-break-inside: avoid; background: white; }
-            .kpi-value { font-size: 9pt; }
-            .kpi-icon { font-size: 12px; }
             
-            table { font-size: 6.5pt; page-break-inside: auto; background: white; }
-            table th, table td { padding: 2px 3px !important; border: 1px solid #999; }
-            th { background: #f0f0f0 !important; color: #000 !important; }
-            tr { page-break-inside: avoid; }
-            
-            .program-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 3px !important; }
-            .program-chip { 
-                padding: 4px 5px !important; min-height: 40px !important;
-                font-size: 6pt !important; border: 1px solid #999 !important;
-                background: #f8f8f8 !important; page-break-inside: avoid;
+            #budgetTable {
+                table-layout: fixed;
+                font-size: 8pt;
+                border-collapse: collapse;
+                width: 100%;
+                page-break-inside: auto !important;
             }
-            .program-chip .pc-name { font-size: 6pt !important; color: #000 !important; -webkit-line-clamp: 2; }
-            .program-chip .pc-cost { font-size: 6pt !important; color: #000 !important; }
-            .program-chip .pc-status { font-size: 5pt !important; color: #000 !important; background: #e5e5e5 !important; }
+            #budgetTable thead { display: table-header-group; }
+            #budgetTable tbody { display: table-row-group; }
+            #budgetTable th, #budgetTable td {
+                padding: 3px 4px !important;
+                border: 1px solid #999 !important;
+                overflow: hidden;
+                word-break: break-word;
+                page-break-inside: auto !important;
+            }
+            #budgetTable th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+                font-size: 7.5pt;
+                font-weight: 700;
+            }
+            #budgetTable th:nth-child(1) { width: 25px; }
+            #budgetTable th:nth-child(2) { width: 110px; }
+            #budgetTable th:nth-child(3) { width: 90px; }
+            #budgetTable th:nth-child(4) { width: auto; }
+            #budgetTable th:nth-child(5) { display: none !important; }
             
-            .chart-wrapper { height: 200px; page-break-inside: avoid; }
-            .chart-section { page-break-inside: avoid; border: 1px solid #ccc; }
+            .program-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 3px !important;
+            }
+            .program-chip {
+                padding: 3px 4px !important;
+                min-height: 38px !important;
+                font-size: 7pt !important;
+                border: 1px solid #999 !important;
+                background: #f8f8f8 !important;
+                page-break-inside: avoid;
+                border-radius: 0;
+            }
+            .program-chip .pc-name {
+                font-size: 7pt !important;
+                color: #000 !important;
+                -webkit-line-clamp: 2;
+                padding-right: 0;
+                font-weight: 600;
+                line-height: 1.2;
+                word-break: break-word;
+            }
+            .program-chip .pc-bottom { flex-direction: column; align-items: flex-start; gap: 0; }
+            .program-chip .pc-cost { font-size: 7pt !important; color: #000 !important; font-weight: 700; }
+            .program-chip .pc-status { font-size: 6pt !important; color: #000 !important; background: #e5e5e5 !important; padding: 0 2px; }
             
-            .summary-panel { background: #f5f5f5 !important; border: 2px solid #999; page-break-inside: avoid; }
-            .summary-item { border: 1px solid #ccc; background: white; }
-            .terbilang-box { border: 1px solid #ccc; background: white; }
+            .schedule-container { overflow: visible !important; border: 1px solid #999; page-break-inside: auto; }
+            #scheduleTable { 
+                min-width: 0 !important; 
+                table-layout: fixed !important;
+                font-size: 7pt;
+                width: 100%;
+                page-break-inside: auto !important;
+            }
+            #scheduleTable thead { display: table-header-group; }
+            #scheduleTable th, #scheduleTable td {
+                padding: 2px 2px !important;
+                border: 1px solid #999 !important;
+                font-size: 7pt;
+            }
+            #scheduleTable th.col-group, #scheduleTable td.col-group {
+                position: static !important;
+                box-shadow: none !important;
+                background: #f0f0f0 !important;
+                width: 70px;
+            }
+            #scheduleTable .col-month { min-width: 0 !important; width: auto; }
+            #scheduleTable .col-remaining { width: 55px; }
             
-            #scheduleTable { min-width: auto; table-layout: auto; font-size: 5.5pt; }
-            #scheduleTable .col-month { min-width: 40px; }
-            #scheduleTable th.col-group, #scheduleTable td.col-group { position: static; box-shadow: none; background: #f0f0f0; }
-            
-            .activity-item { 
-                background: #f0f0f0 !important; border: 1px solid #999 !important; 
-                color: #000 !important; page-break-inside: avoid; font-size: 6pt;
+            .activity-item {
+                background: #f5f5f5 !important;
+                border: 1px solid #999 !important;
+                color: #000 !important;
+                font-size: 6.5pt !important;
+                padding: 2px !important;
+                page-break-inside: avoid;
             }
             .activity-item .title, .activity-item .cost {
-                color: #000 !important; text-decoration: none !important; font-size: 6pt;
+                color: #000 !important;
+                text-decoration: none !important;
+                font-size: 6.5pt !important;
             }
+            .activity-item .status-dot { color: #000 !important; background: #ddd !important; font-size: 6pt !important; }
             
-            .status-summary-section { page-break-inside: avoid; border: 1px solid #999; }
-            .status-summary-grid { grid-template-columns: repeat(3, 1fr); }
-            .status-summary-card { border: 1px solid #999; background: white; page-break-inside: avoid; }
-            .status-row .sr-bar { background: #e0e0e0; }
+            .summary-panel { 
+                background: #f5f5f5 !important; 
+                border: 1px solid #999 !important; 
+                page-break-inside: avoid;
+                padding: 6px !important;
+            }
+            .summary-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 4px; }
+            .summary-item { border: 1px solid #ccc; background: white; padding: 4px; }
+            .summary-item .label { font-size: 7.5pt; }
+            .summary-item .value { font-size: 11pt; }
+            .terbilang-box { border: 1px solid #ccc; background: white; padding: 4px 6px; }
+            .terbilang-box .label { font-size: 7.5pt; }
+            .terbilang-box .value { font-size: 9pt; }
+            .monthly-grid { grid-template-columns: repeat(6, 1fr) !important; gap: 3px; }
+            .month-card { border: 1px solid #ccc; background: white; padding: 3px 4px; }
+            .month-card .month-name { font-size: 7pt; }
+            .month-card .month-value { font-size: 8pt; }
             
-            .monthly-grid { grid-template-columns: repeat(6, 1fr); }
-            .month-card { border: 1px solid #ccc; background: white; }
+            .chart-section {
+                page-break-inside: avoid;
+                border: 1px solid #999;
+                padding: 6px;
+                background: white !important;
+            }
+            .chart-header { border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 5px; }
+            .chart-title { font-size: 9pt; }
+            
+            .chart-wrapper { height: auto !important; min-height: 200px; display: block !important; }
+            
+            .status-summary-section {
+                page-break-inside: avoid;
+                border: 1px solid #999;
+                padding: 6px;
+                background: white !important;
+                margin-top: 8px;
+            }
+            .status-summary-header { border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 5px; }
+            .status-summary-title { font-size: 9pt; }
+            .status-summary-legend { font-size: 7pt; }
+            .status-legend-dot { width: 8px; height: 8px; }
+            
+            .status-summary-grid {
+                display: grid !important;
+                grid-template-columns: repeat(6, 1fr) !important;
+                gap: 4px;
+            }
+            .status-summary-card {
+                border: 1px solid #999 !important;
+                background: white !important;
+                padding: 4px !important;
+                page-break-inside: avoid;
+                border-left-width: 2px !important;
+            }
+            .status-summary-card .group-header { margin-bottom: 4px; padding-bottom: 3px; }
+            .status-summary-card .group-name { font-size: 7.5pt; color: #000; }
+            .status-summary-card .group-total { font-size: 7pt; color: #333; }
+            .status-row { padding: 2px 3px !important; font-size: 6.5pt !important; }
+            .status-row .sr-label { font-size: 6.5pt !important; gap: 2px; }
+            .status-row .sr-label .sr-icon { font-size: 6.5pt !important; }
+            .status-row .sr-right { font-size: 6pt !important; gap: 2px; }
+            .status-row .sr-count { font-size: 6pt !important; }
+            .status-row .sr-amount { font-size: 6pt !important; }
+            .status-row .sr-bar { height: 2px !important; }
             
             @page { margin: 0.8cm; size: A4 landscape; }
+            .page-break-before { page-break-before: always; }
+            .avoid-break { page-break-inside: avoid; }
         }
     </style>
 </head>
@@ -1034,6 +1172,15 @@
 
 <div class="container">
     
+    <!-- PRINT HEADER (Hanya tampil saat print) -->
+    <div class="print-header-print print-only">
+        <div class="ph-title" id="printTitle">AGENDA RENCANA PENGELUARAN</div>
+        <div class="ph-company" id="printCompany">Nama Company</div>
+        <div class="ph-year" id="printYear">Tahun Anggaran: 2027</div>
+        <div class="ph-date" id="printDate">Dicetak pada: -</div>
+    </div>
+    
+    <!-- SCREEN HEADER -->
     <div class="page-header no-print">
         <div class="page-title-block">
             <h1 class="page-title">
@@ -1073,9 +1220,47 @@
         </div>
     </div>
 
+    <!-- KPI GRID (Screen + Print) -->
     <div class="kpi-grid" id="kpiGrid"></div>
+    
+    <!-- INSIGHT PANEL (Screen + Print) -->
+    <div class="insight-panel" id="insightPanel">
+        <div class="insight-panel-title">💡 INSIGHT & REKOMENDASI</div>
+        <div class="insight-list" id="insightList"></div>
+    </div>
+    
+    <!-- RANKING PANEL (Screen + Print) - RANKING LENGKAP DENGAN GRAFIK BATANG -->
+    <div class="ranking-panel" id="rankingPanel">
+        <div class="ranking-panel-title">🏆 RANKING KELOMPOK BERDASARKAN ANGGARAN (Terbesar → Terkecil)</div>
+        
+        <!-- FILTER RANKING -->
+        <div class="ranking-filter-bar no-print">
+            <label>🔎 Tampilkan:</label>
+            <select class="ranking-filter-select" id="rankingFilterSelect" onchange="applyRankingFilter()">
+                <option value="all">Semua Kelompok</option>
+                <option value="top5">Top 5 Terbesar</option>
+                <option value="custom">Custom (Pilih Kelompok)</option>
+            </select>
+        </div>
+        
+        <!-- CUSTOM GROUP SELECTOR -->
+        <div class="custom-group-selector" id="customGroupSelector">
+            <label style="font-weight:700; color:var(--primary);">✅ Pilih Kelompok:</label>
+            <div id="customGroupCheckboxes" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+        </div>
+        
+               <div style="position: relative; width: 100%; margin-bottom: 10px;" class="no-print">
+            <canvas id="rankingChart" style="max-height: 800px;"></canvas>
+        </div>
+        <!-- Print: Grafik Ranking (tampil hanya saat print) -->
+        <div class="print-only" style="display:block !important; text-align:center; padding:10px; page-break-inside: avoid;">
+            <div style="position: relative; width: 100%; height: 300px;">
+                <canvas id="printRankingChart"></canvas>
+            </div>
+        </div>
 
-    <div class="card">
+    <!-- TABEL 1 -->
+    <div class="card" id="tabel1">
         <div class="card-header">
             <h2 class="card-title">
                 <span class="badge-num">1</span>
@@ -1120,7 +1305,8 @@
         </div>
     </div>
 
-    <div class="card">
+    <!-- TABEL 2 -->
+    <div class="card" id="tabel2">
         <div class="card-header">
             <h2 class="card-title">
                 <span class="badge-num">2</span>
@@ -1155,7 +1341,7 @@
             </table>
         </div>
 
-        <div class="summary-panel">
+        <div class="summary-panel" id="summarySection">
             <div class="summary-panel-title">📊 <span id="summaryTitle">RINGKASAN TOTAL PENGELUARAN</span></div>
             <div class="summary-grid">
                 <div class="summary-item">
@@ -1205,14 +1391,16 @@
                     </div>
                 </div>
             </div>
+            
             <div class="chart-wrapper">
                 <canvas id="budgetChart"></canvas>
                 <div class="chart-empty-state" id="chartEmptyState" style="display:none;">
                     <div class="icon">📊</div>
                     <div class="title">Belum cukup data untuk Pie Chart</div>
-                    <div class="desc">Tambah minimal <strong>2 kelompok</strong> dengan program yang sudah dijadwalkan (bukan Cancelled) untuk melihat pie chart yang informatif.</div>
+                    <div class="desc">Tambah minimal <strong>2 kelompok</strong> dengan program yang sudah dijadwalkan (bukan Cancelled).</div>
                 </div>
             </div>
+            
             <div class="chart-legend" id="chartLegend"></div>
         </div>
 
@@ -1234,6 +1422,22 @@
         </div>
     </div>
 
+</div>
+
+<!-- Floating Shortcut Buttons -->
+<div class="floating-shortcut no-print">
+    <div class="floating-btn" onclick="scrollToSection('tabel1')">
+        <span>1</span>
+        <span class="tooltip">Tabel 1: Pengeluaran & Program</span>
+    </div>
+    <div class="floating-btn" onclick="scrollToSection('tabel2')">
+        <span>2</span>
+        <span class="tooltip">Tabel 2: Jadwal Kegiatan</span>
+    </div>
+    <div class="floating-btn" onclick="scrollToSection('summarySection')">
+        <span>📊</span>
+        <span class="tooltip">Summary & Ringkasan</span>
+    </div>
 </div>
 
 <div class="history-overlay" id="historyOverlay" onclick="toggleHistoryPanel()"></div>
@@ -1337,8 +1541,14 @@
     let programCounter = 0;
     let currentMode = 'expense';
     let budgetChart = null;
+    let rankingChart = null;
+    let printBarChart = null;
+    let printPieChart = null;
+    let printRankingChart = null;
     let currentChartType = 'bar';
     let currentChartStatusFilter = 'all';
+    let currentRankingFilter = 'all';
+    let customSelectedGroups = [];
     
     let currentFilters = { search: '', status: '', schedule: '' };
     let historyStack = [];
@@ -1369,6 +1579,8 @@
             labelTotalAll: 'Total Anggaran Keseluruhan',
             accentColor: '#ef4444', accentLight: '#fee2e2', accentDark: '#b91c1c',
             pdfTitle: 'AGENDA RENCANA PENGELUARAN',
+            pdfTitleParts: ['AGENDA RENCANA ', 'PENGELUARAN'],
+            pdfColorWord: [185, 28, 28],
             pdfSection1: 'RINGKASAN PENGELUARAN PER KELOMPOK',
             pdfSection2: 'JADWAL KEGIATAN PENGELUARAN',
             pdfSection3: 'RINGKASAN TOTAL PENGELUARAN',
@@ -1388,6 +1600,8 @@
             labelTotalAll: 'Total Anggaran Keseluruhan',
             accentColor: '#10b981', accentLight: '#d1fae5', accentDark: '#047857',
             pdfTitle: 'AGENDA RENCANA PEMASUKAN',
+            pdfTitleParts: ['AGENDA RENCANA ', 'PEMASUKAN'],
+            pdfColorWord: [4, 120, 87],
             pdfSection1: 'RINGKASAN PEMASUKAN PER KELOMPOK',
             pdfSection2: 'JADWAL KEGIATAN PEMASUKAN',
             pdfSection3: 'RINGKASAN TOTAL PEMASUKAN',
@@ -1454,6 +1668,7 @@
                 localStorage.removeItem(STORAGE_KEY);
                 groups = {}; groupCounter = 0; programCounter = 0;
                 historyStack = []; historyIndex = -1;
+                customSelectedGroups = [];
                 document.getElementById('companyName').value = '';
                 renderAll(); renderHistoryList();
                 showToast('Data tersimpan berhasil dihapus', 'success');
@@ -1465,12 +1680,6 @@
     function changeChartStatusFilter(status) {
         currentChartStatusFilter = status;
         renderChart();
-        const labels = {
-            'all': 'Semua Status', 'active': 'Hanya Aktif', 'non-cancelled': 'Kecuali Cancelled',
-            'draft': 'Draft', 'approved': 'Approved', 'inprogress': 'In Progress',
-            'done': 'Done', 'cancelled': 'Cancelled'
-        };
-        showToast(`📊 Grafik: ${labels[status] || status}`, 'info');
     }
     
     function programMatchesChartFilter(program) {
@@ -1527,14 +1736,12 @@
                 });
                 
                 datasets.push({
-                    label: group.name,
-                    data: monthlyData,
+                    label: group.name, data: monthlyData,
                     backgroundColor: currentChartType === 'line' ? color + '40' : color,
                     borderColor: color,
                     borderWidth: currentChartType === 'line' ? 2 : 1,
                     borderRadius: currentChartType === 'bar' ? 4 : 0,
-                    tension: 0.4,
-                    fill: currentChartType === 'line',
+                    tension: 0.4, fill: currentChartType === 'line',
                     pointRadius: currentChartType === 'line' ? 3 : 0,
                     pointHoverRadius: 6
                 });
@@ -1542,12 +1749,9 @@
         } else if (currentChartType === 'pie') {
             chartLabels = groupIds.map(gid => groups[gid].name);
             datasets.push({
-                label: 'Total',
-                data: groupTotals,
+                label: 'Total', data: groupTotals,
                 backgroundColor: groupIds.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
-                borderColor: '#fff',
-                borderWidth: 3,
-                hoverOffset: 8
+                borderColor: '#fff', borderWidth: 3, hoverOffset: 8
             });
         }
         
@@ -1557,9 +1761,7 @@
             datasets = [{
                 label: 'Belum ada data',
                 data: currentChartType === 'pie' ? [1] : new Array(12).fill(0),
-                backgroundColor: '#e2e8f0',
-                borderColor: '#cbd5e1',
-                borderWidth: 1
+                backgroundColor: '#e2e8f0', borderColor: '#cbd5e1', borderWidth: 1
             }];
             if (currentChartType === 'pie') chartLabels = ['Belum ada data'];
         }
@@ -1574,8 +1776,7 @@
             type: currentChartType,
             data: { labels: chartLabels, datasets },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 layout: { padding: isCircular ? { top: 20, bottom: 20, left: 20, right: 20 } : { top: 10, bottom: 10 } },
                 interaction: { mode: isCircular ? 'nearest' : 'index', intersect: false },
                 plugins: {
@@ -1583,41 +1784,27 @@
                     tooltip: {
                         backgroundColor: 'rgba(15, 23, 42, 0.95)',
                         titleColor: '#fff', bodyColor: '#e2e8f0',
-                        borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
                         padding: 12, cornerRadius: 8,
-                        titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 12 },
-                        displayColors: true,
                         callbacks: {
                             label: function(context) {
                                 const label = context.dataset.label || context.label || '';
                                 const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed;
                                 return `${label}: Rp ${value.toLocaleString('id-ID')}`;
-                            },
-                            footer: function(items) {
-                                if (isCircular) {
-                                    const total = items.reduce((sum, item) => sum + item.parsed, 0);
-                                    return 'Total: Rp ' + total.toLocaleString('id-ID');
-                                }
-                                const total = items.reduce((sum, item) => sum + item.parsed.y, 0);
-                                return 'Total: Rp ' + total.toLocaleString('id-ID');
                             }
                         }
                     }
                 },
                 scales: isCircular ? {} : {
-                    x: { stacked: currentChartType === 'bar', grid: { display: false }, ticks: { font: { size: 11, weight: '600' }, color: '#64748b' } },
-                    y: { stacked: currentChartType === 'bar', beginAtZero: true, grid: { color: '#f1f5f9', drawBorder: false },
-                        ticks: { font: { size: 10 }, color: '#64748b',
-                            callback: function(value) {
-                                if (value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
-                                if (value >= 1000000) return (value / 1000000).toFixed(1) + ' jt';
-                                if (value >= 1000) return (value / 1000).toFixed(0) + ' rb';
-                                return value;
-                            }
-                        }
+                    x: { stacked: currentChartType === 'bar', grid: { display: false } },
+                    y: { stacked: currentChartType === 'bar', beginAtZero: true, grid: { color: '#f1f5f9' },
+                        ticks: { callback: function(value) {
+                            if (value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
+                            if (value >= 1000000) return (value / 1000000).toFixed(1) + ' jt';
+                            if (value >= 1000) return (value / 1000).toFixed(0) + ' rb';
+                            return value;
+                        }}
                     }
-                },
-                animation: { duration: 600, easing: 'easeOutQuart' }
+                }
             },
             plugins: [{
                 id: 'customPieLabels',
@@ -1730,9 +1917,7 @@
                 item.innerHTML = `
                     <span class="legend-color" style="background:${color};"></span>
                     <span style="color:var(--text);">${group.name}</span>
-                    <span style="font-size:10px; color:${total > 0 ? 'var(--text-muted)' : 'var(--text-light)'}; font-weight:700; ${total === 0 ? 'opacity:0.5;' : ''}">
-                        ${total > 0 ? 'Rp ' + total.toLocaleString('id-ID') : 'Rp 0'}
-                    </span>
+                    <span style="font-size:10px; color:var(--text-muted); font-weight:700;">Rp ${total.toLocaleString('id-ID')}</span>
                 `;
             }
             legendContainer.appendChild(item);
@@ -1743,7 +1928,7 @@
             totalItem.style.cssText = 'display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:6px; background:linear-gradient(135deg, var(--primary-light) 0%, var(--card-bg) 100%); border:2px solid var(--primary); margin-left:auto;';
             totalItem.innerHTML = `
                 <div style="display:flex; flex-direction:column; gap:1px;">
-                    <span style="font-weight:700; color:var(--primary); font-size:10px; text-transform:uppercase; letter-spacing:0.05em;">Total Keseluruhan</span>
+                    <span style="font-weight:700; color:var(--primary); font-size:10px; text-transform:uppercase;">Total Keseluruhan</span>
                     <span style="font-size:14px; color:var(--primary); font-weight:800;">Rp ${grandTotal.toLocaleString('id-ID')}</span>
                 </div>
             `;
@@ -1760,6 +1945,233 @@
         `;
         legendContainer.appendChild(toggleWrapper);
     }
+    
+    // ================= RANKING FILTER =================
+    function applyRankingFilter() {
+        const filter = document.getElementById('rankingFilterSelect').value;
+        currentRankingFilter = filter;
+        
+        const customSelector = document.getElementById('customGroupSelector');
+        if (filter === 'custom') {
+            customSelector.classList.add('active');
+            renderCustomGroupCheckboxes();
+        } else {
+            customSelector.classList.remove('active');
+        }
+        
+        renderRankingChart();
+    }
+    
+    function renderCustomGroupCheckboxes() {
+        const container = document.getElementById('customGroupCheckboxes');
+        if (!container) return;
+        
+        const groupIds = Object.keys(groups);
+        if (groupIds.length === 0) {
+            container.innerHTML = '<span style="font-size:11px; color:var(--text-muted); font-style:italic;">Belum ada kelompok</span>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        groupIds.forEach(gid => {
+            const group = groups[gid];
+            const isChecked = customSelectedGroups.includes(gid);
+            
+            const label = document.createElement('label');
+            label.innerHTML = `
+                <input type="checkbox" value="${gid}" ${isChecked ? 'checked' : ''} 
+                    onchange="toggleCustomGroup('${gid}', this.checked)">
+                ${group.name}
+            `;
+            container.appendChild(label);
+        });
+    }
+    
+    function toggleCustomGroup(gid, checked) {
+        if (checked) {
+            if (!customSelectedGroups.includes(gid)) customSelectedGroups.push(gid);
+        } else {
+            customSelectedGroups = customSelectedGroups.filter(id => id !== gid);
+        }
+        renderRankingChart();
+    }
+    
+    function getFilteredRankingGroups() {
+        const groupIds = Object.keys(groups);
+        
+        const groupStats = groupIds.map(gid => {
+            const group = groups[gid];
+            const total = group.programs.reduce((sum, p) => sum + p.cost, 0);
+            return { gid, name: group.name, total };
+        }).sort((a, b) => b.total - a.total);
+        
+        if (currentRankingFilter === 'all') {
+            return groupStats;
+        } else if (currentRankingFilter === 'top5') {
+            return groupStats.slice(0, 5);
+        } else if (currentRankingFilter === 'custom') {
+            if (customSelectedGroups.length === 0) return groupStats;
+            return groupStats.filter(gs => customSelectedGroups.includes(gs.gid));
+        }
+        return groupStats;
+    }
+    
+    // ================= RANKING CHART (WEB) =================
+    function renderRankingChart() {
+        const ctx = document.getElementById('rankingChart')?.getContext('2d');
+        if (!ctx) return;
+        
+        const groupStats = getFilteredRankingGroups();
+        
+        if (groupStats.length === 0) {
+            if (rankingChart) rankingChart.destroy();
+            rankingChart = null;
+            return;
+        }
+        
+        // ====== KUNCI PERBAIKAN: Tinggi canvas dinamis ======
+        const dynamicHeight = Math.max(250, groupStats.length * 22 + 60);
+        const canvasWrapper = ctx.canvas.parentElement;
+        canvasWrapper.style.height = dynamicHeight + 'px';
+        
+        const labels = groupStats.map(g => g.name);
+        const data = groupStats.map(g => g.total);
+        
+        if (rankingChart) rankingChart.destroy();
+        
+        rankingChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Anggaran',
+                    data: data,
+                    backgroundColor: data.map((_, i) => i < 3 ? '#f59e0b' : '#6366f1'),
+                    borderColor: data.map((_, i) => i < 3 ? '#d97706' : '#4f46e5'),
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#e2e8f0',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Rp ' + context.parsed.x.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' },
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000000) return (value / 1000000000).toFixed(1) + ' M';
+                                if (value >= 1000000) return (value / 1000000).toFixed(1) + ' jt';
+                                if (value >= 1000) return (value / 1000).toFixed(0) + ' rb';
+                                return value;
+                            },
+                            font: { size: 10 }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            autoSkip: false,
+                            font: { size: 10, weight: '600' },
+                            callback: function(value, index) {
+                                const label = this.getLabelForValue(value);
+                                if (label.length > 28) return label.substring(0, 26) + '...';
+                                return label;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    duration: 800,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+    }
+    
+    // ================= PRINT RANKING CHART =================
+   function renderPrintRankingChart() {
+    const ctx = document.getElementById('printRankingChart')?.getContext('2d');
+    if (!ctx) return;
+    
+    const groupStats = getFilteredRankingGroups();
+    if (groupStats.length === 0) {
+        if (printRankingChart) printRankingChart.destroy();
+        printRankingChart = null;
+        return;
+    }
+    
+    if (printRankingChart) printRankingChart.destroy();
+    
+    printRankingChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: groupStats.map(g => {
+                let name = g.name;
+                return name.length > 24 ? name.substring(0, 22) + '...' : name;
+            }),
+            datasets: [{
+                label: 'Total',
+                data: groupStats.map(g => g.total),
+                backgroundColor: groupStats.map((_, i) => i < 3 ? '#f59e0b' : '#6366f1'),
+                borderColor: groupStats.map((_, i) => i < 3 ? '#d97706' : '#4f46e5'),
+                borderWidth: 1,
+                borderRadius: 2,
+                barThickness: 12
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false }, 
+                tooltip: { enabled: false } 
+            },
+            scales: {
+                x: { 
+                    beginAtZero: true, 
+                    grid: { color: '#e5e7eb' },
+                    ticks: { 
+                        font: { size: 10, weight: '600' }, 
+                        callback: function(value) {
+                            if (value >= 1000000000) return (value / 1000000000).toFixed(1) + 'M';
+                            if (value >= 1000000) return (value / 1000000).toFixed(0) + 'jt';
+                            if (value >= 1000) return (value / 1000).toFixed(0) + 'rb';
+                            return value;
+                        }
+                    }
+                },
+                y: { 
+                    grid: { display: false }, 
+                    ticks: { 
+                        font: { size: 10, weight: 'bold' },
+                        autoSkip: false,
+                        color: '#1e293b'
+                    } 
+                }
+            },
+            animation: false
+        }
+    });
+}
 
     // ================= KPI =================
     function renderKPIs() {
@@ -1833,8 +2245,48 @@
             </div>
         `;
     }
+    
+    // ================= INSIGHT =================
+    function renderInsight() {
+        const insightList = document.getElementById('insightList');
+        if (!insightList) return;
+        
+        let totalBudget = 0, totalPrograms = 0, totalScheduled = 0;
+        const statusCount = { draft: 0, approved: 0, inprogress: 0, done: 0, cancelled: 0 };
+        
+        Object.values(groups).forEach(group => {
+            group.programs.forEach(p => {
+                totalPrograms++;
+                totalBudget += p.cost;
+                const st = p.status || 'draft';
+                statusCount[st]++;
+                if (p.scheduledMonth !== null && st !== 'cancelled') totalScheduled += p.cost;
+            });
+        });
+        
+        const realisasi = totalBudget > 0 ? (totalScheduled / totalBudget * 100) : 0;
+        const unscheduledCount = totalPrograms - Object.values(groups).reduce((sum, g) => 
+            sum + g.programs.filter(p => p.scheduledMonth !== null).length, 0);
+        
+        const insights = [];
+        if (unscheduledCount > 0) insights.push(`${unscheduledCount} dari ${totalPrograms} program belum terjadwal.`);
+        if (realisasi < 50) insights.push(`Realisasi baru ${realisasi.toFixed(1)}% - perlu percepatan penjadwalan.`);
+        else if (realisasi < 90) insights.push(`Realisasi ${realisasi.toFixed(1)}% - on track.`);
+        else insights.push(`Realisasi ${realisasi.toFixed(1)}% - hampir selesai.`);
+        
+        if (statusCount.cancelled > 0) insights.push(`${statusCount.cancelled} program dibatalkan (Cancelled) - perlu review.`);
+        
+        if (insights.length === 0) insights.push('Belum ada data untuk dianalisis.');
+        
+        insightList.innerHTML = insights.map(i => `<div class="insight-item">${i}</div>`).join('');
+    }
+    
+    // ================= RANKING (LENGKAP) =================
+    function renderRanking() {
+        // Fungsi ini sudah dihapus, list ranking di web hanya grafik saja.
+    }
 
-    // ================= STATUS SUMMARY (GRID 6 KOLOM) =================
+    // ================= STATUS SUMMARY =================
     function renderStatusSummary() {
         const grid = document.getElementById('statusSummaryGrid');
         if (!grid) return;
@@ -2006,11 +2458,9 @@
     // ================= HISTORY =================
     function saveHistory(description) {
         const snapshot = {
-            timestamp: new Date().toISOString(),
-            description,
+            timestamp: new Date().toISOString(), description,
             groups: JSON.parse(JSON.stringify(groups)),
-            groupCounter, programCounter,
-            mode: currentMode,
+            groupCounter, programCounter, mode: currentMode,
             stats: getSnapshotStats()
         };
         
@@ -2084,6 +2534,10 @@
         showToast(isDark ? '🌙 Dark mode aktif' : '☀️ Light mode aktif', 'info');
     }
 
+    function scrollToSection(id) {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function setMode(mode) {
         if (mode !== 'expense' && mode !== 'income') return;
         currentMode = mode;
@@ -2111,6 +2565,8 @@
         document.getElementById('labelTotalAll').textContent = config.labelTotalAll;
         document.getElementById('labelProgramCost').textContent = config.labelProgramCost;
         document.getElementById('chartTitleText').textContent = config.chartTitle;
+        
+        document.getElementById('printTitle').textContent = config.pdfTitle;
         
         document.querySelectorAll('.mode-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.mode === mode);
@@ -2197,8 +2653,19 @@
         renderScheduleTable();
         updateTotals();
         renderChart();
+        renderRankingChart();
         renderKPIs();
+        renderInsight();
         renderStatusSummary();
+        updatePrintHeader();
+    }
+    
+    function updatePrintHeader() {
+        document.getElementById('printCompany').textContent = document.getElementById('companyName').value.trim() || 'Nama Company';
+        document.getElementById('printYear').textContent = 'Tahun Anggaran: ' + (document.getElementById('budgetYear').value || '-');
+        document.getElementById('printDate').textContent = 'Dicetak pada: ' + new Date().toLocaleDateString('id-ID', { 
+            day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
     }
 
     function renderBudgetTable() {
@@ -2250,7 +2717,7 @@
             if (visiblePrograms.length === 0) {
                 const emptyMsg = document.createElement('div');
                 emptyMsg.className = 'empty-state';
-                emptyMsg.textContent = unscheduledPrograms.length === 0 ? 'Belum ada program' : 'Tidak ada yang cocok dengan filter';
+                emptyMsg.textContent = unscheduledPrograms.length === 0 ? 'Belum ada program' : 'Tidak ada yang cocok';
                 programGrid.appendChild(emptyMsg);
             } else {
                 visiblePrograms.forEach(p => {
@@ -2260,7 +2727,6 @@
                     const chip = document.createElement('div');
                     chip.className = 'program-chip';
                     chip.dataset.status = statusKey;
-                    chip.title = `${p.name}\nRp ${p.cost.toLocaleString('id-ID')}\nStatus: ${statusInfo.label}`;
                     
                     if (currentFilters.search && p.name.toLowerCase().includes(currentFilters.search)) {
                         chip.classList.add('highlight-match');
@@ -2272,7 +2738,6 @@
                     const btnEdit = document.createElement('button');
                     btnEdit.type = 'button';
                     btnEdit.className = 'pc-btn pc-btn-edit';
-                    btnEdit.title = 'Edit';
                     btnEdit.textContent = '✏️';
                     btnEdit.onclick = (function(gid, pid) {
                         return function(e) { e.stopPropagation(); openEditProgramModal(gid, pid); };
@@ -2281,7 +2746,6 @@
                     const btnDel = document.createElement('button');
                     btnDel.type = 'button';
                     btnDel.className = 'pc-btn pc-btn-del';
-                    btnDel.title = 'Hapus';
                     btnDel.textContent = '×';
                     btnDel.onclick = (function(gid, pid, pname) {
                         return function(e) { e.stopPropagation(); hapusProgramPermanen(gid, pid, pname); };
@@ -2346,7 +2810,7 @@
         
         if (!hasVisibleGroup && Object.keys(groups).length > 0) {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">Tidak ada hasil yang cocok dengan filter</td>`;
+            tr.innerHTML = `<td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">Tidak ada hasil</td>`;
             tbody.appendChild(tr);
         }
 
@@ -2373,6 +2837,7 @@
         groups[groupId].name = newName;
         renderScheduleTable();
         renderChart();
+        renderRankingChart();
         renderKPIs();
         renderStatusSummary();
     }
@@ -2381,6 +2846,7 @@
         showConfirm('Hapus Kelompok?', `"${groupName}" beserta semua programnya akan dihapus permanen.`,
             function() {
                 delete groups[groupId];
+                customSelectedGroups = customSelectedGroups.filter(id => id !== groupId);
                 renderAll();
                 saveHistory('Hapus kelompok: ' + groupName);
                 triggerAutoSave();
@@ -2534,7 +3000,6 @@
             const div = document.createElement('div');
             div.className = 'activity-item';
             div.dataset.status = statusKey;
-            div.title = 'Klik untuk ubah status | Klik × untuk batalkan jadwal';
             
             if (currentFilters.search && prog.name.toLowerCase().includes(currentFilters.search)) {
                 div.classList.add('highlight-match');
@@ -2550,7 +3015,6 @@
             const btnRemove = document.createElement('button');
             btnRemove.type = 'button';
             btnRemove.className = 'btn-remove-schedule no-print';
-            btnRemove.title = 'Batalkan Jadwal';
             btnRemove.textContent = '×';
             btnRemove.onclick = (function(gid, pid, pname) { 
                 return function(e) { e.stopPropagation(); unscheduleProgram(gid, pid, pname); }; 
@@ -2692,29 +3156,88 @@
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; }
 
-    window.addEventListener('DOMContentLoaded', function() {
-        ['programName', 'programCost'].forEach(id => {
-            document.getElementById(id).addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); saveProgram(); }
+    // ================= PRINT CHARTS =================
+    function renderPrintCharts() {
+        const groupIds = Object.keys(groups);
+        
+        // Bar Chart
+        const barCtx = document.getElementById('printBarChart')?.getContext('2d');
+        if (!barCtx) return;
+        
+        const monthlyData = new Array(12).fill(0);
+        groupIds.forEach(gid => {
+            groups[gid].programs.forEach(p => {
+                if (p.scheduledMonth !== null && programMatchesChartFilter(p)) {
+                    monthlyData[p.scheduledMonth] += p.cost;
+                }
             });
         });
-        document.getElementById('scheduleProgramSelect').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); saveSchedule(); }
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 'p') { e.preventDefault(); exportToPDF(); }
-                if (e.key === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+        
+        if (printBarChart) printBarChart.destroy();
+        printBarChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Total', data: monthlyData,
+                    backgroundColor: CHART_COLORS[0],
+                    borderColor: CHART_COLORS[0],
+                    borderWidth: 1, borderRadius: 3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 8 } } },
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' },
+                        ticks: { font: { size: 7 }, callback: function(value) {
+                            if (value >= 1000000) return (value / 1000000).toFixed(0) + 'jt';
+                            if (value >= 1000) return (value / 1000).toFixed(0) + 'rb';
+                            return value;
+                        }}
+                    }
+                },
+                animation: false
             }
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
-                const hp = document.getElementById('historyPanel');
-                if (hp.classList.contains('open')) toggleHistoryPanel();
+        });
+        
+        // Pie Chart
+        const pieCtx = document.getElementById('printPieChart')?.getContext('2d');
+        if (!pieCtx) return;
+        
+        const groupTotals = groupIds.map(gid => {
+            return groups[gid].programs
+                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
+                .reduce((sum, p) => sum + p.cost, 0);
+        });
+        
+        const nonZeroIndices = groupTotals.map((v, i) => v > 0 ? i : -1).filter(i => i !== -1);
+        const nonZeroLabels = nonZeroIndices.map(i => groups[groupIds[i]].name);
+        const nonZeroValues = nonZeroIndices.map(i => groupTotals[i]);
+        const nonZeroColors = nonZeroIndices.map(i => CHART_COLORS[i % CHART_COLORS.length]);
+        
+        if (printPieChart) printPieChart.destroy();
+        printPieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: nonZeroLabels.length > 0 ? nonZeroLabels : ['Belum ada data'],
+                datasets: [{
+                    data: nonZeroValues.length > 0 ? nonZeroValues : [1],
+                    backgroundColor: nonZeroColors.length > 0 ? nonZeroColors : ['#e2e8f0'],
+                    borderColor: '#fff', borderWidth: 1.5
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                animation: false
             }
         });
-        document.getElementById('companyName').addEventListener('change', triggerAutoSave);
-        document.getElementById('budgetYear').addEventListener('change', triggerAutoSave);
-    });
+        
+        // Print Ranking Chart
+        renderPrintRankingChart();
+    }
 
     // ================= EXPORT PDF =================
     function exportToPDF() {
@@ -2771,41 +3294,56 @@
 
                 const remaining = totalBudget - totalScheduled;
                 const realisasi = totalBudget > 0 ? (totalScheduled / totalBudget * 100) : 0;
-                const accentRGB = hexToRgb(config.accentColor);
-                const accentDarkRGB = hexToRgb(config.accentDark);
+                const wordColor = config.pdfColorWord;
 
+                // ===== HEADER PUTIH MINIMALIS =====
                 const drawHeader = () => {
-                    doc.setFillColor(...accentDarkRGB);
-                    doc.rect(0, 0, pageWidth, 22, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(14);
+                    doc.setDrawColor(180, 180, 180);
+                    doc.setLineWidth(0.4);
+                    doc.line(margin, 20, pageWidth - margin, 20);
+                    
+                    doc.setFontSize(18);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(config.pdfTitle, pageWidth / 2, 10, { align: 'center' });
-                    doc.setFontSize(9);
+                    doc.setTextColor(0, 0, 0);
+                    
+                    const titleParts = config.pdfTitleParts;
+                    const fullTitle = config.pdfTitle;
+                    const titleWidth = doc.getTextWidth(fullTitle);
+                    let textX = (pageWidth - titleWidth) / 2;
+                    
+                    doc.text(titleParts[0], textX, 12);
+                    textX += doc.getTextWidth(titleParts[0]);
+                    
+                    doc.setTextColor(...wordColor);
+                    doc.text(titleParts[1], textX, 12);
+                    
+                    doc.setTextColor(80, 80, 80);
+                    doc.setFontSize(11);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(companyName + ' | Tahun Anggaran: ' + budgetYear, pageWidth / 2, 17, { align: 'center' });
+                    doc.text(companyName + '  |  Tahun Anggaran: ' + budgetYear, pageWidth / 2, 18, { align: 'center' });
                 };
 
                 const drawFooter = () => {
                     const pageCount = doc.internal.getNumberOfPages();
                     for (let i = 1; i <= pageCount; i++) {
                         doc.setPage(i);
-                        doc.setFontSize(7);
-                        doc.setTextColor(148, 163, 184);
+                        doc.setFontSize(9);
+                        doc.setTextColor(120, 120, 120);
                         doc.setFont('helvetica', 'italic');
-                        doc.text(config.title + ' - ' + companyName + ' - Tahun ' + budgetYear, pageWidth / 2, pageHeight - 6, { align: 'center' });
-                        doc.text(`Halaman ${i} dari ${pageCount}`, pageWidth - margin, pageHeight - 6, { align: 'right' });
+                        doc.text('Agenda Rencana ' + config.labelTabel1 + ' - ' + companyName + ' - Tahun ' + budgetYear, pageWidth / 2, pageHeight - 8, { align: 'center' });
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('Halaman ' + i + ' dari ' + pageCount, pageWidth - margin, pageHeight - 8, { align: 'right' });
                     }
                 };
 
                 const drawSectionTitle = (text) => {
-                    doc.setFillColor(...accentDarkRGB);
-                    doc.rect(margin, yPos, pageWidth - 2 * margin, 7, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(9);
+                    doc.setFillColor(235, 235, 240);
+                    doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(13);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(text, margin + 3, yPos + 5);
-                    yPos += 9;
+                    doc.text(text, margin + 5, yPos + 7);
+                    yPos += 14;
                 };
 
                 // ============ HALAMAN 1: EXECUTIVE SUMMARY ============
@@ -2813,11 +3351,11 @@
                 yPos = 30;
 
                 const now = new Date();
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(8);
+                doc.setTextColor(80, 80, 80);
+                doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
                 doc.text('Dicetak pada: ' + now.toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}), margin, yPos);
-                yPos += 8;
+                yPos += 12;
 
                 drawSectionTitle(config.pdfSection6);
 
@@ -2838,98 +3376,132 @@
                 const kpiData = [
                     { label: 'TOTAL KELOMPOK', value: String(groupIds.length), color: [99, 102, 241], sub: totalPrograms + ' program' },
                     { label: 'TOTAL ANGGARAN', value: 'Rp ' + totalBudget.toLocaleString('id-ID'), color: [30, 41, 59], sub: 'Seluruh kelompok' },
-                    { label: 'REALISASI', value: realisasi.toFixed(1) + '%', color: accentRGB, sub: 'Terjadwal aktif' },
+                    { label: 'REALISASI', value: realisasi.toFixed(1) + '%', color: [71, 85, 105], sub: 'Terjadwal aktif' },
                     { label: 'BULAN TERENDAH', value: minMonth !== -1 ? months[minMonth] : '-', color: [59, 130, 246], sub: minMonth !== -1 ? 'Rp ' + minVal.toLocaleString('id-ID') : 'Belum ada' },
                     { label: 'BULAN TERPADAT', value: maxVal > 0 ? months[maxMonth] : '-', color: [245, 158, 11], sub: maxVal > 0 ? 'Rp ' + maxVal.toLocaleString('id-ID') : 'Belum ada' },
                     { label: 'SISA ANGGARAN', value: 'Rp ' + remaining.toLocaleString('id-ID'), color: remaining < 0 ? [220, 38, 38] : [16, 185, 129], sub: 'Terjadwal aktif' }
                 ];
 
                 const kpiCount = kpiData.length;
-                const kpiGap = 3;
+                const kpiGap = 5;
                 const kpiWidth = (pageWidth - 2 * margin - (kpiCount - 1) * kpiGap) / kpiCount;
-                const kpiHeight = 20;
+                const kpiHeight = 28;
                 const kpiY = yPos;
 
                 kpiData.forEach((item, i) => {
                     const x = margin + i * (kpiWidth + kpiGap);
-                    doc.setFillColor(248, 250, 252);
-                    doc.setDrawColor(226, 232, 240);
-                    doc.roundedRect(x, kpiY, kpiWidth, kpiHeight, 1.5, 1.5, 'FD');
+                    doc.setFillColor(250, 250, 252);
+                    doc.setDrawColor(200, 200, 210);
+                    doc.roundedRect(x, kpiY, kpiWidth, kpiHeight, 2, 2, 'FD');
                     doc.setFillColor(...item.color);
-                    doc.rect(x, kpiY, 2, kpiHeight, 'F');
-                    doc.setTextColor(100, 116, 139);
-                    doc.setFontSize(6.5);
+                    doc.rect(x, kpiY, 3, kpiHeight, 'F');
+                    doc.setTextColor(80, 80, 80);
+                    doc.setFontSize(9);
                     doc.setFont('helvetica', 'normal');
-                    doc.text(item.label, x + 4, kpiY + 5);
+                    doc.text(item.label, x + 6, kpiY + 8);
                     doc.setTextColor(...item.color);
-                    doc.setFontSize(11);
+                    doc.setFontSize(14);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(item.value, x + 4, kpiY + 12);
-                    doc.setFontSize(7);
+                    doc.text(item.value, x + 6, kpiY + 17);
+                    doc.setFontSize(9);
                     doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(100, 116, 139);
-                    doc.text(item.sub, x + 4, kpiY + 17);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(item.sub, x + 6, kpiY + 24);
                 });
-                yPos = kpiY + kpiHeight + 8;
+                yPos = kpiY + kpiHeight + 12;
 
+                // INSIGHT
                 const insights = [];
                 if (totalPrograms > 0) {
                     const unscheduledCount = totalPrograms - groupStats.reduce((sum, g) => sum + (g.group.programs.filter(p => p.scheduledMonth !== null).length), 0);
-                    if (unscheduledCount > 0) insights.push(`- ${unscheduledCount} dari ${totalPrograms} program belum terjadwal.`);
-                    if (realisasi < 50) insights.push(`- Realisasi baru ${realisasi.toFixed(1)}% - perlu percepatan penjadwalan.`);
-                    else if (realisasi < 90) insights.push(`- Realisasi ${realisasi.toFixed(1)}% - on track.`);
-                    else insights.push(`- Realisasi ${realisasi.toFixed(1)}% - hampir selesai.`);
+                    if (unscheduledCount > 0) insights.push('- ' + unscheduledCount + ' dari ' + totalPrograms + ' program belum terjadwal.');
+                    if (realisasi < 50) insights.push('- Realisasi baru ' + realisasi.toFixed(1) + '% - perlu percepatan penjadwalan.');
+                    else if (realisasi < 90) insights.push('- Realisasi ' + realisasi.toFixed(1) + '% - on track.');
+                    else insights.push('- Realisasi ' + realisasi.toFixed(1) + '% - hampir selesai.');
                     
                     const cancelledCount = statusGlobal.cancelled;
-                    if (cancelledCount > 0) insights.push(`- ${cancelledCount} program dibatalkan (Cancelled) - perlu review.`);
+                    if (cancelledCount > 0) insights.push('- ' + cancelledCount + ' program dibatalkan (Cancelled) - perlu review.');
                 }
 
                 if (insights.length > 0) {
-                    const insightHeight = 8 + insights.length * 5;
+                    const insightHeight = 12 + insights.length * 7;
                     doc.setFillColor(255, 251, 235);
                     doc.setDrawColor(245, 158, 11);
-                    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, insightHeight, 2, 2, 'FD');
+                    doc.roundedRect(margin, yPos, pageWidth - 2 * margin, insightHeight, 3, 3, 'FD');
                     doc.setTextColor(146, 64, 14);
-                    doc.setFontSize(8);
+                    doc.setFontSize(12);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('INSIGHT & REKOMENDASI', margin + 4, yPos + 5);
+                    doc.text('INSIGHT & REKOMENDASI', margin + 6, yPos + 9);
                     doc.setFont('helvetica', 'normal');
-                    doc.setFontSize(8);
+                    doc.setFontSize(11);
                     insights.forEach((insight, i) => {
-                        doc.text(insight, margin + 4, yPos + 10 + i * 4.5);
+                        doc.text(insight, margin + 6, yPos + 17 + i * 7);
                     });
-                    yPos += insightHeight + 6;
+                    yPos += insightHeight + 10;
                 }
 
-                const topGroups = [...groupStats].sort((a, b) => b.gBudget - a.gBudget).slice(0, 5);
-                if (topGroups.length > 0) {
-                    doc.setTextColor(...accentDarkRGB);
-                    doc.setFontSize(10);
+                // ===== RANKING CHART DI HALAMAN PERTAMA (DIPERKECIL) =====
+                const rankedGroups = [...groupStats].sort((a, b) => b.gBudget - a.gBudget);
+                if (rankedGroups.length > 0) {
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(13);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('TOP 5 KELOMPOK DENGAN ANGGARAN TERBESAR', margin, yPos);
-                    yPos += 6;
-
-                    const maxBudget = topGroups[0].gBudget;
-                    topGroups.forEach((gs, i) => {
-                        const barWidth = (gs.gBudget / maxBudget) * (pageWidth - 2 * margin - 80);
-                        doc.setFillColor(240, 240, 245);
-                        doc.rect(margin, yPos, pageWidth - 2 * margin - 80, 6, 'F');
-                        doc.setFillColor(...accentRGB);
-                        doc.rect(margin, yPos, barWidth, 6, 'F');
+                    doc.text('RANKING KELOMPOK BERDASARKAN ANGGARAN (Terbesar ke Terkecil)', margin, yPos);
+                    yPos += 9;
+                    
+                    // Batasi tinggi chart agar tidak keluar halaman
+                    const maxChartHeight = 100;
+                    const neededHeight = rankedGroups.length * 5.5 + 16;
+                    const chartHeight = Math.min(neededHeight, maxChartHeight);
+                    const chartWidth = pageWidth - 2 * margin;
+                    const chartX = margin;
+                    const chartY = yPos;
+                    const barMaxWidth = chartWidth - 120;
+                    const maxBudget = rankedGroups[0].gBudget;
+                    
+                    doc.setFillColor(250, 250, 252);
+                    doc.setDrawColor(220, 220, 230);
+                    doc.roundedRect(chartX, chartY, chartWidth, chartHeight, 3, 3, 'FD');
+                    
+                    // Hitung tinggi bar berdasarkan jumlah kelompok (dibatasi)
+                    const visibleCount = Math.min(rankedGroups.length, Math.floor((chartHeight - 16) / 5.5));
+                    const barHeight = Math.min((chartHeight - 16) / Math.max(visibleCount, 1), 5);
+                    const barGap = 1.5;
+                    const barStartY = chartY + 8;
+                    
+                    rankedGroups.slice(0, visibleCount).forEach((gs, i) => {
+                        const barY = barStartY + i * (barHeight + barGap);
+                        if (barY + barHeight > chartY + chartHeight - 3) return;
                         
-                        doc.setTextColor(30, 41, 59);
-                        doc.setFontSize(8);
+                        const ratio = maxBudget > 0 ? gs.gBudget / maxBudget : 0;
+                        const barW = ratio * barMaxWidth;
+                        
+                        if (i < 3) {
+                            doc.setFillColor(245, 158, 11);
+                        } else {
+                            doc.setFillColor(99, 102, 241);
+                        }
+                        doc.rect(chartX + 60, barY, barW, barHeight, 'F');
+                        
+                        // Label nama (font besar, max 24 karakter)
+                        doc.setTextColor(20, 20, 20);
+                        doc.setFontSize(9);
                         doc.setFont('helvetica', 'bold');
-                        doc.text(`${i+1}. ${gs.group.name}`, margin + 3, yPos + 4);
+                        let nameText = gs.group.name;
+                        if (nameText.length > 24) nameText = nameText.substring(0, 22) + '...';
+                        doc.text(nameText, chartX + 6, barY + barHeight - 1.5);
                         
-                        doc.setTextColor(100, 116, 139);
-                        doc.setFontSize(8);
-                        doc.text('Rp ' + gs.gBudget.toLocaleString('id-ID'), pageWidth - margin, yPos + 4, { align: 'right' });
-                        yPos += 8;
+                        // Nominal (font besar)
+                        doc.setTextColor(50, 50, 50);
+                        doc.setFontSize(9);
+                        doc.setFont('helvetica', 'normal');
+                        doc.text('Rp ' + gs.gBudget.toLocaleString('id-ID'), chartX + chartWidth - 6, barY + barHeight - 1.5, { align: 'right' });
                     });
+                    
+                    yPos = chartY + chartHeight + 10;
                 }
 
-                // ============ HALAMAN 2: RINGKASAN PER KELOMPOK ============
+                // ============ HALAMAN 2: RINGKASAN ============
                 doc.addPage();
                 drawHeader();
                 yPos = 30;
@@ -2938,11 +3510,10 @@
                 const budgetTableData = groupStats.map((gs, i) => {
                     const unscheduled = gs.group.programs.filter(p => p.scheduledMonth === null);
                     const unscheduledText = unscheduled.length > 0 
-                        ? `${unscheduled.length} program (Rp ${gs.gUnscheduled.toLocaleString('id-ID')})`
+                        ? unscheduled.length + ' program (Rp ' + gs.gUnscheduled.toLocaleString('id-ID') + ')'
                         : '-';
                     return [
-                        String(i+1),
-                        gs.group.name,
+                        String(i+1), gs.group.name,
                         'Rp ' + gs.gBudget.toLocaleString('id-ID'),
                         'Rp ' + gs.gScheduled.toLocaleString('id-ID'),
                         'Rp ' + gs.remaining.toLocaleString('id-ID'),
@@ -2956,15 +3527,15 @@
                     body: budgetTableData,
                     foot: [['', 'TOTAL', 'Rp ' + totalBudget.toLocaleString('id-ID'), 'Rp ' + totalScheduled.toLocaleString('id-ID'), 'Rp ' + remaining.toLocaleString('id-ID'), '']],
                     theme: 'grid',
-                    styles: { fontSize: 9, cellPadding: 3, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle' },
-                    headStyles: { fillColor: [226, 232, 240], textColor: [30, 41, 59], fontStyle: 'bold', fontSize: 9, halign: 'center' },
-                    footStyles: { fillColor: config.accentLight === '#d1fae5' ? [209, 250, 229] : [254, 226, 226], textColor: accentDarkRGB, fontStyle: 'bold', fontSize: 9 },
-                    columnStyles: { 0: { cellWidth: 12, halign: 'center' }, 1: { cellWidth: 60, fontStyle: 'bold' }, 2: { cellWidth: 45, halign: 'right' }, 3: { cellWidth: 45, halign: 'right' }, 4: { cellWidth: 45, halign: 'right' }, 5: { cellWidth: 'auto' } },
+                    styles: { font: 'helvetica', fontSize: 11, cellPadding: 4, lineColor: [200, 200, 210], lineWidth: 0.3, textColor: [30, 30, 30], valign: 'middle' },
+                    headStyles: { fillColor: [235, 235, 240], textColor: [20, 20, 20], fontStyle: 'bold', fontSize: 12, halign: 'center', font: 'helvetica' },
+                    footStyles: { fillColor: [235, 235, 240], textColor: wordColor, fontStyle: 'bold', fontSize: 11, font: 'helvetica' },
+                    columnStyles: { 0: { cellWidth: 15, halign: 'center' }, 1: { cellWidth: 80, fontStyle: 'bold' }, 2: { cellWidth: 65, halign: 'right' }, 3: { cellWidth: 65, halign: 'right' }, 4: { cellWidth: 65, halign: 'right' }, 5: { cellWidth: 'auto' } },
                     alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
-                yPos = doc.lastAutoTable.finalY + 8;
+                yPos = doc.lastAutoTable.finalY + 12;
 
-                // ============ HALAMAN 3: JADWAL ============
+                // JADWAL
                 doc.addPage();
                 drawHeader();
                 yPos = 30;
@@ -2978,8 +3549,8 @@
                         if (activities.length === 0) row.push('-');
                         else {
                             const totalMonth = activities.reduce((s, a) => s + a.cost, 0);
-                            const statuses = activities.map(a => `[${STATUS_FLOW[a.status || 'draft'].pdfShort}]`).join(' ');
-                            row.push(`${activities.length} prog ${statuses}\nRp ${totalMonth.toLocaleString('id-ID')}`);
+                            const statuses = activities.map(a => '[' + STATUS_FLOW[a.status || 'draft'].pdfShort + ']').join(' ');
+                            row.push(activities.length + ' prog ' + statuses + '\nRp ' + totalMonth.toLocaleString('id-ID'));
                         }
                     });
                     return row;
@@ -2987,27 +3558,19 @@
 
                 doc.autoTable({
                     startY: yPos,
-                    head: scheduleHead,
-                    body: scheduleBody,
+                    head: scheduleHead, body: scheduleBody,
                     theme: 'grid',
-                    styles: { fontSize: 7, cellPadding: 2, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle', halign: 'center' },
-                    headStyles: { fillColor: accentDarkRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7.5, halign: 'center', valign: 'middle' },
-                    columnStyles: { 0: { cellWidth: 45, fontStyle: 'bold', halign: 'left' }, 1: { cellWidth: 35, halign: 'right', fontStyle: 'bold' } },
+                    styles: { font: 'helvetica', fontSize: 9, cellPadding: 3, lineColor: [200, 200, 210], lineWidth: 0.3, textColor: [30, 30, 30], valign: 'middle', halign: 'center' },
+                    headStyles: { fillColor: [235, 235, 240], textColor: [20, 20, 20], fontStyle: 'bold', fontSize: 10, halign: 'center', valign: 'middle', font: 'helvetica' },
+                    columnStyles: { 0: { cellWidth: 65, fontStyle: 'bold', halign: 'left' }, 1: { cellWidth: 50, halign: 'right', fontStyle: 'bold' } },
                     alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
-                yPos = doc.lastAutoTable.finalY + 8;
+                yPos = doc.lastAutoTable.finalY + 12;
 
-                // ============ HALAMAN 4: CHART + STATUS SUMMARY ============
+                // STATUS SUMMARY (Tanpa grafik ganda)
                 doc.addPage();
                 drawHeader();
                 yPos = 30;
-
-                drawSectionTitle('GRAFIK FLUKTUASI ' + config.labelTabel1.toUpperCase() + ' PER BULAN');
-                const chartW = pageWidth - 2 * margin;
-                const chartH = 75;
-                drawChartInPDF(doc, margin, yPos, chartW, chartH, null, currentChartType, groupIds);
-                yPos += chartH + 8;
-
                 drawSectionTitle(config.pdfSection4);
 
                 const statusHead = [['Kelompok', 'Total', '[D] Draft', '[A] Approved', '[P] In Prog', '[V] Done', '[X] Cancel']];
@@ -3015,31 +3578,23 @@
                     const cell = (st) => {
                         const c = gs.gStatusCount[st];
                         const a = gs.gStatusAmount[st];
-                        return c > 0 ? `${c} prog\nRp ${a.toLocaleString('id-ID')}` : '-';
+                        return c > 0 ? c + ' prog\nRp ' + a.toLocaleString('id-ID') : '-';
                     };
-                    return [
-                        gs.group.name,
-                        'Rp ' + gs.gBudget.toLocaleString('id-ID'),
-                        cell('draft'), cell('approved'), cell('inprogress'), cell('done'), cell('cancelled')
-                    ];
+                    return [gs.group.name, 'Rp ' + gs.gBudget.toLocaleString('id-ID'), cell('draft'), cell('approved'), cell('inprogress'), cell('done'), cell('cancelled')];
                 });
 
                 doc.autoTable({
                     startY: yPos,
-                    head: statusHead,
-                    body: statusBody,
+                    head: statusHead, body: statusBody,
                     theme: 'grid',
-                    styles: { fontSize: 7, cellPadding: 2, lineColor: [226, 232, 240], lineWidth: 0.2, textColor: [30, 41, 59], valign: 'middle', halign: 'center' },
-                    headStyles: { fillColor: accentDarkRGB, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7.5, halign: 'center', valign: 'middle' },
-                    columnStyles: {
-                        0: { cellWidth: 50, fontStyle: 'bold', halign: 'left' },
-                        1: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
-                    },
+                    styles: { font: 'helvetica', fontSize: 10, cellPadding: 4, lineColor: [200, 200, 210], lineWidth: 0.3, textColor: [30, 30, 30], valign: 'middle', halign: 'center' },
+                    headStyles: { fillColor: [235, 235, 240], textColor: [20, 20, 20], fontStyle: 'bold', fontSize: 11, halign: 'center', valign: 'middle', font: 'helvetica' },
+                    columnStyles: { 0: { cellWidth: 70, fontStyle: 'bold', halign: 'left' }, 1: { cellWidth: 60, halign: 'right', fontStyle: 'bold' } },
                     alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
-                yPos = doc.lastAutoTable.finalY + 8;
+                yPos = doc.lastAutoTable.finalY + 12;
 
-                // ============ HALAMAN 5+: DETAIL PROGRAM (3 KOLOM) ============
+                               // DETAIL PROGRAM - 5 KOLOM DENGAN 2 BARIS NAMA
                 doc.addPage();
                 drawHeader();
                 yPos = 30;
@@ -3049,26 +3604,25 @@
                     const programs = gs.group.programs;
                     if (programs.length === 0) return;
                     
-                    if (yPos > pageHeight - 30) {
-                        doc.addPage();
-                        drawHeader();
-                        yPos = 30;
+                    if (yPos > pageHeight - 60) {
+                        doc.addPage(); drawHeader(); yPos = 30;
                     }
 
-                    doc.setFillColor(...accentRGB);
-                    doc.rect(margin, yPos, pageWidth - 2 * margin, 8, 'F');
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(10);
+                    doc.setFillColor(235, 235, 240);
+                    doc.rect(margin, yPos, pageWidth - 2 * margin, 12, 'F');
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(13);
                     doc.setFont('helvetica', 'bold');
-                    doc.text(`${gIdx + 1}. ${gs.group.name}`, margin + 3, yPos + 5.5);
-                    doc.setFontSize(8);
-                    doc.text(`Total: Rp ${gs.gBudget.toLocaleString('id-ID')} | ${programs.length} program`, pageWidth - margin - 3, yPos + 5.5, { align: 'right' });
-                    yPos += 10;
+                    doc.text((gIdx + 1) + '. ' + gs.group.name, margin + 5, yPos + 8);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('Total: Rp ' + gs.gBudget.toLocaleString('id-ID') + '  |  ' + programs.length + ' program', pageWidth - margin - 5, yPos + 8, { align: 'right' });
+                    yPos += 15;
 
-                    const cols = 3;
-                    const colWidth = (pageWidth - 2 * margin - (cols - 1) * 2) / cols;
-                    const cardHeight = 13;
-                    const cardGap = 2;
+                    const cols = 5;
+                    const colWidth = (pageWidth - 2 * margin - (cols - 1) * 2.5) / cols;
+                    const cardHeight = 26;  // DIPERBESAR untuk 2 baris nama
+                    const cardGap = 3;
                     let col = 0;
                     let colY = yPos;
 
@@ -3077,52 +3631,67 @@
                         const statusInfo = STATUS_FLOW[statusKey];
                         const statusRGB = hexToRgb(statusInfo.color);
                         
-                        if (colY + cardHeight > pageHeight - 15) {
-                            doc.addPage();
-                            drawHeader();
-                            colY = 30;
-                            col = 0;
+                        if (colY + cardHeight > pageHeight - 25) {
+                            doc.addPage(); drawHeader();
+                            colY = 30; col = 0;
                             
-                            doc.setFillColor(...accentRGB);
-                            doc.rect(margin, colY, pageWidth - 2 * margin, 8, 'F');
-                            doc.setTextColor(255, 255, 255);
-                            doc.setFontSize(10);
+                            doc.setFillColor(235, 235, 240);
+                            doc.rect(margin, colY, pageWidth - 2 * margin, 12, 'F');
+                            doc.setTextColor(20, 20, 20);
+                            doc.setFontSize(13);
                             doc.setFont('helvetica', 'bold');
-                            doc.text(`${gIdx + 1}. ${gs.group.name} (lanjutan)`, margin + 3, colY + 5.5);
-                            colY += 10;
+                            doc.text((gIdx + 1) + '. ' + gs.group.name + ' (lanjutan)', margin + 5, colY + 8);
+                            colY += 15;
                         }
                         
-                        const x = margin + col * (colWidth + 2);
+                        const x = margin + col * (colWidth + 2.5);
                         
                         doc.setFillColor(250, 250, 252);
-                        doc.setDrawColor(226, 232, 240);
-                        doc.roundedRect(x, colY, colWidth, cardHeight, 1, 1, 'FD');
+                        doc.setDrawColor(210, 210, 220);
+                        doc.roundedRect(x, colY, colWidth, cardHeight, 1.5, 1.5, 'FD');
                         
                         doc.setFillColor(...statusRGB);
-                        doc.rect(x, colY, 2, cardHeight, 'F');
+                        doc.rect(x, colY, 2.5, cardHeight, 'F');
                         
-                        doc.setTextColor(30, 41, 59);
-                        doc.setFontSize(7);
+                        // Nomor + Nama Program (2 baris)
+                        doc.setTextColor(20, 20, 20);
+                        doc.setFontSize(9);
                         doc.setFont('helvetica', 'bold');
-                        let displayName = p.name;
-                        if (displayName.length > 45) displayName = displayName.substring(0, 42) + '...';
-                        doc.text(`${pIdx + 1}. ${displayName}`, x + 4, colY + 4);
+                        const fullName = p.name;
+                        const prefix = (pIdx + 1) + '. ';
                         
-                        doc.setFontSize(6.5);
+                        // Split jadi 2 baris jika perlu
+                        const maxCharsPerLine = 38;
+                        if ((prefix + fullName).length <= maxCharsPerLine) {
+                            doc.text(prefix + fullName, x + 5, colY + 6);
+                        } else {
+                            // Baris 1: nomor + nama sebagian
+                            const firstLine = prefix + fullName.substring(0, maxCharsPerLine - prefix.length);
+                            doc.text(firstLine, x + 5, colY + 5);
+                            // Baris 2: lanjutan nama
+                            let remaining = fullName.substring(maxCharsPerLine - prefix.length);
+                            if (remaining.length > maxCharsPerLine) remaining = remaining.substring(0, maxCharsPerLine - 3) + '...';
+                            doc.text(remaining, x + 5, colY + 10);
+                        }
+                        
+                        // Status
+                        doc.setFontSize(8.5);
                         doc.setFont('helvetica', 'normal');
                         doc.setTextColor(...statusRGB);
-                        doc.text(`[${statusInfo.pdfShort}] ${statusInfo.pdfLabel}`, x + 4, colY + 8.5);
+                        doc.text('[' + statusInfo.pdfShort + '] ' + statusInfo.pdfLabel, x + 5, colY + 15);
                         
-                        doc.setTextColor(30, 41, 59);
+                        // Nominal
+                        doc.setTextColor(20, 20, 20);
                         doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(7);
-                        doc.text(`Rp ${p.cost.toLocaleString('id-ID')}`, x + colWidth - 3, colY + 8.5, { align: 'right' });
+                        doc.setFontSize(9.5);
+                        doc.text('Rp ' + p.cost.toLocaleString('id-ID'), x + 5, colY + 21);
                         
+                        // Bulan (jika ada) - di pojok kanan atas
                         if (p.scheduledMonth !== null) {
-                            doc.setFontSize(6);
-                            doc.setTextColor(100, 116, 139);
+                            doc.setFontSize(8);
+                            doc.setTextColor(80, 80, 80);
                             doc.setFont('helvetica', 'italic');
-                            doc.text(`Jadwal: ${months[p.scheduledMonth]}`, x + 4, colY + 11.5);
+                            doc.text('Bulan: ' + months[p.scheduledMonth], x + colWidth - 5, colY + 6, { align: 'right' });
                         }
                         
                         col++;
@@ -3133,66 +3702,63 @@
                     });
                     
                     if (col > 0) colY += cardHeight + cardGap;
-                    yPos = colY + 4;
+                    yPos = colY + 6;
                 });
 
-                // ============ RINGKASAN TOTAL AKHIR ============
-                if (yPos > pageHeight - 50) {
-                    doc.addPage();
-                    drawHeader();
-                    yPos = 30;
+                // RINGKASAN TOTAL
+                if (yPos > pageHeight - 70) {
+                    doc.addPage(); drawHeader(); yPos = 30;
                 }
 
                 drawSectionTitle(config.pdfSection3);
                 
                 const panelBgColor = config.accentLight === '#d1fae5' ? [240, 253, 244] : [254, 242, 242];
                 doc.setFillColor(...panelBgColor);
-                doc.setDrawColor(...accentRGB);
-                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 25, 3, 3, 'FD');
+                doc.setDrawColor(180, 180, 190);
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 36, 4, 4, 'FD');
 
                 const midX = margin + (pageWidth - 2 * margin) / 2;
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Total Terjadwal:', margin + 5, yPos + 8);
-                doc.setTextColor(...accentDarkRGB);
+                doc.setTextColor(80, 80, 80);
                 doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Total Terjadwal:', margin + 8, yPos + 12);
+                doc.setTextColor(...wordColor);
+                doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + totalScheduled.toLocaleString('id-ID'), margin + 5, yPos + 15);
+                doc.text('Rp ' + totalScheduled.toLocaleString('id-ID'), margin + 8, yPos + 22);
 
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Sisa Anggaran:', midX - 20, yPos + 8);
-                doc.setTextColor(...(remaining < 0 ? [220, 38, 38] : accentDarkRGB));
+                doc.setTextColor(80, 80, 80);
                 doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Sisa Anggaran:', midX - 30, yPos + 12);
+                doc.setTextColor(...(remaining < 0 ? [220, 38, 38] : [60, 60, 60]));
+                doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + remaining.toLocaleString('id-ID'), midX - 20, yPos + 15);
+                doc.text('Rp ' + remaining.toLocaleString('id-ID'), midX - 30, yPos + 22);
 
-                doc.setTextColor(100, 116, 139);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Total Anggaran:', pageWidth - margin - 60, yPos + 8);
-                doc.setTextColor(30, 41, 59);
+                doc.setTextColor(80, 80, 80);
                 doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Total Anggaran:', pageWidth - margin - 85, yPos + 12);
+                doc.setTextColor(20, 20, 20);
+                doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
-                doc.text('Rp ' + totalBudget.toLocaleString('id-ID'), pageWidth - margin - 60, yPos + 15);
-                yPos += 28;
+                doc.text('Rp ' + totalBudget.toLocaleString('id-ID'), pageWidth - margin - 85, yPos + 22);
+                yPos += 42;
 
                 doc.setFillColor(238, 242, 255);
                 doc.setDrawColor(99, 102, 241);
-                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 12, 3, 3, 'FD');
+                doc.roundedRect(margin, yPos, pageWidth - 2 * margin, 18, 3, 3, 'FD');
                 doc.setTextColor(99, 102, 241);
-                doc.setFontSize(7);
+                doc.setFontSize(10);
                 doc.setFont('helvetica', 'bold');
-                doc.text('TERBILANG:', margin + 4, yPos + 4);
-                doc.setTextColor(30, 41, 59);
-                doc.setFontSize(9);
+                doc.text('TERBILANG:', margin + 6, yPos + 7);
+                doc.setTextColor(20, 20, 20);
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'italic');
-                doc.text(formatTerbilang(totalScheduled), margin + 4, yPos + 9);
+                doc.text(formatTerbilang(totalScheduled), margin + 6, yPos + 14);
 
                 drawFooter();
-
                 doc.save(config.filename + '_' + budgetYear + '.pdf');
                 overlay.classList.remove('active');
                 showToast('PDF berhasil di-export', 'success');
@@ -3205,227 +3771,9 @@
     }
 
     function drawChartInPDF(doc, x, y, width, height, chartData, chartType, groupIds) {
-        const isCircular = chartType === 'pie';
-        
-        const groupTotals = groupIds.map(gid => {
-            return groups[gid].programs
-                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
-                .reduce((sum, p) => sum + p.cost, 0);
-        });
-        const grandTotal = groupTotals.reduce((s, v) => s + v, 0);
-        const nonZeroCount = groupTotals.filter(v => v > 0).length;
-        
-        doc.setFillColor(250, 250, 252);
-        doc.setDrawColor(226, 232, 240);
-        doc.roundedRect(x, y, width, height, 2, 2, 'FD');
-        
-        if (grandTotal === 0) {
-            doc.setTextColor(150, 150, 150);
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'italic');
-            doc.text('Belum ada data untuk ditampilkan', x + width/2, y + height/2, { align: 'center' });
-            return;
-        }
-        
-        if (isCircular) {
-            if (nonZeroCount < 2) {
-                doc.setTextColor(150, 150, 150);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'italic');
-                doc.text('Belum cukup data untuk Pie Chart', x + width/2, y + height/2 - 5, { align: 'center' });
-                doc.setFontSize(7);
-                doc.text('(minimal 2 kelompok dengan data terjadwal)', x + width/2, y + height/2 + 2, { align: 'center' });
-                return;
-            }
-            
-            const chartAreaWidth = width * 0.5;
-            const centerX = x + chartAreaWidth / 2;
-            const centerY = y + height / 2;
-            const maxRadius = Math.min(chartAreaWidth, height) / 2 - 10;
-            const outerRadius = maxRadius;
-            
-            let currentAngle = -Math.PI / 2;
-            const segments = [];
-            
-            groupTotals.forEach((value, i) => {
-                if (value === 0) return;
-                const angle = (value / grandTotal) * Math.PI * 2;
-                segments.push({
-                    value, startAngle: currentAngle, endAngle: currentAngle + angle,
-                    color: hexToRgb(CHART_COLORS[i % CHART_COLORS.length]),
-                    percentage: (value / grandTotal) * 100,
-                    groupName: groups[groupIds[i]].name
-                });
-                currentAngle += angle;
-            });
-            
-            segments.forEach(seg => {
-                const steps = Math.max(20, Math.ceil((seg.endAngle - seg.startAngle) / (Math.PI / 60)));
-                const points = [];
-                for (let s = 0; s <= steps; s++) {
-                    const t = seg.startAngle + (seg.endAngle - seg.startAngle) * (s / steps);
-                    points.push({ x: centerX + Math.cos(t) * outerRadius, y: centerY + Math.sin(t) * outerRadius });
-                }
-                points.push({ x: centerX, y: centerY });
-                
-                const deltas = [];
-                for (let i = 0; i < points.length - 1; i++) {
-                    deltas.push([points[i+1].x - points[i].x, points[i+1].y - points[i].y]);
-                }
-                
-                doc.setFillColor(...seg.color);
-                doc.setDrawColor(255, 255, 255);
-                doc.setLineWidth(0.3);
-                doc.lines(deltas, points[0].x, points[0].y, [1, 1], 'FD', true);
-                
-                const midAngle = (seg.startAngle + seg.endAngle) / 2;
-                const labelRadius = outerRadius * 0.65;
-                const labelX = centerX + Math.cos(midAngle) * labelRadius;
-                const labelY = centerY + Math.sin(midAngle) * labelRadius;
-                const arcSize = seg.endAngle - seg.startAngle;
-                
-                if (arcSize > 0.3) {
-                    let valueStr;
-                    if (seg.value >= 1000000000) valueStr = (seg.value / 1000000000).toFixed(1) + 'M';
-                    else if (seg.value >= 1000000) valueStr = (seg.value / 1000000).toFixed(1) + 'jt';
-                    else if (seg.value >= 1000) valueStr = (seg.value / 1000).toFixed(0) + 'rb';
-                    else valueStr = seg.value.toString();
-                    
-                    doc.setTextColor(255, 255, 255);
-                    doc.setFontSize(9);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(valueStr, labelX, labelY - 1, { align: 'center' });
-                    doc.setFontSize(8);
-                    doc.text(seg.percentage.toFixed(1) + '%', labelX, labelY + 3.5, { align: 'center' });
-                }
-            });
-            
-            const legendX = x + chartAreaWidth + 5;
-            const legendY = y + 12;
-            let legendItemY = legendY;
-            
-            doc.setTextColor(30, 41, 59);
-            doc.setFontSize(8);
-            doc.setFont('helvetica', 'bold');
-            doc.text('RINCIAN PER KELOMPOK', legendX, legendItemY);
-            legendItemY += 6;
-            
-            const nonZeroSegments = segments.filter(s => s.value > 0).sort((a, b) => b.value - a.value);
-            
-            nonZeroSegments.forEach(seg => {
-                if (legendItemY > y + height - 15) return;
-                doc.setFillColor(...seg.color);
-                doc.rect(legendX, legendItemY - 2, 3.5, 3.5, 'F');
-                doc.setTextColor(30, 41, 59);
-                doc.setFontSize(7.5);
-                doc.setFont('helvetica', 'bold');
-                const name = seg.groupName.length > 20 ? seg.groupName.substring(0, 18) + '..' : seg.groupName;
-                doc.text(name, legendX + 5, legendItemY);
-                doc.setTextColor(...seg.color);
-                doc.text('Rp ' + seg.value.toLocaleString('id-ID') + ' (' + seg.percentage.toFixed(1) + '%)', legendX + 5, legendItemY + 3.5);
-                legendItemY += 7;
-            });
-        } else if (chartType === 'bar' || chartType === 'line') {
-            const monthlyByGroup = groupIds.map(gid => {
-                const arr = new Array(12).fill(0);
-                groups[gid].programs.forEach(p => {
-                    if (p.scheduledMonth !== null && programMatchesChartFilter(p)) {
-                        arr[p.scheduledMonth] += p.cost;
-                    }
-                });
-                return arr;
-            });
-            
-            const monthlyTotals = new Array(12).fill(0);
-            monthlyByGroup.forEach(arr => arr.forEach((v, i) => monthlyTotals[i] += v));
-            const maxValue = Math.max(...monthlyTotals, 1);
-            
-            const chartPadding = { left: 22, right: 8, top: 8, bottom: 14 };
-            const chartW = width - chartPadding.left - chartPadding.right;
-            const chartH = height - chartPadding.top - chartPadding.bottom;
-            const chartX = x + chartPadding.left;
-            const chartY = y + chartPadding.top;
-            
-            doc.setFontSize(6);
-            doc.setTextColor(150, 150, 150);
-            doc.setFont('helvetica', 'normal');
-            for (let g = 0; g <= 4; g++) {
-                const gy = chartY + chartH - (chartH * g / 4);
-                doc.setDrawColor(240, 240, 245);
-                doc.setLineWidth(0.1);
-                doc.line(chartX, gy, chartX + chartW, gy);
-                const val = maxValue * g / 4;
-                let label;
-                if (val >= 1000000000) label = (val / 1000000000).toFixed(1) + 'M';
-                else if (val >= 1000000) label = (val / 1000000).toFixed(1) + 'jt';
-                else if (val >= 1000) label = (val / 1000).toFixed(0) + 'rb';
-                else label = val.toFixed(0);
-                doc.text(label, chartX - 2, gy + 1, { align: 'right' });
-            }
-            
-            doc.setFontSize(7);
-            doc.setTextColor(100, 116, 139);
-            const colWidth = chartW / 12;
-            
-            if (chartType === 'bar') {
-                const barGroupWidth = colWidth * 0.75;
-                const barWidth = barGroupWidth / groupIds.length;
-                
-                months.forEach((m, i) => {
-                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
-                    let stackY = chartY + chartH;
-                    groupIds.forEach((gid, gi) => {
-                        const value = monthlyByGroup[gi][i];
-                        if (value === 0) return;
-                        const barHeight = (value / maxValue) * chartH;
-                        const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
-                        doc.setFillColor(...color);
-                        doc.setDrawColor(255, 255, 255);
-                        doc.setLineWidth(0.1);
-                        doc.rect(chartX + colWidth * i + (colWidth - barGroupWidth) / 2 + barWidth * gi, stackY - barHeight, barWidth, barHeight, 'FD');
-                        stackY -= barHeight;
-                    });
-                });
-            } else {
-                months.forEach((m, i) => {
-                    doc.text(m, chartX + colWidth * i + colWidth / 2, chartY + chartH + 5, { align: 'center' });
-                });
-                groupIds.forEach((gid, gi) => {
-                    const color = hexToRgb(CHART_COLORS[gi % CHART_COLORS.length]);
-                    doc.setDrawColor(...color);
-                    doc.setLineWidth(0.5);
-                    let prevX = null, prevY = null;
-                    monthlyByGroup[gi].forEach((val, i) => {
-                        const px = chartX + colWidth * i + colWidth / 2;
-                        const py = chartY + chartH - (val / maxValue) * chartH;
-                        if (prevX !== null) doc.line(prevX, prevY, px, py);
-                        doc.setFillColor(...color);
-                        doc.circle(px, py, 0.8, 'F');
-                        prevX = px; prevY = py;
-                    });
-                });
-            }
-            
-            const legendY = y + height - 5;
-            let legendX = x + chartPadding.left;
-            doc.setFontSize(6.5);
-            const visibleGroups = groupIds.map((gid, i) => ({ gid, val: monthlyByGroup[i].reduce((s,v)=>s+v,0) }))
-                .filter(g => g.val > 0)
-                .slice(0, 10);
-            visibleGroups.forEach((g) => {
-                const color = hexToRgb(CHART_COLORS[groupIds.indexOf(g.gid) % CHART_COLORS.length]);
-                doc.setFillColor(...color);
-                doc.rect(legendX, legendY - 2, 3, 3, 'F');
-                doc.setTextColor(30, 41, 59);
-                doc.setFont('helvetica', 'normal');
-                const gname = groups[g.gid].name.length > 15 ? groups[g.gid].name.substring(0,13) + '..' : groups[g.gid].name;
-                doc.text(gname, legendX + 4, legendY);
-                legendX += 4 + doc.getTextWidth(gname) + 4;
-            });
-        }
+        // Fungsi ini tidak lagi digunakan
     }
 
-    // ================= EXPORT EXCEL =================
     function exportToExcel() {
         const config = MODE_CONFIG[currentMode];
         const companyName = document.getElementById('companyName').value.trim() || '';
@@ -3499,6 +3847,7 @@
                 });
 
                 groups = {}; groupCounter = 0; programCounter = 0;
+                customSelectedGroups = [];
                 const groupMap = {};
                 const statusMap = { 'draft': 'draft', 'approved': 'approved', 'in progress': 'inprogress', 'inprogress': 'inprogress', 'done': 'done', 'cancelled': 'cancelled' };
 
@@ -3565,7 +3914,28 @@
         
         renderAll();
         saveHistory('Inisialisasi awal');
+        
+        setTimeout(() => { renderPrintCharts(); }, 500);
+        
+        document.getElementById('companyName').addEventListener('input', updatePrintHeader);
+        document.getElementById('budgetYear').addEventListener('change', updatePrintHeader);
+        updatePrintHeader();
+        
+        document.getElementById('rankingFilterSelect').value = 'all';
+        
+        const originalRenderAll = renderAll;
+        window.renderAll = function() {
+            originalRenderAll();
+            renderPrintCharts();
+        };
+        
         window.addEventListener('beforeunload', saveToLocalStorage);
+        
+        window.addEventListener('beforeprint', function() {
+            renderPrintCharts();
+            // Force re-render ranking chart untuk print
+            renderPrintRankingChart();
+        });
     };
 </script>
 
