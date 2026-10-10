@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root {
@@ -1597,6 +1598,7 @@
             pdfSection4: 'SUMMARY STATUS PER KELOMPOK',
             pdfSection5: 'DETAIL PROGRAM PER KELOMPOK',
             pdfSection6: 'EXECUTIVE SUMMARY',
+            pdfSection7: 'RANKING KELOMPOK BERDASARKAN ANGGARAN',
             filename: 'Agenda_Rencana_Pengeluaran',
             excelLabel: 'Pengeluaran', chartTitle: 'Grafik Fluktuasi Pengeluaran Per Bulan'
         },
@@ -1618,6 +1620,7 @@
             pdfSection4: 'SUMMARY STATUS PER KELOMPOK',
             pdfSection5: 'DETAIL PROGRAM PER KELOMPOK',
             pdfSection6: 'EXECUTIVE SUMMARY',
+            pdfSection7: 'RANKING KELOMPOK BERDASARKAN ANGGARAN',
             filename: 'Agenda_Rencana_Pemasukan',
             excelLabel: 'Pemasukan', chartTitle: 'Grafik Fluktuasi Pemasukan Per Bulan'
         }
@@ -3094,11 +3097,12 @@
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; }
 
-    // ================= EXPORT PDF =================
+    // ================= EXPORT PDF (dengan html2canvas capture chart) =================
     function exportToPDF() {
         const overlay = document.getElementById('loadingOverlay');
         overlay.classList.add('active');
 
+        // Tunggu chart selesai render, lalu capture
         setTimeout(() => {
             try {
                 const { jsPDF } = window.jspdf;
@@ -3200,7 +3204,7 @@
                     yPos += 14;
                 };
 
-                // ============ HALAMAN 1: EXECUTIVE SUMMARY ============
+                // ============ HALAMAN 1: EXECUTIVE SUMMARY + RANKING CHART ============
                 drawHeader();
                 yPos = 30;
 
@@ -3291,6 +3295,35 @@
                         doc.text(insight, margin + 6, yPos + 17 + i * 7);
                     });
                     yPos += insightHeight + 10;
+                }
+
+                // ============ RANKING CHART VIA HTML2CANVAS ============
+                const rankingCanvas = document.getElementById('rankingChart');
+                if (rankingCanvas && groupIds.length > 0) {
+                    doc.setTextColor(20, 20, 20);
+                    doc.setFontSize(13);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(config.pdfSection7 + ' (Terbesar ke Terkecil)', margin, yPos);
+                    yPos += 8;
+                    
+                    // Ambil chart image dari canvas
+                    const chartImg = rankingCanvas.toDataURL('image/png', 1.0);
+                    
+                    // Hitung ukuran gambar
+                    const imgMaxWidth = pageWidth - 2 * margin;
+                    const imgAspect = rankingCanvas.height / rankingCanvas.width;
+                    let imgWidth = imgMaxWidth;
+                    let imgHeight = imgWidth * imgAspect;
+                    
+                    // Batasi tinggi max agar tidak keluar halaman
+                    const maxImgHeight = pageHeight - yPos - 20;
+                    if (imgHeight > maxImgHeight) {
+                        imgHeight = maxImgHeight;
+                        imgWidth = imgHeight / imgAspect;
+                    }
+                    
+                    doc.addImage(chartImg, 'PNG', margin, yPos, imgWidth, imgHeight);
+                    yPos += imgHeight + 10;
                 }
 
                 // ============ HALAMAN 2: RINGKASAN ============
@@ -3542,13 +3575,13 @@
                 drawFooter();
                 doc.save(config.filename + '_' + budgetYear + '.pdf');
                 overlay.classList.remove('active');
-                showToast('PDF berhasil di-export', 'success');
+                showToast('PDF berhasil di-export (dengan grafik ranking)', 'success');
             } catch (err) {
                 overlay.classList.remove('active');
                 showToast('Gagal export PDF: ' + err.message, 'error');
                 console.error(err);
             }
-        }, 100);
+        }, 300);
     }
 
     function exportToExcel() {
@@ -3700,7 +3733,6 @@
         
         window.addEventListener('beforeunload', saveToLocalStorage);
         
-        // Sebelum print, render ulang ranking chart supaya fresh
         window.addEventListener('beforeprint', function() {
             renderRankingChart();
         });
