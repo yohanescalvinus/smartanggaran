@@ -915,15 +915,19 @@
                 padding-bottom: 4px !important;
                 border-bottom: 1px solid #6366f1 !important;
             }
-            .ranking-panel .print-only {
+            
+            /* Chart wrapper tampil normal saat print - gunakan chart web yang sudah ada */
+            .ranking-panel .chart-wrapper-print {
                 display: block !important;
                 page-break-inside: avoid;
                 text-align: center;
                 padding: 6px !important;
+                height: 280px !important;
+                position: relative;
             }
-            .ranking-panel .print-only canvas {
-                max-height: 260px !important;
-                height: 260px !important;
+            .ranking-panel .chart-wrapper-print canvas {
+                max-height: 280px !important;
+                height: 280px !important;
                 width: 100% !important;
             }
             
@@ -1239,8 +1243,7 @@
     </div>
     
     <!-- ============================================================ -->
-    <!-- RANKING PANEL - DIPISAHKAN DARI TABEL 1                     -->
-    <!-- Tampil di halaman pertama saat print, Tabel 1 di halaman baru -->
+    <!-- RANKING PANEL - MENGGUNAKAN CHART YANG SAMA UNTUK WEB & PRINT -->
     <!-- ============================================================ -->
     <div class="ranking-panel" id="rankingPanel">
         <div class="ranking-panel-title">🏆 RANKING KELOMPOK BERDASARKAN ANGGARAN (Terbesar → Terkecil)</div>
@@ -1261,16 +1264,9 @@
             <div id="customGroupCheckboxes" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
         </div>
         
-        <!-- WEB CHART -->
-        <div style="position: relative; width: 100%; margin-bottom: 10px;" class="no-print">
-            <canvas id="rankingChart" style="max-height: 800px;"></canvas>
-        </div>
-        
-        <!-- PRINT CHART (Hanya tampil saat print) - TANPA inline display:block -->
-        <div class="print-only" style="text-align:center; padding:10px; page-break-inside: avoid;">
-            <div style="position: relative; width: 100%; height: 300px;">
-                <canvas id="printRankingChart"></canvas>
-            </div>
+        <!-- SATU CHART UNTUK WEB & PRINT -->
+        <div class="chart-wrapper-print" id="rankingChartWrapper">
+            <canvas id="rankingChart"></canvas>
         </div>
     </div>
 
@@ -1559,7 +1555,6 @@
     let rankingChart = null;
     let printBarChart = null;
     let printPieChart = null;
-    let printRankingChart = null;
     let currentChartType = 'bar';
     let currentChartStatusFilter = 'all';
     let currentRankingFilter = 'all';
@@ -1975,7 +1970,6 @@
         }
         
         renderRankingChart();
-        renderPrintRankingChart();
     }
     
     function renderCustomGroupCheckboxes() {
@@ -2010,7 +2004,6 @@
             customSelectedGroups = customSelectedGroups.filter(id => id !== gid);
         }
         renderRankingChart();
-        renderPrintRankingChart();
     }
     
     function getFilteredRankingGroups() {
@@ -2033,7 +2026,7 @@
         return groupStats;
     }
     
-    // ================= RANKING CHART (WEB) =================
+    // ================= RANKING CHART (SATU CHART UNTUK WEB & PRINT) =================
     function renderRankingChart() {
         const ctx = document.getElementById('rankingChart')?.getContext('2d');
         if (!ctx) return;
@@ -2046,9 +2039,13 @@
             return;
         }
         
+        // Set tinggi wrapper dinamis
         const dynamicHeight = Math.max(250, groupStats.length * 22 + 60);
-        const canvasWrapper = ctx.canvas.parentElement;
-        canvasWrapper.style.height = dynamicHeight + 'px';
+        const wrapper = document.getElementById('rankingChartWrapper');
+        if (wrapper) {
+            wrapper.style.height = dynamicHeight + 'px';
+            wrapper.style.position = 'relative';
+        }
         
         const labels = groupStats.map(g => g.name);
         const data = groupStats.map(g => g.total);
@@ -2072,6 +2069,7 @@
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: false,
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -2113,78 +2111,7 @@
                             }
                         }
                     }
-                },
-                animation: {
-                    duration: 800,
-                    easing: 'easeOutQuart'
                 }
-            }
-        });
-    }
-    
-    // ================= PRINT RANKING CHART =================
-    function renderPrintRankingChart() {
-        const ctx = document.getElementById('printRankingChart')?.getContext('2d');
-        if (!ctx) return;
-        
-        const groupStats = getFilteredRankingGroups();
-        if (groupStats.length === 0) {
-            if (printRankingChart) printRankingChart.destroy();
-            printRankingChart = null;
-            return;
-        }
-        
-        if (printRankingChart) printRankingChart.destroy();
-        
-        printRankingChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: groupStats.map(g => {
-                    let name = g.name;
-                    return name.length > 24 ? name.substring(0, 22) + '...' : name;
-                }),
-                datasets: [{
-                    label: 'Total',
-                    data: groupStats.map(g => g.total),
-                    backgroundColor: groupStats.map((_, i) => i < 3 ? '#f59e0b' : '#6366f1'),
-                    borderColor: groupStats.map((_, i) => i < 3 ? '#d97706' : '#4f46e5'),
-                    borderWidth: 1,
-                    borderRadius: 2,
-                    barThickness: 12
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false }, 
-                    tooltip: { enabled: false } 
-                },
-                scales: {
-                    x: { 
-                        beginAtZero: true, 
-                        grid: { color: '#e5e7eb' },
-                        ticks: { 
-                            font: { size: 10, weight: '600' }, 
-                            callback: function(value) {
-                                if (value >= 1000000000) return (value / 1000000000).toFixed(1) + 'M';
-                                if (value >= 1000000) return (value / 1000000).toFixed(0) + 'jt';
-                                if (value >= 1000) return (value / 1000).toFixed(0) + 'rb';
-                                return value;
-                            }
-                        }
-                    },
-                    y: { 
-                        grid: { display: false }, 
-                        ticks: { 
-                            font: { size: 10, weight: 'bold' },
-                            autoSkip: false,
-                            color: '#1e293b'
-                        } 
-                    }
-                },
-                animation: false
             }
         });
     }
@@ -2669,11 +2596,6 @@
         renderInsight();
         renderStatusSummary();
         updatePrintHeader();
-        
-        // Render print ranking chart setiap kali data berubah
-        setTimeout(() => {
-            renderPrintRankingChart();
-        }, 100);
     }
     
     function updatePrintHeader() {
@@ -2854,7 +2776,6 @@
         renderScheduleTable();
         renderChart();
         renderRankingChart();
-        renderPrintRankingChart();
         renderKPIs();
         renderStatusSummary();
     }
@@ -3173,86 +3094,6 @@
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
     window.onclick = function(event) { if (event.target.classList.contains('modal')) event.target.style.display = 'none'; }
 
-    // ================= PRINT CHARTS =================
-    function renderPrintCharts() {
-        const groupIds = Object.keys(groups);
-        
-        const barCtx = document.getElementById('printBarChart')?.getContext('2d');
-        if (!barCtx) return;
-        
-        const monthlyData = new Array(12).fill(0);
-        groupIds.forEach(gid => {
-            groups[gid].programs.forEach(p => {
-                if (p.scheduledMonth !== null && programMatchesChartFilter(p)) {
-                    monthlyData[p.scheduledMonth] += p.cost;
-                }
-            });
-        });
-        
-        if (printBarChart) printBarChart.destroy();
-        printBarChart = new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Total', data: monthlyData,
-                    backgroundColor: CHART_COLORS[0],
-                    borderColor: CHART_COLORS[0],
-                    borderWidth: 1, borderRadius: 3
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { font: { size: 8 } } },
-                    y: { beginAtZero: true, grid: { color: '#f1f5f9' },
-                        ticks: { font: { size: 7 }, callback: function(value) {
-                            if (value >= 1000000) return (value / 1000000).toFixed(0) + 'jt';
-                            if (value >= 1000) return (value / 1000).toFixed(0) + 'rb';
-                            return value;
-                        }}
-                    }
-                },
-                animation: false
-            }
-        });
-        
-        const pieCtx = document.getElementById('printPieChart')?.getContext('2d');
-        if (!pieCtx) return;
-        
-        const groupTotals = groupIds.map(gid => {
-            return groups[gid].programs
-                .filter(p => p.scheduledMonth !== null && programMatchesChartFilter(p))
-                .reduce((sum, p) => sum + p.cost, 0);
-        });
-        
-        const nonZeroIndices = groupTotals.map((v, i) => v > 0 ? i : -1).filter(i => i !== -1);
-        const nonZeroLabels = nonZeroIndices.map(i => groups[groupIds[i]].name);
-        const nonZeroValues = nonZeroIndices.map(i => groupTotals[i]);
-        const nonZeroColors = nonZeroIndices.map(i => CHART_COLORS[i % CHART_COLORS.length]);
-        
-        if (printPieChart) printPieChart.destroy();
-        printPieChart = new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: nonZeroLabels.length > 0 ? nonZeroLabels : ['Belum ada data'],
-                datasets: [{
-                    data: nonZeroValues.length > 0 ? nonZeroValues : [1],
-                    backgroundColor: nonZeroColors.length > 0 ? nonZeroColors : ['#e2e8f0'],
-                    borderColor: '#fff', borderWidth: 1.5
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                animation: false
-            }
-        });
-        
-        renderPrintRankingChart();
-    }
-
     // ================= EXPORT PDF =================
     function exportToPDF() {
         const overlay = document.getElementById('loadingOverlay');
@@ -3450,62 +3291,6 @@
                         doc.text(insight, margin + 6, yPos + 17 + i * 7);
                     });
                     yPos += insightHeight + 10;
-                }
-
-                const rankedGroups = [...groupStats].sort((a, b) => b.gBudget - a.gBudget);
-                if (rankedGroups.length > 0) {
-                    doc.setTextColor(20, 20, 20);
-                    doc.setFontSize(13);
-                    doc.setFont('helvetica', 'bold');
-                    doc.text('RANKING KELOMPOK BERDASARKAN ANGGARAN (Terbesar ke Terkecil)', margin, yPos);
-                    yPos += 9;
-                    
-                    const maxChartHeight = 100;
-                    const neededHeight = rankedGroups.length * 5.5 + 16;
-                    const chartHeight = Math.min(neededHeight, maxChartHeight);
-                    const chartWidth = pageWidth - 2 * margin;
-                    const chartX = margin;
-                    const chartY = yPos;
-                    const barMaxWidth = chartWidth - 120;
-                    const maxBudget = rankedGroups[0].gBudget;
-                    
-                    doc.setFillColor(250, 250, 252);
-                    doc.setDrawColor(220, 220, 230);
-                    doc.roundedRect(chartX, chartY, chartWidth, chartHeight, 3, 3, 'FD');
-                    
-                    const visibleCount = Math.min(rankedGroups.length, Math.floor((chartHeight - 16) / 5.5));
-                    const barHeight = Math.min((chartHeight - 16) / Math.max(visibleCount, 1), 5);
-                    const barGap = 1.5;
-                    const barStartY = chartY + 8;
-                    
-                    rankedGroups.slice(0, visibleCount).forEach((gs, i) => {
-                        const barY = barStartY + i * (barHeight + barGap);
-                        if (barY + barHeight > chartY + chartHeight - 3) return;
-                        
-                        const ratio = maxBudget > 0 ? gs.gBudget / maxBudget : 0;
-                        const barW = ratio * barMaxWidth;
-                        
-                        if (i < 3) {
-                            doc.setFillColor(245, 158, 11);
-                        } else {
-                            doc.setFillColor(99, 102, 241);
-                        }
-                        doc.rect(chartX + 60, barY, barW, barHeight, 'F');
-                        
-                        doc.setTextColor(20, 20, 20);
-                        doc.setFontSize(9);
-                        doc.setFont('helvetica', 'bold');
-                        let nameText = gs.group.name;
-                        if (nameText.length > 24) nameText = nameText.substring(0, 22) + '...';
-                        doc.text(nameText, chartX + 6, barY + barHeight - 1.5);
-                        
-                        doc.setTextColor(50, 50, 50);
-                        doc.setFontSize(9);
-                        doc.setFont('helvetica', 'normal');
-                        doc.text('Rp ' + gs.gBudget.toLocaleString('id-ID'), chartX + chartWidth - 6, barY + barHeight - 1.5, { align: 'right' });
-                    });
-                    
-                    yPos = chartY + chartHeight + 10;
                 }
 
                 // ============ HALAMAN 2: RINGKASAN ============
@@ -3907,24 +3692,17 @@
         renderAll();
         saveHistory('Inisialisasi awal');
         
-        setTimeout(() => { renderPrintRankingChart(); }, 500);
-        
         document.getElementById('companyName').addEventListener('input', updatePrintHeader);
         document.getElementById('budgetYear').addEventListener('change', updatePrintHeader);
         updatePrintHeader();
         
         document.getElementById('rankingFilterSelect').value = 'all';
         
-        const originalRenderAll = renderAll;
-        window.renderAll = function() {
-            originalRenderAll();
-            renderPrintRankingChart();
-        };
-        
         window.addEventListener('beforeunload', saveToLocalStorage);
         
+        // Sebelum print, render ulang ranking chart supaya fresh
         window.addEventListener('beforeprint', function() {
-            renderPrintRankingChart();
+            renderRankingChart();
         });
     };
 </script>
